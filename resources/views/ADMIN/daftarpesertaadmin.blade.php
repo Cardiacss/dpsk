@@ -181,7 +181,7 @@
                     </button>
                     </form>
                       <a href="{{ route('peserta.showDetail', ['idanggota' => $p->idanggota]) }}"
-                      class="px-3 py-1 bg-teal-600 text-white text-sm rounded hover:bg-blue-700">
+                      class="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
                       Detail
                     </a>
                   </td>

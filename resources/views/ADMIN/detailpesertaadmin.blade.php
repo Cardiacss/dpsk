@@ -128,19 +128,18 @@
         <!-- Tabs -->
         <div class="flex space-x-2 mb-6 justify-center">
           <!-- Tombol Detail -->
-          <a href="detailpesertaadmin" class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">
-            Detail
-          </a>
+          <a href="{{ url('/detailpesertaadmin/'.$peserta->idanggota) }}" 
+             class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Detail</a>
 
           <!-- Tombol Tanggungan -->
-          <a href="/tanggunganpesertaadmin" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
-            Tanggungan
-          </a>
+                   <a href="{{ url('/tanggunganpesertaadmin/'.$peserta->idanggota) }}" 
+             class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">Tanggungan</a>
 
           <!-- Tombol Ahli Waris -->
-          <a href="/ahliwarispesertaadmin" class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">
-            Ahli Waris
-          </a>
+         <a href="{{ route('ahliwarispesertaadmin', ['idanggota' => $peserta->idanggota]) }}" 
+   class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">
+   Ahli Waris
+</a>
         </div>
 
         <!-- FORM DETAIL -->
@@ -221,9 +220,11 @@
             <a href="/daftarpesertaadmin" class="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500">
               Kembali
             </a>
-            <button type="button" class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700">
+            <a href="{{ route('peserta.cetakKartu', $peserta->idanggota) }}"
+              class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700">
               Cetak Kartu Peserta
-            </button>
+            </a>
+
           </div>
         </form>
     </main>

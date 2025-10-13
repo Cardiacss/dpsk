@@ -107,110 +107,104 @@
         <a href="mailto:ftik@uksw.edu" class="underline">ftik@uksw.edu</a>
       </div>
     </aside>
-
     <!-- Main Content -->
-    <main class="flex-1 p-6 bg-gray-100 overflow-y-auto">
-    <div class="bg-white rounded-lg shadow p-6">
-         <!-- MAIN CONTENT -->
-  <main class="flex-1 bg-gray-100 p-6">
-    <h1 class="text-2xl font-bold text-center mb-4">Detail Peserta</h1>
+    <main class="flex-1 bg-gray-100 p-6 overflow-y-auto">
+      <div class="bg-white rounded-lg shadow p-6">
 
-    <!-- Breadcrumb -->
-    <p class="text-sm text-gray-500 mb-4">Peserta &gt; Lihat Detail &gt; Ahli Waris</p>
+        <h1 class="text-2xl font-bold text-center mb-4">Detail Peserta</h1>
 
-    <!-- Tabs -->
-   <!-- Tabs -->
-   <div class="flex space-x-2 mb-6 justify-center">
-  <!-- Tombol Detail -->
-  <a href=".detailpesertaadmin" 
-     class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">
-     Detail
-  </a>
+        <p class="text-sm text-gray-500 mb-4">Peserta &gt; Lihat Detail &gt; Ahli Waris</p>
 
-  <!-- Tombol Tanggungan -->
-  <a href="/tanggunganpesertaadmin" 
-     class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
-     Tanggungan
-  </a>
+        <!-- Tabs -->
+        <div class="flex space-x-2 mb-6 justify-center">
+          <a href="{{ url('/detailpesertaadmin/'.$peserta->idanggota) }}" 
+             class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">Detail</a>
 
-  <!-- Tombol Ahli Waris -->
-  <a href="/ahliwarispesertaope1" 
-     class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">
-     Ahli Waris
-  </a>
-</div>
+          <a href="{{ url('/tanggunganpesertaadmin/'.$peserta->idanggota) }}" 
+             class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600"">Tanggungan</a>
 
-    <!-- Data Peserta -->
-    <div class="grid grid-cols-2 gap-4 bg-white p-4 rounded shadow mb-6">
-      <div>
-        <label class="block text-sm font-medium">Nomor Peserta</label>
-        <input type="text" class="w-full border rounded px-2 py-1" value="123456" disabled />
+          <a href="{{ url('/ahliwarispesertaadmin/'.$peserta->idanggota) }}" 
+             class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Ahli Waris</a>
+        </div>
+
+        <!-- Data Peserta -->
+        <div class="grid grid-cols-2 gap-4 bg-white p-4 rounded shadow mb-6">
+          <div>
+            <label class="block text-sm font-medium">Nomor Peserta</label>
+            <input type="text" class="w-full border rounded px-2 py-1 bg-gray-100" 
+                   value="{{ $peserta->nopeserta }}" readonly>
+          </div>
+          <div>
+            <label class="block text-sm font-medium">Mitra / Pemberi Kerja</label>
+            <input type="text" class="w-full border rounded px-2 py-1 bg-gray-100" 
+                   value="{{ $peserta->idmitra ?? '-' }}" readonly>
+          </div>
+          <div>
+            <label class="block text-sm font-medium">Nama Peserta</label>
+            <input type="text" class="w-full border rounded px-2 py-1 bg-gray-100" 
+                   value="{{ $peserta->nama }}" readonly>
+          </div>
+          <div>
+            <label class="block text-sm font-medium">Unit Kerja</label>
+            <input type="text" class="w-full border rounded px-2 py-1 bg-gray-100" 
+                   value="{{ $peserta->idunit ?? '-' }}" readonly>
+          </div>
+          <div>
+            <label class="block text-sm font-medium">Status Nikah</label>
+            <input type="text" class="w-full border rounded px-2 py-1 bg-gray-100" 
+                   value="{{ $peserta->statusnikah ?? '-' }}" readonly>
+          </div>
+          <div>
+            <label class="block text-sm font-medium">Status Waris</label>
+            <input type="text" class="w-full border rounded px-2 py-1 bg-gray-100" 
+                   value="Aktif" readonly>
+          </div>
+        </div>
+
+        <!-- Tabel Ahli Waris -->
+        <h2 class="font-semibold mb-2">Menunjuk :</h2>
+        <div class="bg-white rounded shadow overflow-hidden">
+          <table class="w-full text-sm">
+            <thead class="bg-teal-500 text-white">
+              <tr>
+                <th class="py-2 px-4 text-left">Nama Lengkap</th>
+                <th class="py-2 px-4 text-left">Tempat/Tgl Lahir</th>
+                <th class="py-2 px-4 text-left">Jenis Kelamin</th>
+                <th class="py-2 px-4 text-left">Hubungan</th>
+                <th class="py-2 px-4 text-left">Pekerjaan</th>
+                <th class="py-2 px-4 text-left">Tanggal Tunjuk</th>
+                <th class="py-2 px-4 text-left">Nomor Surat</th>
+              </tr>
+            </thead>
+            <tbody>
+              @forelse ($ahliwaris as $kel)
+                <tr class="border-b hover:bg-gray-50">
+                  <td class="py-2 px-4">{{ $kel->nm_keluarga }}</td>
+                  <td class="py-2 px-4">{{ $kel->tempatlahir }} / {{ $kel->tglahir->format('Y-m-d') }}</td>
+                  <td class="py-2 px-4">{{ $kel->jeniskelamin }}</td>
+                  <td class="py-2 px-4">{{ $kel->hubungan }}</td>
+                  <td class="py-2 px-4">{{ $kel->pekerjaan }}</td>
+                  <td class="py-2 px-4">{{ $kel->tgltunjukwaris ?? '-' }}</td>
+                  <td class="py-2 px-4">{{ $kel->notunjukwaris ?? '-' }}</td>
+                </tr>
+              @empty
+                <tr>
+                  <td colspan="7" class="text-center py-4 text-gray-500">
+                    Tidak ada data ahli waris untuk peserta ini.
+                  </td>
+                </tr>
+              @endforelse
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-6">
+          <a href="{{ url('/tanggunganpesertaadmin/'.$peserta->idanggota) }}" 
+             class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">← Kembali</a>
+        </div>
+
       </div>
-      <div>
-        <label class="block text-sm font-medium">Mitra / Pemberi Kerja</label>
-        <input type="text" class="w-full border rounded px-2 py-1" value="PT Contoh" disabled />
-      </div>
-      <div>
-        <label class="block text-sm font-medium">Nama Peserta</label>
-        <input type="text" class="w-full border rounded px-2 py-1" value="Budi Santoso" disabled />
-      </div>
-      <div>
-        <label class="block text-sm font-medium">Unit Kerja</label>
-        <input type="text" class="w-full border rounded px-2 py-1" value="Keuangan" disabled />
-      </div>
-      <div>
-        <label class="block text-sm font-medium">Status Nikah</label>
-        <input type="text" class="w-full border rounded px-2 py-1" value="Menikah" disabled />
-      </div>
-      <div>
-        <label class="block text-sm font-medium">Status Waris</label>
-        <input type="text" class="w-full border rounded px-2 py-1" value="Aktif" disabled />
-      </div>
-    </div>
-
-    <!-- Tabel Ahli Waris -->
-    <h2 class="font-semibold mb-2">Menunjuk :</h2>
-    <div class="bg-white rounded shadow overflow-hidden">
-      <table class="w-full text-sm">
-        <thead class="bg-teal-500 text-white">
-          <tr>
-            <th class="py-2 px-4 text-left">Nama Lengkap</th>
-            <th class="py-2 px-4 text-left">Tempat/Tgl Lahir</th>
-            <th class="py-2 px-4 text-left">Jenis Kelamin</th>
-            <th class="py-2 px-4 text-left">Hubungan</th>
-            <th class="py-2 px-4 text-left">Pekerjaan</th>
-            <th class="py-2 px-4 text-left">Tanggal</th>
-            <th class="py-2 px-4 text-left">Nomor Surat</th>
-            <th class="py-2 px-4 text-left">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="border-b">
-            <td class="py-2 px-4">Herawati Rubiana</td>
-            <td class="py-2 px-4">Yogyakarta / 1985-07-08</td>
-            <td class="py-2 px-4">Wanita</td>
-            <td class="py-2 px-4">Istri</td>
-            <td class="py-2 px-4">Hidup</td>
-            <td class="py-2 px-4">2025-09-25</td>
-            <td class="py-2 px-4">001/AW/2025</td>
-           <td class="px-4 py-2 border space-x-2">
-  <a href="/ubahahliwarispesertaadmin1" 
-     class="px-3 py-1 bg-teal-600 text-white rounded hover:bg-teal-700 text-sm inline-block">
-    Ubah
-  </a>
-  <button class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm">Hapus</button>
-</td>
-
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Tombol Kembali -->
-    <div class="mt-6">
-      <a href="detailpeserta.html" 
-         class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Kembali</a>
-    </div>
-  </main>
+    </main>
+  </div>
 </body>
 </html>

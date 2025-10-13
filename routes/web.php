@@ -38,7 +38,24 @@ Route::middleware(['auth', 'role:Administrator'])->group(function () {
     Route::post('/ubahpesertaadmin/{idanggota}', [App\Http\Controllers\Admin\PesertaController::class, 'update'])
         ->name('peserta.update');
     Route::get('/detailpesertaadmin/{idanggota}', [App\Http\Controllers\Admin\PesertaController::class, 'showDetail'])
-    ->name('peserta.showDetail');
+        ->name('peserta.showDetail');
+    Route::get('/cetak-kartu-peserta/{idanggota}', [App\Http\Controllers\Admin\PesertaController::class, 'cetakKartu'])
+        ->name('peserta.cetakKartu');
+Route::get('/tanggunganpesertaadmin/{idanggota}', 
+    [App\Http\Controllers\Admin\TanggunganPesertaController::class, 'index'])
+    ->name('tanggunganpesertaadmin');
+    Route::get('/tanggunganpesertaadmin/{id}', [App\Http\Controllers\Admin\TanggunganPesertaController::class, 'show'])
+    ->name('tanggunganpesertaadmin');
+    Route::get('/tambahanggotapesertaadmin', [App\Http\Controllers\Admin\TanggunganPesertaController::class, 'create'])
+        ->name('tambahanggotapesertaadmin');
+        Route::get('/ahliwarispesertaadmin/{idanggota}', 
+    [App\Http\Controllers\Admin\AhliWarisPesertaController::class, 'index'])
+    ->name('ahliwarispesertaadmin');
+    Route::get('/tambahanggotapesertaadmin/{idanggota}', [App\Http\Controllers\Admin\TambahAnggotaPesertaController::class, 'create'])
+    ->name('tambahanggotapesertaadmin');
+
+Route::post('/tambahanggotapesertaadmin/{idanggota}', [App\Http\Controllers\Admin\TambahAnggotaPesertaController::class, 'store'])
+    ->name('tambahanggotapesertaadmin.store');
 
 });
 

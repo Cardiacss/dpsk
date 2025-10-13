@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\TPeserta;
+use Barryvdh\DomPDF\PDF as DomPDFPDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class PesertaController extends Controller
 {
@@ -128,18 +131,28 @@ class PesertaController extends Controller
         return redirect()->route('peserta.index')->with('success', 'Data peserta berhasil diperbarui!');
     }
     public function show($idanggota)
-{
-    $peserta = TPeserta::findOrFail($idanggota);
-    return view('ADMIN.detailpesertaadmin', compact('peserta'));
-}
-public function showDetail($idanggota)
-{
-    $peserta = DB::table('t_peserta')->where('idanggota', $idanggota)->first();
-
-    if (!$peserta) {
-        return redirect('/daftarpesertaadmin')->with('error', 'Data peserta tidak ditemukan');
+    {
+        $peserta = TPeserta::findOrFail($idanggota);
+        return view('ADMIN.detailpesertaadmin', compact('peserta'));
     }
+    public function showDetail($idanggota)
+    {
+        $peserta = DB::table('t_peserta')->where('idanggota', $idanggota)->first();
 
-    return view('ADMIN.detailpesertaadmin', compact('peserta'));
-}
+        if (!$peserta) {
+            return redirect('/daftarpesertaadmin')->with('error', 'Data peserta tidak ditemukan');
+        }
+
+        return view('ADMIN.detailpesertaadmin', compact('peserta'));
+    }
+    public function cetakKartu($idanggota)
+    {
+        $peserta = TPeserta::findOrFail($idanggota);
+
+        // Load view untuk PDF
+        $pdf = Pdf::loadView('ADMIN.kartupeserta', compact('peserta'));
+
+        // Download file PDF dengan nama peserta
+        return $pdf->download('Kartu_Peserta_' . $peserta->nama . '.pdf');
+    }
 }
