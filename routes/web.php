@@ -41,22 +41,27 @@ Route::middleware(['auth', 'role:Administrator'])->group(function () {
         ->name('peserta.showDetail');
     Route::get('/cetak-kartu-peserta/{idanggota}', [App\Http\Controllers\Admin\PesertaController::class, 'cetakKartu'])
         ->name('peserta.cetakKartu');
-Route::get('/tanggunganpesertaadmin/{idanggota}', 
-    [App\Http\Controllers\Admin\TanggunganPesertaController::class, 'index'])
-    ->name('tanggunganpesertaadmin');
+    Route::get(
+        '/tanggunganpesertaadmin/{idanggota}',
+        [App\Http\Controllers\Admin\TanggunganPesertaController::class, 'index']
+    )
+        ->name('tanggunganpesertaadmin');
     Route::get('/tanggunganpesertaadmin/{id}', [App\Http\Controllers\Admin\TanggunganPesertaController::class, 'show'])
-    ->name('tanggunganpesertaadmin');
+        ->name('tanggunganpesertaadmin');
     Route::get('/tambahanggotapesertaadmin', [App\Http\Controllers\Admin\TanggunganPesertaController::class, 'create'])
         ->name('tambahanggotapesertaadmin');
-        Route::get('/ahliwarispesertaadmin/{idanggota}', 
-    [App\Http\Controllers\Admin\AhliWarisPesertaController::class, 'index'])
-    ->name('ahliwarispesertaadmin');
-    Route::get('/tambahanggotapesertaadmin/{idanggota}', [App\Http\Controllers\Admin\TambahAnggotaPesertaController::class, 'create'])
-    ->name('tambahanggotapesertaadmin');
-
-Route::post('/tambahanggotapesertaadmin/{idanggota}', [App\Http\Controllers\Admin\TambahAnggotaPesertaController::class, 'store'])
-    ->name('tambahanggotapesertaadmin.store');
-
+    Route::get('/tambahkeluarga/{idanggota}', [App\Http\Controllers\Admin\KeluargaController::class, 'create'])->name('keluarga.create');
+    Route::post('/tambahkeluarga', [App\Http\Controllers\Admin\KeluargaController::class, 'store'])->name('keluarga.store');
+    Route::get(
+        '/ahliwarispesertaadmin/{idanggota}',
+        [App\Http\Controllers\Admin\AhliWarisPesertaController::class, 'index']
+    )
+        ->name('ahliwarispesertaadmin');
+    Route::get('/cetakKeluarga/{idanggota}', [App\Http\Controllers\Admin\KeluargaController::class, 'cetakKeluarga'])
+        ->name('cetakKeluarga');
+        Route::delete('/keluarga/{idkeluarga}', [App\Http\Controllers\Admin\KeluargaController::class, 'destroy'])->name('keluarga.destroy');
+Route::get('/editanggotaahliwarispesertaadmin/{idkeluarga}', [App\Http\Controllers\Admin\KeluargaController::class, 'edit'])->name('keluarga.edit');
+Route::put('/updateanggotaahliwarispesertaadmin/{idkeluarga}', [App\Http\Controllers\Admin\KeluargaController::class, 'update'])->name('keluarga.update');
 });
 
 // ----------------------------

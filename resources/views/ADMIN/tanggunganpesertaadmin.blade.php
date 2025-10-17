@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id" xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,12 +8,13 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="//unpkg.com/alpinejs" defer></script>
 </head>
+
 <body class="bg-gray-900">
 
   <div class="flex h-screen">
     <!-- Sidebar -->
-    <aside class="w-64 bg-[#2994A4] text-white flex flex-col" 
-           x-data="{ kepesertaan:false, mitra:false, kepensiunan:false, master:false }">
+    <aside class="w-64 bg-[#2994A4] text-white flex flex-col"
+      x-data="{ kepesertaan:false, mitra:false, kepensiunan:false, master:false }">
 
       <!-- Header -->
       <div class="p-4 text-lg font-bold border-b border-white/20">
@@ -22,7 +24,7 @@
       <!-- Menu -->
       <nav class="flex-1 px-4 space-y-2">
         <!-- Home -->
-        <a href="/menuadmin" class="flex items-center space-x-2 px-3 py-2 hover:bg-cyan-800 rounded">
+        <a href="/admin/menu" class="flex items-center space-x-2 px-3 py-2 hover:bg-cyan-800 rounded">
           <span>🏠</span> <span>Home</span>
         </a>
 
@@ -33,7 +35,8 @@
 
         <!-- Kepesertaan Dropdown -->
         <div>
-          <button @click="kepesertaan = !kepesertaan" class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
+          <button @click="kepesertaan = !kepesertaan"
+            class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
             <span class="flex items-center space-x-2">
               <span>🧾</span> <span>Kepesertaan</span>
             </span>
@@ -47,7 +50,8 @@
 
         <!-- Mitra Dropdown -->
         <div>
-          <button @click="mitra = !mitra" class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
+          <button @click="mitra = !mitra"
+            class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
             <span class="flex items-center space-x-2">
               <span>🤝</span> <span>Mitra</span>
             </span>
@@ -61,7 +65,8 @@
 
         <!-- Kepensiunan Dropdown -->
         <div>
-          <button @click="kepensiunan = !kepensiunan" class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
+          <button @click="kepensiunan = !kepensiunan"
+            class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
             <span class="flex items-center space-x-2">
               <span>📑</span> <span>Kepensiunan</span>
             </span>
@@ -79,8 +84,8 @@
 
         <!-- Master -->
         <div>
-          <button @click="master = !master" 
-                  class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
+          <button @click="master = !master"
+            class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
             <span class="flex items-center space-x-2">
               <span>⚙️</span> <span>Master</span>
             </span>
@@ -122,111 +127,112 @@
 
         <!-- Tabs -->
         <div class="flex space-x-2 mb-6 justify-center">
-          <a href="{{ url('/detailpesertaadmin/'.$peserta->idanggota) }}" 
-             class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">Detail</a>
+          <a href="{{ url('/detailpesertaadmin/' . $peserta->idanggota) }}"
+            class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">Detail</a>
 
-          <a href="{{ url('/tanggunganpesertaadmin/'.$peserta->idanggota) }}" 
-             class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Tanggungan</a>
+          <a href="{{ url('/tanggunganpesertaadmin/' . $peserta->idanggota) }}"
+            class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Tanggungan</a>
 
-<a href="{{ route('ahliwarispesertaadmin', ['idanggota' => $peserta->idanggota]) }}" 
-   class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">
-   Ahli Waris
-</a>
+          <a href="{{ route('ahliwarispesertaadmin', ['idanggota' => $peserta->idanggota]) }}"
+            class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">
+            Ahli Waris
+          </a>
         </div>
 
-<!-- Form Header -->
-<form class="bg-white p-6 rounded shadow-md max-w-3xl mx-auto mb-6">
-  <div class="grid grid-cols-2 gap-4 mb-4">
-    <div>
-      <label class="block text-sm">Nomor Peserta</label>
-      <input class="w-full border rounded p-2" value="{{ $peserta->nopeserta ?? '' }}" readonly />
-    </div>
-    <div>
-      <label class="block text-sm">Nama Peserta</label>
-      <input class="w-full border rounded p-2" value="{{ $peserta->nama ?? '' }}" readonly />
-    </div>
-    <div>
-      <label class="block text-sm">Status Nikah</label>
-      <input class="w-full border rounded p-2" value="{{ $peserta->statusnikah ?? '' }}" readonly />
-    </div>
-    <div>
-      <label class="block text-sm">Mitra / Pemberi Kerja</label>
-      <input class="w-full border rounded p-2" value="{{ $peserta->idmitra ?? '' }}" readonly />
-    </div>
-    <div>
-      <label class="block text-sm">Unit Kerja</label>
-      <input class="w-full border rounded p-2" value="{{ $peserta->idunit ?? '' }}" readonly />
-    </div>
-  </div>
-
-  <a href="/tambahanggotapesertaadmin" 
-     class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 mb-4 inline-block">
-    + Tambah
-  </a>
-
-  <!-- Table -->
-  <div class="overflow-x-auto">
-    <table class="w-full text-sm border border-gray-300">
-      <thead class="bg-teal-600 text-white">
-        <tr>
-          <th class="px-4 py-2 border">Nama Anggota Keluarga</th>
-          <th class="px-4 py-2 border">Tempat / Tgl Lahir</th>
-          <th class="px-4 py-2 border">Jenis Kelamin</th>
-          <th class="px-4 py-2 border">Hubungan</th>
-          <th class="px-4 py-2 border">Status Hidup</th>
-          <th class="px-4 py-2 border">Waris</th>
-          <th class="px-4 py-2 border">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        @forelse ($keluarga as $k)
-        <tr class="bg-white hover:bg-gray-50">
-          <td class="px-4 py-2 border">{{ $k->nm_keluarga }}</td>
-          <td class="px-4 py-2 border">{{ $k->tempatlahir }} / {{ $k->tglahir->format('Y-m-d') }}</td>
-          <td class="px-4 py-2 border">{{ $k->jeniskelamin }}</td>
-          <td class="px-4 py-2 border">{{ $k->hubungan }}</td>
-          <td class="px-4 py-2 border">{{ $k->statushidup ? 'Hidup' : 'Meninggal' }}</td>
-          <td class="px-4 py-2 border">{{ $k->bolehwaris ? 'Ya' : 'Tidak' }}</td>
-          <td class="px-4 py-2 border text-center">
-            <div class="flex justify-center space-x-2">
-              <a href="/editanggotaahliwarispesertaadmin/{{ $k->idkeluarga }}" 
-                 class="px-3 py-1 bg-teal-600 text-white rounded-md hover:bg-teal-700 text-sm">
-                Ubah
-              </a>
-
-              <form action="/hapusanggota/{{ $k->idkeluarga }}" method="POST" 
-                    onsubmit="return confirm('Yakin ingin menghapus data ini?')" class="inline">
-                @csrf
-                @method('DELETE')
-                <button type="submit" 
-                        class="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm">
-                  Hapus
-                </button>
-              </form>
+        <!-- Form Header -->
+        <form class="bg-white p-6 rounded shadow-md max-w-3xl mx-auto mb-6">
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-sm">Nomor Peserta</label>
+              <input class="w-full border rounded p-2" value="{{ $peserta->nopeserta ?? '' }}" readonly />
             </div>
-          </td>
-        </tr>
-        @empty
-        <tr>
-          <td colspan="7" class="text-center py-4 text-gray-500">Belum ada data keluarga</td>
-        </tr>
-        @endforelse
-      </tbody>
-    </table>
-  </div>
-</form>
+            <div>
+              <label class="block text-sm">Nama Peserta</label>
+              <input class="w-full border rounded p-2" value="{{ $peserta->nama ?? '' }}" readonly />
+            </div>
+            <div>
+              <label class="block text-sm">Status Nikah</label>
+              <input class="w-full border rounded p-2" value="{{ $peserta->statusnikah ?? '' }}" readonly />
+            </div>
+            <div>
+              <label class="block text-sm">Mitra / Pemberi Kerja</label>
+              <input class="w-full border rounded p-2" value="{{ $peserta->idmitra ?? '' }}" readonly />
+            </div>
+            <div>
+              <label class="block text-sm">Unit Kerja</label>
+              <input class="w-full border rounded p-2" value="{{ $peserta->idunit ?? '' }}" readonly />
+            </div>
+          </div>
+          <a href="{{ route('keluarga.create', $peserta->idanggota) }}"
+            class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 mb-4 inline-block">
+            + Tambah Anggota Keluarga
+          </a>
 
-          <!-- Cetak Button -->
-          <div class="flex justify-center mt-6">
-            <button type="button" 
-                    class="px-6 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 transition duration-200">
-              Cetak Keluarga
-            </button>
+          <!-- Table -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm border border-gray-300">
+              <thead class="bg-teal-600 text-white">
+                <tr>
+                  <th class="px-4 py-2 border">Nama Anggota Keluarga</th>
+                  <th class="px-4 py-2 border">Tempat / Tgl Lahir</th>
+                  <th class="px-4 py-2 border">Jenis Kelamin</th>
+                  <th class="px-4 py-2 border">Hubungan</th>
+                  <th class="px-4 py-2 border">Status Hidup</th>
+                  <th class="px-4 py-2 border">Waris</th>
+                  <th class="px-4 py-2 border">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @forelse ($keluarga as $k)
+                  <tr class="bg-white hover:bg-gray-50">
+                    <td class="px-4 py-2 border">{{ $k->nm_keluarga }}</td>
+                    <td class="px-4 py-2 border">{{ $k->tempatlahir }} /
+                      {{ $k->tgllahir ? \Carbon\Carbon::parse($k->tgllahir)->format('Y-m-d') : '-' }}
+                    </td>
+                    <td class="px-4 py-2 border">{{ $k->jeniskelamin }}</td>
+                    <td class="px-4 py-2 border">{{ $k->hubungan }}</td>
+                    <td class="px-4 py-2 border">{{ $k->statushidup ? 'Hidup' : 'Meninggal' }}</td>
+                    <td class="px-4 py-2 border">{{ $k->bolehwaris ? 'Ya' : 'Tidak' }}</td>
+                    <td class="px-4 py-2 border text-center">
+                      <div class="flex justify-center space-x-2">
+                        <a href="/editanggotaahliwarispesertaadmin/{{ $k->idkeluarga }}"
+                          class="px-3 py-1 bg-teal-600 text-white rounded-md hover:bg-teal-700 text-sm">
+                          Ubah
+                        </a>
+
+                        <form action="{{ route('keluarga.destroy', $k->idkeluarga) }}" method="POST"
+                          onsubmit="return confirm('Yakin ingin menghapus anggota ini?')" class="inline-block">
+                          @csrf
+                          @method('DELETE')
+                          <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">
+                            Hapus
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                @empty
+                  <tr>
+                    <td colspan="7" class="text-center py-4 text-gray-500">Belum ada data keluarga</td>
+                  </tr>
+                @endforelse
+              </tbody>
+            </table>
           </div>
         </form>
+
+        <!-- Cetak Button -->
+        <div class="flex justify-center mt-6">
+          <a href="{{ route('cetakKeluarga', ['idanggota' => $peserta->idanggota]) }}"
+            class="px-6 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 transition duration-200">
+            Cetak Keluarga
+          </a>
         </div>
+        </form>
       </div>
-    </main>
+  </div>
+  </main>
   </div>
 </body>
+
 </html>

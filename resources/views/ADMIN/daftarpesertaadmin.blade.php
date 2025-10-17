@@ -23,7 +23,7 @@
 
       <!-- Menu -->
       <nav class="flex-1 px-4 space-y-2">
-        <a href="/menuadmin" class="flex items-center space-x-2 px-3 py-2 hover:bg-cyan-800 rounded">
+        <a href="/admin/menu" class="flex items-center space-x-2 px-3 py-2 hover:bg-cyan-800 rounded">
           <span>🏠</span> <span>Home</span>
         </a>
 

@@ -19,11 +19,11 @@ class TKeluarga extends Model
         'nm_keluarga',
         'jeniskelamin',
         'tempatlahir',
-        'tglahir',
+        'tgllahir',
         'pekerjaan',
         'hubungan',
         'keterangan_kel',
-        'statuswiras',
+        'statuswaris',
         'nosuratnikah',
         'nosuratcerai',
         'notunjukwaris',
@@ -37,7 +37,7 @@ class TKeluarga extends Model
     ];
 
     protected $casts = [
-        'tglahir' => 'date',
+        'tglLahir' => 'date',
         'tglubah' => 'date',
         'tgltunjukwaris' => 'date',
         'tglmohonwaris' => 'date',

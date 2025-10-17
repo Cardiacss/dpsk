@@ -14,12 +14,15 @@ public function index($idanggota)
         // Ambil data peserta
         $peserta = TPeserta::findOrFail($idanggota);
 
-        // Ambil keluarga yang terkait dan boleh menjadi ahli waris
+        // Ambil semua keluarga peserta
+        $keluarga = TKeluarga::where('idanggota', $idanggota)->get();
+
+        // Ambil hanya yang boleh jadi ahli waris
         $ahliwaris = TKeluarga::where('idanggota', $idanggota)
             ->where('bolehwaris', 1)
             ->get();
 
-        // Kirim data ke view
-        return view('ADMIN.ahliwarispesertaadmin', compact('peserta', 'ahliwaris'));
+        // Kirim semua data ke view
+        return view('ADMIN.ahliwarispesertaadmin', compact('peserta', 'keluarga', 'ahliwaris'));
     }
 }
