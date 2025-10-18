@@ -49,7 +49,7 @@ class TPeserta extends Model
     // Contoh accessor (jika ingin format tanggal otomatis)
     protected $casts = [
         'tglahir' => 'date',
-        'tmtekja' => 'date',
+        'tmtkeja' => 'date',
         'tglmohon' => 'date',
         'tglsahpeserta' => 'date',
         'tgltiuran' => 'date',
@@ -60,5 +60,9 @@ class TPeserta extends Model
     public function unit()
     {
         return $this->belongsTo(TUnitMitra::class, 'idunit', 'idunit');
+    }
+        public function keluarga()
+    {
+        return $this->hasMany(TKeluarga::class, 'idanggota', 'idanggota');
     }
 }

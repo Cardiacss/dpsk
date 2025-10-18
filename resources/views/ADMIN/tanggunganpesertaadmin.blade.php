@@ -10,7 +10,6 @@
 </head>
 
 <body class="bg-gray-900">
-
   <div class="flex h-screen">
     <!-- Sidebar -->
     <aside class="w-64 bg-[#2994A4] text-white flex flex-col"
@@ -23,6 +22,7 @@
 
       <!-- Menu -->
       <nav class="flex-1 px-4 space-y-2">
+
         <!-- Home -->
         <a href="/admin/menu" class="flex items-center space-x-2 px-3 py-2 hover:bg-cyan-800 rounded">
           <span>🏠</span> <span>Home</span>
@@ -44,7 +44,7 @@
           </button>
           <div x-show="kepesertaan" class="pl-10 mt-1 space-y-1" x-cloak>
             <a href="/iuranpesertaadmin" class="block px-3 py-1 hover:bg-cyan-800 rounded">Iuran Peserta</a>
-            <a href="#" class="block px-3 py-1 hover:bg-cyan-800 rounded">Simulasi Kepersetaan & Manfaat Pensiun</a>
+            <a href="#" class="block px-3 py-1 hover:bg-cyan-800 rounded">Simulasi Kepesertaan & Manfaat Pensiun</a>
           </div>
         </div>
 
@@ -115,9 +115,11 @@
     <!-- Main Content -->
     <main class="flex-1 p-6 bg-gray-100 overflow-y-auto">
       <div class="bg-white rounded-lg shadow p-6">
+
         <!-- Breadcrumb -->
         <p class="text-sm text-gray-500 mb-4">
-          Peserta &gt; Lihat Detail &gt; <span class="text-blue-500">Tanggungan</span>
+          Peserta &gt; Lihat Detail &gt;
+          <span class="text-blue-500">Tanggungan</span>
         </p>
 
         <!-- Title -->
@@ -134,13 +136,11 @@
             class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Tanggungan</a>
 
           <a href="{{ route('ahliwarispesertaadmin', ['idanggota' => $peserta->idanggota]) }}"
-            class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">
-            Ahli Waris
-          </a>
+            class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">Ahli Waris</a>
         </div>
 
         <!-- Form Header -->
-        <form class="bg-white p-6 rounded shadow-md max-w-3xl mx-auto mb-6">
+        <div class="bg-white p-6 rounded shadow-md max-w-3xl mx-auto mb-6">
           <div class="grid grid-cols-2 gap-4 mb-4">
             <div>
               <label class="block text-sm">Nomor Peserta</label>
@@ -163,6 +163,7 @@
               <input class="w-full border rounded p-2" value="{{ $peserta->idunit ?? '' }}" readonly />
             </div>
           </div>
+
           <a href="{{ route('keluarga.create', $peserta->idanggota) }}"
             class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 mb-4 inline-block">
             + Tambah Anggota Keluarga
@@ -182,11 +183,13 @@
                   <th class="px-4 py-2 border">Action</th>
                 </tr>
               </thead>
+
               <tbody>
                 @forelse ($keluarga as $k)
                   <tr class="bg-white hover:bg-gray-50">
                     <td class="px-4 py-2 border">{{ $k->nm_keluarga }}</td>
-                    <td class="px-4 py-2 border">{{ $k->tempatlahir }} /
+                    <td class="px-4 py-2 border">
+                      {{ $k->tempatlahir }} /
                       {{ $k->tgllahir ? \Carbon\Carbon::parse($k->tgllahir)->format('Y-m-d') : '-' }}
                     </td>
                     <td class="px-4 py-2 border">{{ $k->jeniskelamin }}</td>
@@ -196,12 +199,12 @@
                     <td class="px-4 py-2 border text-center">
                       <div class="flex justify-center space-x-2">
                         <a href="/editanggotaahliwarispesertaadmin/{{ $k->idkeluarga }}"
-                          class="px-3 py-1 bg-teal-600 text-white rounded-md hover:bg-teal-700 text-sm">
-                          Ubah
-                        </a>
+                          class="px-3 py-1 bg-teal-600 text-white rounded-md hover:bg-teal-700 text-sm">Ubah</a>
 
-                        <form action="{{ route('keluarga.destroy', $k->idkeluarga) }}" method="POST"
-                          onsubmit="return confirm('Yakin ingin menghapus anggota ini?')" class="inline-block">
+                        <form action="{{ route('keluarga.destroy', ['idkeluarga' => $k->idkeluarga]) }}"
+                              method="POST"
+                              onsubmit="return confirm('Yakin ingin menghapus anggota ini?')"
+                              class="inline-block">
                           @csrf
                           @method('DELETE')
                           <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">
@@ -219,7 +222,7 @@
               </tbody>
             </table>
           </div>
-        </form>
+        </div>
 
         <!-- Cetak Button -->
         <div class="flex justify-center mt-6">
@@ -228,11 +231,8 @@
             Cetak Keluarga
           </a>
         </div>
-        </form>
       </div>
-  </div>
-  </main>
+    </main>
   </div>
 </body>
-
 </html>

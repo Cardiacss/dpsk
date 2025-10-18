@@ -173,12 +173,15 @@
                       class="px-3 py-1 bg-teal-600 text-white text-sm rounded hover:bg-teal-700">
                       Ubah
                     </a>
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" onclick="return confirm('Yakin ingin menghapus data ini?')"
-                      class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">
-                      Hapus
-                    </button>
+<form action="{{ route('peserta.destroy', $p->idanggota) }}" method="POST" class="inline" 
+      onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+  @csrf
+  @method('DELETE')
+  <button type="submit" 
+    class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">
+    Hapus
+  </button>
+</form>
                     </form>
                       <a href="{{ route('peserta.showDetail', ['idanggota' => $p->idanggota]) }}"
                       class="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">

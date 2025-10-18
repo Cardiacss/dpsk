@@ -18,42 +18,43 @@ class KeluargaController extends Controller
     }
 
     // Simpan data keluarga ke database
-    public function store(Request $request)
-    {
-        $request->validate([
-            'idanggota' => 'required|exists:t_peserta,idanggota',
-            'nm_keluarga' => 'required|string|max:255',
-            'tempatlahir' => 'nullable|string|max:100',
-            'tgllahir' => 'nullable|date',
-            'jeniskelamin' => 'required|string',
-            'hubungan' => 'nullable|string|max:50',
-            'pekerjaan' => 'nullable|string|max:100',
-            'statuswaris' => 'nullable|string|max:50',
-            'statushidup' => 'nullable|string|max:10',
-            'keterangan_kel' => 'nullable|string',
-            'notunjukwaris' => 'nullable|string|max:100',
-            'nomohonwaris' => 'nullable|string|max:100',
-        ]);
+public function store(Request $request)
+{
+    $request->validate([
+        'idanggota' => 'required|exists:t_peserta,idanggota',
+        'nm_keluarga' => 'required|string|max:255',
+        'tempatlahir' => 'nullable|string|max:100',
+        'tgllahir' => 'nullable|date',
+        'jeniskelamin' => 'required|string',
+        'hubungan' => 'nullable|string|max:50',
+        'pekerjaan' => 'nullable|string|max:100',
+        'statuswaris' => 'nullable|string|max:50',
+        'statushidup' => 'nullable|string|max:10',
+        'keterangan_kel' => 'nullable|string',
+        'notunjukwaris' => 'nullable|string|max:100',
+        'nomohonwaris' => 'nullable|string|max:100',
+    ]);
 
-        TKeluarga::create([
-            'idanggota' => $request->idanggota,
-            'nm_keluarga' => $request->nm_keluarga,
-            'tempatlahir' => $request->tempatlahir,
-            'tgllahir' => $request->tgllahir,
-            'jeniskelamin' => $request->jeniskelamin,
-            'hubungan' => $request->hubungan,
-            'pekerjaan' => $request->pekerjaan,
-            'statuswaris' => $request->statuswaris,
-            'statushidup' => $request->statushidup,
-            'keterangan_kel' => $request->keterangan_kel,
-            'notunjukwaris' => $request->notunjukwaris,
-            'nomohonwaris' => $request->nomohonwaris,
-        ]);
+    TKeluarga::create([
+        'idanggota' => $request->idanggota,
+        'nm_keluarga' => $request->nm_keluarga,
+        'tempatlahir' => $request->tempatlahir,
+        'tgllahir' => $request->tgllahir,
+        'jeniskelamin' => $request->jeniskelamin,
+        'hubungan' => $request->hubungan,
+        'pekerjaan' => $request->pekerjaan,
+        'statuswaris' => $request->statuswaris,
+        'statushidup' => $request->statushidup,
+        'keterangan_kel' => $request->keterangan_kel,
+        'notunjukwaris' => $request->notunjukwaris,
+        'nomohonwaris' => $request->nomohonwaris,
+    ]);
+
+    // ✅ Redirect ke halaman tanggungan peserta sesuai idanggota
     return redirect()
-        ->route('tanggunganpesertaadmin', ['id' => $request->idanggota])
+        ->route('tanggunganpesertaadmin', ['idanggota' => $request->idanggota])
         ->with('success', 'Anggota keluarga berhasil ditambahkan.');
-    }
-
+}
     public function ahliwaris($idanggota)
     {
         // Ambil data peserta berdasarkan id
@@ -86,10 +87,9 @@ public function destroy($idkeluarga)
     // Hapus data
     $keluarga->delete();
 
-    // Kembali ke halaman tanggungan peserta
-    return redirect()
-        ->route('tanggunganpesertaadmin', ['id' => $idanggota])
-        ->with('success', 'Data anggota keluarga berhasil dihapus.');
+return redirect()
+    ->route('tanggunganpesertaadmin', ['idanggota' => $idanggota])
+    ->with('success', 'Data anggota keluarga berhasil dihapus.');;
 }
     
 public function update(Request $request, $idkeluarga)
@@ -112,7 +112,7 @@ public function update(Request $request, $idkeluarga)
     $keluarga->update($request->all());
 
     return redirect()
-        ->route('tanggunganpesertaadmin', ['id' => $keluarga->idanggota])
+        ->route('tanggunganpesertaadmin', ['idanggota' => $keluarga->idanggota])
         ->with('success', 'Data anggota keluarga berhasil diperbarui.');
 }
 public function edit($idkeluarga)

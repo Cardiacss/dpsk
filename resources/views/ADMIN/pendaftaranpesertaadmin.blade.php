@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="id" xmlns="http://www.w3.org/1999/xhtml">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,12 +9,11 @@
 </head>
 
 <body class="bg-gray-900">
-
   <div class="flex h-screen">
     <!-- Sidebar -->
     <aside class="w-64 bg-[#2994A4] text-white flex flex-col"
-      x-data="{ kepesertaan:false, mitra:false, kepensiunan:false, master:false }">
-
+           x-data="{ kepesertaan:false, mitra:false, kepensiunan:false, master:false }">
+      
       <!-- Header -->
       <div class="p-4 text-lg font-bold border-b border-white/20">
         DANA PENSIUN <br> SEKOLAH KRISTEN
@@ -31,9 +29,10 @@
           <span>👤</span> <span>Peserta</span>
         </a>
 
+        <!-- Kepesertaan -->
         <div>
           <button @click="kepesertaan = !kepesertaan"
-            class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
+                  class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
             <span class="flex items-center space-x-2">
               <span>🧾</span> <span>Kepesertaan</span>
             </span>
@@ -45,9 +44,10 @@
           </div>
         </div>
 
+        <!-- Mitra -->
         <div>
           <button @click="mitra = !mitra"
-            class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
+                  class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
             <span class="flex items-center space-x-2">
               <span>🤝</span> <span>Mitra</span>
             </span>
@@ -59,9 +59,10 @@
           </div>
         </div>
 
+        <!-- Kepensiunan -->
         <div>
           <button @click="kepensiunan = !kepensiunan"
-            class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
+                  class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
             <span class="flex items-center space-x-2">
               <span>📑</span> <span>Kepensiunan</span>
             </span>
@@ -77,9 +78,10 @@
           </div>
         </div>
 
+        <!-- Master -->
         <div>
           <button @click="master = !master"
-            class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
+                  class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
             <span class="flex items-center space-x-2">
               <span>⚙️</span> <span>Master</span>
             </span>
@@ -96,6 +98,7 @@
         </a>
       </nav>
 
+      <!-- Footer -->
       <div class="p-4 text-xs border-t border-white/20">
         Gedung Fakultas Teknologi Informasi <br />
         Universitas Kristen Satya Wacana <br />
@@ -107,71 +110,105 @@
     <!-- Main Content -->
     <main class="flex-1 p-6 bg-gray-100 overflow-y-auto">
       <div class="bg-white rounded-lg shadow p-6">
-
         <p class="text-sm text-gray-500 mb-4">
           Peserta &gt; <a href="#" class="text-blue-500">Pendaftaran Peserta</a>
         </p>
 
         <h1 class="text-2xl font-bold mb-6 text-center">Pendaftaran Peserta</h1>
 
-        <!-- ✅ FORM DENGAN ACTION DAN NAME -->
+        <!-- Form -->
         <form action="{{ route('peserta.store') }}" method="POST" class="bg-white p-6 rounded shadow-md">
           @csrf
 
           <!-- Identitas -->
           <div class="grid grid-cols-2 gap-4 mb-4">
             <div>
-              <label class="block text-sm">Nomor Peserta</label>
-              <input name="nopeserta" class="w-full border rounded p-2" required />
+              <label class="block text-sm font-medium">Nomor Peserta <span class="text-red-600">*</span></label>
+              <input name="nopeserta" value="{{ old('nopeserta') }}"
+                     class="w-full border rounded p-2 @error('nopeserta') border-red-500 @enderror" required>
+              @error('nopeserta')
+                <p class="text-red-500 text-sm mt-1">Wajib diisi.</p>
+              @enderror
             </div>
+
             <div>
-              <label class="block text-sm">No KTP/Passport</label>
-              <input name="id_num" class="w-full border rounded p-2" />
+              <label class="block text-sm font-medium">No KTP/Passport <span class="text-red-600">*</span></label>
+              <input name="id_num" value="{{ old('id_num') }}"
+                     class="w-full border rounded p-2 @error('id_num') border-red-500 @enderror" required>
+              @error('id_num')
+                <p class="text-red-500 text-sm mt-1">Wajib diisi.</p>
+              @enderror
             </div>
+
             <div>
-              <label class="block text-sm">Nama Peserta</label>
-              <input name="nama" class="w-full border rounded p-2" required />
+              <label class="block text-sm font-medium">Nama Peserta <span class="text-red-600">*</span></label>
+              <input name="nama" value="{{ old('nama') }}"
+                     class="w-full border rounded p-2 @error('nama') border-red-500 @enderror" required>
+              @error('nama')
+                <p class="text-red-500 text-sm mt-1">Wajib diisi.</p>
+              @enderror
             </div>
+
             <div>
-              <label class="block text-sm">Jenis Kelamin</label>
-              <div class="flex space-x-4 mt-2">
-                <label><input type="radio" name="jeniskelamin" value="Pria" /> Pria</label>
-                <label><input type="radio" name="jeniskelamin" value="Wanita" /> Wanita</label>
+              <label class="block text-sm font-medium">Jenis Kelamin <span class="text-red-600">*</span></label>
+              <div class="flex space-x-4 mt-2 @error('jeniskelamin') border border-red-500 rounded p-2 @enderror">
+                <label><input type="radio" name="jeniskelamin" value="Pria" {{ old('jeniskelamin') == 'Pria' ? 'checked' : '' }}> Pria</label>
+                <label><input type="radio" name="jeniskelamin" value="Wanita" {{ old('jeniskelamin') == 'Wanita' ? 'checked' : '' }}> Wanita</label>
               </div>
+              @error('jeniskelamin')
+                <p class="text-red-500 text-sm mt-1">Wajib diisi.</p>
+              @enderror
             </div>
+
             <div>
-              <label class="block text-sm">Tempat Lahir</label>
-              <input name="tempatlahir" class="w-full border rounded p-2" />
+              <label class="block text-sm font-medium">Tempat Lahir <span class="text-red-600">*</span></label>
+              <input name="tempatlahir" value="{{ old('tempatlahir') }}"
+                     class="w-full border rounded p-2 @error('tempatlahir') border-red-500 @enderror" required>
+              @error('tempatlahir')
+                <p class="text-red-500 text-sm mt-1">Wajib diisi.</p>
+              @enderror
             </div>
+
             <div>
-              <label class="block text-sm">Tanggal Lahir</label>
-              <input type="date" name="tgllahir" class="w-full border rounded p-2" />
+              <label class="block text-sm font-medium">Tanggal Lahir <span class="text-red-600">*</span></label>
+              <input type="date" name="tgllahir" value="{{ old('tgllahir') }}"
+                     class="w-full border rounded p-2 @error('tgllahir') border-red-500 @enderror" required>
+              @error('tgllahir')
+                <p class="text-red-500 text-sm mt-1">Wajib diisi.</p>
+              @enderror
+            </div>
+
+            <!-- Alamat -->
+            <div class="col-span-2">
+              <label class="block text-sm font-medium">Alamat Lengkap <span class="text-red-600">*</span></label>
+              <input name="alamatterakhir" value="{{ old('alamatterakhir') }}"
+                     class="w-full border rounded p-2 @error('alamatterakhir') border-red-500 @enderror" required>
+              @error('alamatterakhir')
+                <p class="text-red-500 text-sm mt-1">Wajib diisi.</p>
+              @enderror
+            </div>
+
+            <div>
+              <label class="block text-sm">Kecamatan</label>
+              <input name="kecamatan" class="w-full border rounded p-2" />
+            </div>
+                      
+            <div>
+              <label class="block text-sm">Kelurahan</label>
+              <input name="kelurahan" class="w-full border rounded p-2" />
+            </div>
+            
+            <div>
+              <label class="block text-sm">Kota</label>
+              <input name="kotakab" class="w-full border rounded p-2" />
+            </div>
+
+            <div>
+              <label class="block text-sm">Provinsi</label>
+              <input name="provinsi" class="w-full border rounded p-2" />
             </div>
           </div>
 
-          <!-- Alamat -->
-          <div class="mb-4">
-            <label class="block text-sm">Alamat Lengkap</label>
-            <input name="alamatterakhir" class="w-full border rounded p-2 mb-4" />
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm">Kelurahan</label>
-                <input name="kelurahan" class="w-full border rounded p-2" />
-              </div>
-              <div>
-                <label class="block text-sm">Kecamatan</label>
-                <input name="kecamatan" class="w-full border rounded p-2" />
-              </div>
-              <div>
-                <label class="block text-sm">Kota</label>
-                <input name="kotakab" class="w-full border rounded p-2" />
-              </div>
-              <div>
-                <label class="block text-sm">Provinsi</label>
-                <input name="provinsi" class="w-full border rounded p-2" />
-              </div>
-            </div>
-          </div>
 
           <!-- PEKERJAAN -->
           <div class="mb-4">
@@ -180,7 +217,8 @@
               <label class="block text-sm">Tanggal Mulai Kerja (TMT Kerja)</label>
               <input type="date" name="tmtkeja" class="w-full border rounded p-2" required>
             </div>
-            <div class="grid grid-cols-2 gap-4">
+
+            <div class="grid grid-cols-2 gap-4 mt-2">
               <div>
                 <label class="block text-sm">Mitra Pemberi Kerja</label>
                 <input name="idmitra" class="w-full border rounded p-2" />
@@ -242,5 +280,4 @@
     </main>
   </div>
 </body>
-
 </html>

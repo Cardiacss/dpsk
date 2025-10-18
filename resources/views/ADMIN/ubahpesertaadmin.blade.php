@@ -191,7 +191,7 @@
   <div>
     <h2 class="text-lg font-semibold mb-4">Keanggotaan</h2>
     <div class="grid grid-cols-3 gap-4">
-      <input type="date" name="tmtiuran" value="{{ $peserta->tgltiuran }}" class="border rounded px-3 py-2" />
+      <input type="date" name="tmtiuran" value="{{ $peserta->tmtkeja }}" class="border rounded px-3 py-2" />
       <input type="date" name="tglsahpeserta" value="{{ $peserta->tglsahpeserta }}" class="border rounded px-3 py-2" />
       <input type="text" name="statuspeserta" value="{{ $peserta->statuspeserta }}" placeholder="Status Kartu" class="border rounded px-3 py-2" />
     </div>

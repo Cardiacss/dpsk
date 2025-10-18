@@ -12,44 +12,44 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class PesertaController extends Controller
 {
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'nopeserta' => 'required',
-            'nama' => 'required',
-            'jeniskelamin' => 'required',
-            'tempatlahir' => 'nullable|string',
-            'tgllahir' => 'nullable|date',
-            'alamatterakhir' => 'nullable|string',
-            'kelurahan' => 'nullable|string',
-            'kecamatan' => 'nullable|string',
-            'tmtkeja' => 'nullable|date', // ubah ke date karena ini tanggal mulai kerja
-            'kotakab' => 'nullable|string',
-            'provinsi' => 'nullable|string',
-            'pekerjaanakhir' => 'nullable|string',
-            'idmitra' => 'nullable|string',
-            'idunit' => 'nullable|string',
-            'statusnikah' => 'nullable|string',
-            'tglkawin' => 'nullable|date',
-            'jumlahanak' => 'nullable|integer',
-            'tmtiuran' => 'nullable|date',
-            'tglsahpeserta' => 'nullable|date',
-            'statuspeserta' => 'nullable|string',
-            'id_num' => 'nullable|string',
-        ]);
+  public function store(Request $request)
+{
+    $validated = $request->validate([
+        'nopeserta' => 'required|string',
+        'nama' => 'required|string',
+        'jeniskelamin' => 'required|string',
+        'tempatlahir' => 'required|string',
+        'tgllahir' => 'required||date',
+        'alamatterakhir' => 'nullable|string',
+        'kelurahan' => 'nullable|string',
+        'kecamatan' => 'nullable|string',
+        'tmtkeja' => 'required|date',
+        'kotakab' => 'nullable|string',
+        'provinsi' => 'nullable|string',
+        'pekerjaanakhir' => 'nullable|string',
+        'idmitra' => 'nullable|string',
+        'idunit' => 'nullable|string',
+        'statusnikah' => 'nullable|string',
+        'tglkawin' => 'nullable|date',
+        'jumlahanak' => 'nullable|integer',
+        'tmtiuran' => 'nullable|date',
+        'tglsahpeserta' => 'nullable|date',
+        'statuspeserta' => 'nullable|string',
+        'id_num' => 'nullable|string',
+    ], [
+        'required' => 'Data ini wajib diisi.',
+        'date' => 'Format tanggal tidak valid.',
+    ]);
 
-        // 🛠 Perbaikan default value
-        $validated['statushiduo'] = 1;
-        $validated['statuspeserta'] = $validated['statuspeserta'] ?? 'AKTIF';
-        $validated['jumlahanak'] = $validated['jumlahanak'] ?? 0;
+    $validated['statushiduo'] = 1;
+    $validated['statuspeserta'] = $validated['statuspeserta'] ?? 'AKTIF';
+    $validated['jumlahanak'] = $validated['jumlahanak'] ?? 0;
 
-        // Jika ada kolom opsional lain yang boleh kosong, isi string kosong biar aman
-        $validated['tmtkeja'] = $validated['tmtkeja'] ?? null;
+    TPeserta::create($validated);
 
-        TPeserta::create($validated);
+    return redirect()->route('peserta.index')->with('success', 'Peserta berhasil ditambahkan!');
+}
 
-        return redirect()->route('peserta.index')->with('success', 'Peserta berhasil ditambahkan!');
-    }
 
     public function index(Request $request)
     {
@@ -86,13 +86,19 @@ class PesertaController extends Controller
         // arahkan ke form pendaftaran peserta
         return view('ADMIN.pendaftaranpesertaadmin');
     }
-    public function destroy($idanggota)
-    {
-        $peserta = TPeserta::findOrFail($idanggota);
-        $peserta->delete();
+   public function destroy($idanggota)
+{
+    $peserta = TPeserta::findOrFail($idanggota);
 
-        return redirect()->route('peserta.index')->with('success', 'Data peserta berhasil dihapus.');
-    }
+    // ✅ Hapus dulu semua keluarga terkait
+    $peserta->keluarga()->delete();
+
+    // ✅ Baru hapus peserta
+    $peserta->delete();
+
+    return redirect()->route('peserta.index')
+        ->with('success', 'Peserta dan seluruh data keluarganya berhasil dihapus.');
+}
     public function edit($idanggota)
     {
         $peserta = TPeserta::findOrFail($idanggota);
