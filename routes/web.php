@@ -43,7 +43,7 @@ Route::middleware(['auth', 'role:Administrator'])->group(function () {
     Route::get('/cetak-kartu-peserta/{idanggota}', [App\Http\Controllers\Admin\PesertaController::class, 'cetakKartu'])
         ->name('peserta.cetakKartu');
 
-            // ---------------- KELUARGA ----------------
+    // ---------------- KELUARGA ----------------
     Route::get('/tambahkeluarga/{idanggota}', [App\Http\Controllers\Admin\KeluargaController::class, 'create'])
         ->name('keluarga.create');
     Route::post('/tambahkeluarga', [App\Http\Controllers\Admin\KeluargaController::class, 'store'])
@@ -54,14 +54,15 @@ Route::middleware(['auth', 'role:Administrator'])->group(function () {
         ->name('keluarga.update');
     Route::get('/cetakKeluarga/{idanggota}', [App\Http\Controllers\Admin\KeluargaController::class, 'cetakKeluarga'])
         ->name('cetakKeluarga');
-        Route::get('/editanggotaahliwarispesertaadmin/{id}', [App\Http\Controllers\Admin\KeluargaController::class, 'edit'])
-    ->name('keluarga.edit');
+    Route::get('/editanggotaahliwarispesertaadmin/{id}', [App\Http\Controllers\Admin\KeluargaController::class, 'edit'])
+        ->name('keluarga.edit');
+
 
     // ---------------- TANGGUNGAN ----------------
-Route::get(
-    '/tanggunganpesertaadmin/{idanggota}',
-    [App\Http\Controllers\Admin\TanggunganPesertaController::class, 'index']
-)->name('tanggunganpesertaadmin');
+    Route::get(
+        '/tanggunganpesertaadmin/{idanggota}',
+        [App\Http\Controllers\Admin\TanggunganPesertaController::class, 'index']
+    )->name('tanggunganpesertaadmin');
 
     Route::get('/tambahanggotapesertaadmin', [App\Http\Controllers\Admin\TanggunganPesertaController::class, 'create'])
         ->name('tambahanggotapesertaadmin');
@@ -74,8 +75,41 @@ Route::get(
     // ---------------- IURAN ----------------
     Route::get('/iuranpesertaadmin', [App\Http\Controllers\Admin\IuranController::class, 'index'])
         ->name('iuranpesertaadmin');
-});
 
+
+    // ---------------- MITRA  ----------------
+    Route::get('/mitradansekolahadmin', function () {
+        return view('ADMIN.mitradansekolahadmin');
+    })->name('mitradansekolahadmin');
+
+    Route::get('/inputmitraadmin', function () {
+        return view('ADMIN.inputmitraadmin');
+    })->name('inputmitraadmin');
+    Route::get('/mitradansekolahadmin', [App\Http\Controllers\Admin\MitraController::class, 'index'])
+        ->name('admin.mitradansekolah');
+
+    Route::get('/inputmitraadmin', [App\Http\Controllers\Admin\MitraController::class, 'create'])
+        ->name('admin.inputmitra');
+
+    Route::post('/inputmitraadmin', [App\Http\Controllers\Admin\MitraController::class, 'store'])
+        ->name('admin.storemitra');
+        Route::get('/inputsekolahadmin', function () {
+    return view('ADMIN.inputsekolahadmin');
+})->name('inputsekolahadmin');
+Route::get('/nilaiaktuariaadmin', function () {
+    return view('ADMIN.nilaiaktuariaadmin');
+})->name('nilaiaktuariaadmin');
+Route::get('/inputsekolahadmin', [App\Http\Controllers\Admin\MitraController::class, 'createSekolah'])->name('admin.inputsekolah');
+Route::get('/get-mitra/{idunit}', [App\Http\Controllers\Admin\PesertaController::class, 'getMitraByUnit']);
+Route::get('/get-nama-mitra/{idunit}', [App\Http\Controllers\Admin\MitraController::class, 'getNamaMitra']);
+Route::post('/inputsekolahadmin/store', [App\Http\Controllers\Admin\MitraController::class, 'storeSekolah'])
+    ->name('admin.storesekolah');
+    Route::get('/datanilaiaktuariaadmin', function () {
+        return view('ADMIN.datanilaiaktuariaadmin');
+    })->name('datanilaiaktuariaadmin');
+
+    
+});
 
 // ----------------------------
 // GRUP RUTE UNTUK OPERATOR 1

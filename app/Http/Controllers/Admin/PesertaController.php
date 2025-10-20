@@ -4,106 +4,105 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\TPeserta;
-use Barryvdh\DomPDF\PDF as DomPDFPDF;
+use App\Models\TUnitMitra;
+use App\Models\TMitra;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\Facade\Pdf;
-
 
 class PesertaController extends Controller
 {
-  public function store(Request $request)
-{
-    $validated = $request->validate([
-        'nopeserta' => 'required|string',
-        'nama' => 'required|string',
-        'jeniskelamin' => 'required|string',
-        'tempatlahir' => 'required|string',
-        'tgllahir' => 'required||date',
-        'alamatterakhir' => 'nullable|string',
-        'kelurahan' => 'nullable|string',
-        'kecamatan' => 'nullable|string',
-        'tmtkeja' => 'required|date',
-        'kotakab' => 'nullable|string',
-        'provinsi' => 'nullable|string',
-        'pekerjaanakhir' => 'nullable|string',
-        'idmitra' => 'nullable|string',
-        'idunit' => 'nullable|string',
-        'statusnikah' => 'nullable|string',
-        'tglkawin' => 'nullable|date',
-        'jumlahanak' => 'nullable|integer',
-        'tmtiuran' => 'nullable|date',
-        'tglsahpeserta' => 'nullable|date',
-        'statuspeserta' => 'nullable|string',
-        'id_num' => 'nullable|string',
-    ], [
-        'required' => 'Data ini wajib diisi.',
-        'date' => 'Format tanggal tidak valid.',
-    ]);
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'nopeserta' => 'required|string|max:20',
+            'nama' => 'required|string|max:100',
+            'tempatlahir' => 'required|string|max:100',
+            'tgllahir' => 'required|date',
+            'jeniskelamin' => 'required|string',
+            'alamatterakhir' => 'required|string',
+            'kelurahan' => 'nullable|string',
+            'kecamatan' => 'nullable|string',
+            'kotakab' => 'nullable|string',
+            'provinsi' => 'nullable|string',
+            'idunit' => 'required|string',
+            'statusnikah' => 'nullable|string',
+            'tglkawin' => 'nullable|date',
+            'jumlahanak' => 'nullable|integer',
+            'tmtkeja' => 'nullable|date',
+            'tglsahpeserta' => 'nullable|date',
+            'statuspeserta' => 'nullable|string',
+            'id_num' => 'nullable|string',
+        ]);
 
-    $validated['statushiduo'] = 1;
-    $validated['statuspeserta'] = $validated['statuspeserta'] ?? 'AKTIF';
-    $validated['jumlahanak'] = $validated['jumlahanak'] ?? 0;
+        // ✅ Cek unit valid
+        $unit = TUnitMitra::where('idunit', $validated['idunit'])->first();
+        if (!$unit) {
+            return back()->withErrors(['idunit' => 'Kode unit tidak ditemukan dalam tabel t_unitmitra.']);
+        }
 
-    TPeserta::create($validated);
+        // ✅ Cari idmitra dari TMitra berdasarkan idunit
+        $mitra = TMitra::where('idunit', $validated['idunit'])->first();
+        if (!$mitra) {
+            return back()->withErrors(['idunit' => 'Tidak ditemukan mitra untuk unit ini di tabel t_mitra.']);
+        }
 
-    return redirect()->route('peserta.index')->with('success', 'Peserta berhasil ditambahkan!');
-}
+        // ✅ Isi nilai tambahan
+        $validated['idmitra'] = $mitra->idmitra;
+        $validated['statushidup'] = 1;
+        $validated['statuspeserta'] = $validated['statuspeserta'] ?? 'AKTIF';
+        $validated['jumlahanak'] = $validated['jumlahanak'] ?? 0;
 
+        TPeserta::create($validated);
+
+        return redirect('/daftarpesertaadmin')->with('success', 'Peserta berhasil ditambahkan.');
+    }
 
     public function index(Request $request)
     {
-        // Ambil parameter filter dan pencarian
         $filter = $request->input('filter');
         $search = $request->input('search');
 
-        // Query dasar
-        $query = TPeserta::query();
+        $query = TPeserta::with(['mitra', 'unit']);
 
-        // Filter
-        if ($filter && $search) {
-            switch ($filter) {
-                case 'Nomor':
-                    $query->where('nopeserta', 'LIKE', "%{$search}%");
-                    break;
-                case 'Nama':
-                    $query->where('nama', 'LIKE', "%{$search}%");
-                    break;
-                case 'Mitra':
-                    $query->where('idmitra', 'LIKE', "%{$search}%");
-                    break;
+        if ($search) {
+            if ($filter == 'Nomor') {
+                $query->where('nopeserta', 'like', "%{$search}%");
+            } elseif ($filter == 'Nama') {
+                $query->where('nama', 'like', "%{$search}%");
+            } elseif ($filter == 'Mitra') {
+                $query->whereHas('mitra', function ($q) use ($search) {
+                    $q->where('nama_um', 'like', "%{$search}%");
+                });
             }
         }
 
-        // Ambil hasil
         $peserta = $query->paginate(10);
-
         return view('ADMIN.daftarpesertaadmin', compact('peserta', 'filter', 'search'));
     }
 
     public function create()
     {
-        // arahkan ke form pendaftaran peserta
-        return view('ADMIN.pendaftaranpesertaadmin');
+        $unitmitra = TUnitMitra::all();
+        return view('ADMIN.pendaftaranpesertaadmin', compact('unitmitra'));
     }
-   public function destroy($idanggota)
-{
-    $peserta = TPeserta::findOrFail($idanggota);
 
-    // ✅ Hapus dulu semua keluarga terkait
-    $peserta->keluarga()->delete();
+    public function destroy($idanggota)
+    {
+        $peserta = TPeserta::findOrFail($idanggota);
+        $peserta->keluarga()->delete();
+        $peserta->delete();
 
-    // ✅ Baru hapus peserta
-    $peserta->delete();
+        return redirect()->route('peserta.index')
+            ->with('success', 'Peserta dan seluruh data keluarganya berhasil dihapus.');
+    }
 
-    return redirect()->route('peserta.index')
-        ->with('success', 'Peserta dan seluruh data keluarganya berhasil dihapus.');
-}
     public function edit($idanggota)
     {
         $peserta = TPeserta::findOrFail($idanggota);
         return view('ADMIN.ubahpesertaadmin', compact('peserta'));
     }
+
     public function update(Request $request, $idanggota)
     {
         $peserta = TPeserta::findOrFail($idanggota);
@@ -120,45 +119,56 @@ class PesertaController extends Controller
             'kotakab' => 'nullable|string',
             'provinsi' => 'nullable|string',
             'pkerjaanakhir' => 'nullable|string',
-            'idmitra' => 'nullable|string',
             'idunit' => 'nullable|string',
             'tmtkeja' => 'nullable|date',
             'statusnikah' => 'nullable|string',
             'tglkawin' => 'nullable|date',
             'jumlahanak' => 'nullable|integer',
-            'tmtiuran' => 'nullable|date',
+            'tgltiuran' => 'nullable|date',
             'tglsahpeserta' => 'nullable|date',
             'statuspeserta' => 'nullable|string',
             'id_num' => 'nullable|string',
         ]);
 
+        // ✅ Update idmitra berdasarkan idunit baru (jika diubah)
+        if (!empty($validated['idunit'])) {
+            $mitra = TMitra::where('idunit', $validated['idunit'])->first();
+            if ($mitra) {
+                $validated['idmitra'] = $mitra->idmitra;
+            }
+        }
+
         $peserta->update($validated);
 
         return redirect()->route('peserta.index')->with('success', 'Data peserta berhasil diperbarui!');
     }
+
     public function show($idanggota)
     {
         $peserta = TPeserta::findOrFail($idanggota);
         return view('ADMIN.detailpesertaadmin', compact('peserta'));
     }
-    public function showDetail($idanggota)
-    {
-        $peserta = DB::table('t_peserta')->where('idanggota', $idanggota)->first();
 
-        if (!$peserta) {
-            return redirect('/daftarpesertaadmin')->with('error', 'Data peserta tidak ditemukan');
-        }
-
-        return view('ADMIN.detailpesertaadmin', compact('peserta'));
-    }
     public function cetakKartu($idanggota)
     {
         $peserta = TPeserta::findOrFail($idanggota);
-
-        // Load view untuk PDF
         $pdf = Pdf::loadView('ADMIN.kartupeserta', compact('peserta'));
-
-        // Download file PDF dengan nama peserta
         return $pdf->download('Kartu_Peserta_' . $peserta->nama . '.pdf');
     }
+
+    public function getMitraByUnit($idunit)
+    {
+        $mitra = TMitra::where('idunit', $idunit)->get(['idmitra', 'nama_um']);
+        return response()->json($mitra);
+    }
+    public function showDetail($idanggota)
+{
+    $peserta = TPeserta::with(['mitra', 'unit', 'keluarga'])->find($idanggota);
+
+    if (!$peserta) {
+        return redirect()->back()->with('error', 'Data peserta tidak ditemukan.');
+    }
+
+    return view('ADMIN.detailpesertaadmin', compact('peserta'));
+}
 }

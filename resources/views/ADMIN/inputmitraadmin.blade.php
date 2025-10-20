@@ -146,50 +146,56 @@
     <h1 class="text-2xl font-bold mb-4 text-center">Input Mitra</h1>
     <div class="max-w-2xl mx-auto bg-white p-6 rounded shadow">
       <h2 class="text-center text-xl font-bold mb-6">Mitra Pendiri</h2>
-      <form action="#" method="POST" class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium mb-1">Kode Mitra Pendiri</label>
-          <input type="text" class="w-full border rounded px-3 py-2" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-1">Nama Mitra Pendiri</label>
-          <input type="text" class="w-full border rounded px-3 py-2" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-1">Alamat Mitra Pendiri</label>
-          <input type="text" class="w-full border rounded px-3 py-2" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-1">Kelurahan</label>
-          <input type="text" class="w-full border rounded px-3 py-2" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-1">Kota/Kabupaten</label>
-          <input type="text" class="w-full border rounded px-3 py-2" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-1">Kecamatan</label>
-          <input type="text" class="w-full border rounded px-3 py-2" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-1">Provinsi</label>
-          <input type="text" class="w-full border rounded px-3 py-2" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-1">Penetapan Iuran Peserta %</label>
-          <input type="number" class="w-full border rounded px-3 py-2" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-1">Penetapan Iuran Pemberi Kerja %</label>
-          <input type="number" class="w-full border rounded px-3 py-2" />
-        </div>
-        <p class="text-center text-sm text-gray-600">Silahkan Lengkapi Data Anda Dengan Benar</p>
-        <div class="text-center">
-          <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded shadow">
-            Submit
-          </button>
-        </div>
-      </form>
+<form action="{{ route('admin.storemitra') }}" method="POST" class="space-y-4">
+  @csrf
+<div>
+  <label class="block text-sm font-medium mb-1">Kode Mitra Pendiri</label>
+
+  <!-- ini yang ditampilkan -->
+  <input type="text" class="w-full border rounded px-3 py-2 bg-gray-100" value="{{ $kode_view }}" readonly>
+
+  <!-- ini yang dikirim ke database -->
+  <input type="hidden" name="idunit" value="{{ $kode_simpan }}">
+</div>
+  <div>
+    <label class="block text-sm font-medium mb-1">Nama Mitra Pendiri</label>
+    <input type="text" name="nama_um" class="w-full border rounded px-3 py-2" required>
+  </div>
+  <div>
+    <label class="block text-sm font-medium mb-1">Alamat Mitra</label>
+    <input type="text" name="alamat_um" class="w-full border rounded px-3 py-2" required>
+  </div>
+  <div>
+    <label class="block text-sm font-medium mb-1">Kelurahan</label>
+    <input type="text" name="kelurahan" class="w-full border rounded px-3 py-2" required>
+  </div>
+  <div>
+    <label class="block text-sm font-medium mb-1">Kecamatan</label>
+    <input type="text" name="kecamatan" class="w-full border rounded px-3 py-2" required>
+  </div>
+  <div>
+    <label class="block text-sm font-medium mb-1">Kota/Kabupaten</label>
+    <input type="text" name="kotakab" class="w-full border rounded px-3 py-2" required>
+  </div>
+  <div>
+    <label class="block text-sm font-medium mb-1">Provinsi</label>
+    <input type="text" name="provinsi" class="w-full border rounded px-3 py-2" required>
+  </div>
+  <div>
+    <label class="block text-sm font-medium mb-1">Iuran Peserta (%)</label>
+    <input type="number" name="ip_pct" class="w-full border rounded px-3 py-2" step="0.01" required>
+  </div>
+  <div>
+    <label class="block text-sm font-medium mb-1">Iuran Pemberi Kerja (%)</label>
+    <input type="number" name="ipk_pct" class="w-full border rounded px-3 py-2" step="0.01" required>
+  </div>
+
+  <div class="text-center">
+    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded shadow">
+      Simpan
+    </button>
+  </div>
+</form>
     </div>
   </main>
 </div>

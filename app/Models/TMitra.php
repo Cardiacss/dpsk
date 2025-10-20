@@ -5,43 +5,44 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TUnitMitra extends Model
+class TMitra extends Model
 {
     use HasFactory;
 
-    protected $table = 't_unitmitra';
-    protected $primaryKey = 'idunit';
+    protected $table = 't_mitra';
+    protected $primaryKey = 'idmitra';
     public $timestamps = false;
 
-    // Tambahkan dua baris ini
     public $incrementing = false;
     protected $keyType = 'string';
 
     protected $fillable = [
-        'idunit',
+        'idmitra',
         'nama_um',
         'alamat_um',
         'kelurahan',
         'kecamatan',
         'kotakab',
         'provinsi',
+        'idunit',
         'stat_um',
         'ip_pct',
         'ipk_pct',
         'urut',
         'nilaitambahan',
-        'tahunakatuaria',
+        'tahunaktuaria',
     ];
 
     protected $casts = [
         'ip_pct' => 'float',
         'ipk_pct' => 'float',
         'nilaitambahan' => 'float',
-        'tahunakatuaria' => 'integer',
+        'tahunaktuaria' => 'integer',
     ];
 
-    public function peserta()
+    public function unitMitra()
     {
-        return $this->hasMany(TPeserta::class, 'idunit', 'idunit');
+        return $this->belongsTo(TUnitMitra::class, 'idunit', 'idunit');
     }
+    
 }

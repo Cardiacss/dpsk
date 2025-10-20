@@ -60,7 +60,7 @@
             <span x-text="mitra ? '▾' : '▸'"></span>
           </button>
           <div x-show="mitra" class="pl-10 mt-1 space-y-1" x-cloak>
-            <a href="/mitra&sekolahadmin" class="block px-3 py-1 hover:bg-cyan-800 rounded">Mitra & Sekolah</a>
+            <a href="/mitradansekolahadmin" class="block px-3 py-1 hover:bg-cyan-800 rounded">Mitra & Sekolah</a>
             <a href="/nilaiaktuariaadmin" class="block px-3 py-1 hover:bg-cyan-800 rounded">Nilai Aktuaria</a>
           </div>
         </div>

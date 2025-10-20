@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id" xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,8 +13,8 @@
   <div class="flex h-screen">
     <!-- Sidebar -->
     <aside class="w-64 bg-[#2994A4] text-white flex flex-col"
-           x-data="{ kepesertaan:false, mitra:false, kepensiunan:false, master:false }">
-      
+      x-data="{ kepesertaan:false, mitra:false, kepensiunan:false, master:false }">
+
       <!-- Header -->
       <div class="p-4 text-lg font-bold border-b border-white/20">
         DANA PENSIUN <br> SEKOLAH KRISTEN
@@ -32,7 +33,7 @@
         <!-- Kepesertaan -->
         <div>
           <button @click="kepesertaan = !kepesertaan"
-                  class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
+            class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
             <span class="flex items-center space-x-2">
               <span>🧾</span> <span>Kepesertaan</span>
             </span>
@@ -47,7 +48,7 @@
         <!-- Mitra -->
         <div>
           <button @click="mitra = !mitra"
-                  class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
+            class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
             <span class="flex items-center space-x-2">
               <span>🤝</span> <span>Mitra</span>
             </span>
@@ -62,7 +63,7 @@
         <!-- Kepensiunan -->
         <div>
           <button @click="kepensiunan = !kepensiunan"
-                  class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
+            class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
             <span class="flex items-center space-x-2">
               <span>📑</span> <span>Kepensiunan</span>
             </span>
@@ -81,7 +82,7 @@
         <!-- Master -->
         <div>
           <button @click="master = !master"
-                  class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
+            class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
             <span class="flex items-center space-x-2">
               <span>⚙️</span> <span>Master</span>
             </span>
@@ -125,7 +126,7 @@
             <div>
               <label class="block text-sm font-medium">Nomor Peserta <span class="text-red-600">*</span></label>
               <input name="nopeserta" value="{{ old('nopeserta') }}"
-                     class="w-full border rounded p-2 @error('nopeserta') border-red-500 @enderror" required>
+                class="w-full border rounded p-2 @error('nopeserta') border-red-500 @enderror" required>
               @error('nopeserta')
                 <p class="text-red-500 text-sm mt-1">Wajib diisi.</p>
               @enderror
@@ -134,7 +135,7 @@
             <div>
               <label class="block text-sm font-medium">No KTP/Passport <span class="text-red-600">*</span></label>
               <input name="id_num" value="{{ old('id_num') }}"
-                     class="w-full border rounded p-2 @error('id_num') border-red-500 @enderror" required>
+                class="w-full border rounded p-2 @error('id_num') border-red-500 @enderror" required>
               @error('id_num')
                 <p class="text-red-500 text-sm mt-1">Wajib diisi.</p>
               @enderror
@@ -143,7 +144,7 @@
             <div>
               <label class="block text-sm font-medium">Nama Peserta <span class="text-red-600">*</span></label>
               <input name="nama" value="{{ old('nama') }}"
-                     class="w-full border rounded p-2 @error('nama') border-red-500 @enderror" required>
+                class="w-full border rounded p-2 @error('nama') border-red-500 @enderror" required>
               @error('nama')
                 <p class="text-red-500 text-sm mt-1">Wajib diisi.</p>
               @enderror
@@ -163,7 +164,7 @@
             <div>
               <label class="block text-sm font-medium">Tempat Lahir <span class="text-red-600">*</span></label>
               <input name="tempatlahir" value="{{ old('tempatlahir') }}"
-                     class="w-full border rounded p-2 @error('tempatlahir') border-red-500 @enderror" required>
+                class="w-full border rounded p-2 @error('tempatlahir') border-red-500 @enderror" required>
               @error('tempatlahir')
                 <p class="text-red-500 text-sm mt-1">Wajib diisi.</p>
               @enderror
@@ -172,7 +173,7 @@
             <div>
               <label class="block text-sm font-medium">Tanggal Lahir <span class="text-red-600">*</span></label>
               <input type="date" name="tgllahir" value="{{ old('tgllahir') }}"
-                     class="w-full border rounded p-2 @error('tgllahir') border-red-500 @enderror" required>
+                class="w-full border rounded p-2 @error('tgllahir') border-red-500 @enderror" required>
               @error('tgllahir')
                 <p class="text-red-500 text-sm mt-1">Wajib diisi.</p>
               @enderror
@@ -182,7 +183,7 @@
             <div class="col-span-2">
               <label class="block text-sm font-medium">Alamat Lengkap <span class="text-red-600">*</span></label>
               <input name="alamatterakhir" value="{{ old('alamatterakhir') }}"
-                     class="w-full border rounded p-2 @error('alamatterakhir') border-red-500 @enderror" required>
+                class="w-full border rounded p-2 @error('alamatterakhir') border-red-500 @enderror" required>
               @error('alamatterakhir')
                 <p class="text-red-500 text-sm mt-1">Wajib diisi.</p>
               @enderror
@@ -192,12 +193,12 @@
               <label class="block text-sm">Kecamatan</label>
               <input name="kecamatan" class="w-full border rounded p-2" />
             </div>
-                      
+
             <div>
               <label class="block text-sm">Kelurahan</label>
               <input name="kelurahan" class="w-full border rounded p-2" />
             </div>
-            
+
             <div>
               <label class="block text-sm">Kota</label>
               <input name="kotakab" class="w-full border rounded p-2" />
@@ -218,66 +219,121 @@
               <input type="date" name="tmtkeja" class="w-full border rounded p-2" required>
             </div>
 
-            <div class="grid grid-cols-2 gap-4 mt-2">
-              <div>
-                <label class="block text-sm">Mitra Pemberi Kerja</label>
-                <input name="idmitra" class="w-full border rounded p-2" />
-              </div>
-              <div>
-                <label class="block text-sm">Unit Kerja</label>
-                <input name="idunit" class="w-full border rounded p-2" />
-              </div>
-              <div class="col-span-2">
-                <label class="block text-sm">Pekerjaan</label>
-                <input name="pekerjaanakhir" class="w-full border rounded p-2" />
-              </div>
-            </div>
-          </div>
+<!-- Dropdown Unit Mitra -->
+<div class="mb-4">
+  <label for="idunit" class="block text-sm font-medium text-gray-700">Pilih Unit Mitra</label>
+  <select id="idunit" name="idunit" class="w-full border rounded p-2">
+    <option value="">-- Pilih Unit Mitra --</option>
+    @foreach($unitmitra as $unit)
+      <option value="{{ $unit->idunit }}">{{ $unit->idunit }} - {{ $unit->nama_um }}</option>
+    @endforeach
+  </select>
+</div>
 
-          <!-- Keluarga -->
-          <div class="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label class="block text-sm">Status Nikah</label>
-              <input name="statusnikah" class="w-full border rounded p-2" />
-            </div>
-            <div>
-              <label class="block text-sm">Tanggal Perkawinan</label>
-              <input type="date" name="tglkawin" class="w-full border rounded p-2" />
-            </div>
+<!-- Dropdown Mitra -->
+<div class="mb-4">
+  <label for="idmitra" class="block text-sm font-medium text-gray-700">Pilih Mitra</label>
+  <select id="idmitra" name="idmitra" class="w-full border rounded p-2" disabled>
+    <option value="">-- Pilih Mitra --</option>
+  </select>
+</div>
+
+<!-- Hidden input untuk menampung idmitra dari unit terpilih -->
+<input type="hidden" name="idmitra" id="idmitra">
+<input type="hidden" name="namamitra" id="namamitra">
+<script>
+  document.getElementById('idunit').addEventListener('change', function () {
+    const selected = this.options[this.selectedIndex];
+    const idmitra = selected.getAttribute('data-idmitra');
+    const namamitra = selected.getAttribute('data-namemitra');
+    document.getElementById('idmitra').value = idmitra || '';
+    document.getElementById('namamitra').value = namamitra || '';
+  });
+</script>
             <div class="col-span-2">
-              <label class="block text-sm">Jumlah Anak</label>
-              <input type="number" name="jumlahanak" class="w-full border rounded p-2" />
+              <label class="block text-sm">Pekerjaan</label>
+              <input name="pekerjaanakhir" class="w-full border rounded p-2" />
             </div>
-          </div>
 
-          <!-- Keanggotaan -->
-          <div class="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label class="block text-sm">Tanggal Pertama Iuran</label>
-              <input type="date" name="tmtiuran" class="w-full border rounded p-2" />
-            </div>
-            <div>
-              <label class="block text-sm">Tanggal Disahkan</label>
-              <input type="date" name="tglsahpeserta" class="w-full border rounded p-2" />
-            </div>
-            <div class="col-span-2">
-              <label class="block text-sm">Status Kartu</label>
-              <input name="statuspeserta" class="w-full border rounded p-2" />
-            </div>
-          </div>
-
-          <!-- Tombol -->
-          <div class="flex space-x-4">
-            <a href="/daftarpesertaadmin" class="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500">
-              Kembali
-            </a>
-            <button type="submit" class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700">
-              Submit
-            </button>
-          </div>
-        </form>
+      <!-- Keluarga -->
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-sm">Status Nikah</label>
+          <input name="statusnikah" class="w-full border rounded p-2" />
+        </div>
+        <div>
+          <label class="block text-sm">Tanggal Perkawinan</label>
+          <input type="date" name="tglkawin" class="w-full border rounded p-2" />
+        </div>
+        <div class="col-span-2">
+          <label class="block text-sm">Jumlah Anak</label>
+          <input type="number" name="jumlahanak" class="w-full border rounded p-2" />
+        </div>
       </div>
-    </main>
+
+      <!-- Keanggotaan -->
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-sm">Tanggal Pertama Iuran</label>
+          <input type="date" name="tmtiuran" class="w-full border rounded p-2" />
+        </div>
+        <div>
+          <label class="block text-sm">Tanggal Disahkan</label>
+          <input type="date" name="tglsahpeserta" class="w-full border rounded p-2" />
+        </div>
+        <div class="col-span-2">
+          <label class="block text-sm">Status Kartu</label>
+          <input name="statuspeserta" class="w-full border rounded p-2" />
+        </div>
+      </div>
+
+      <!-- Tombol -->
+      <div class="flex space-x-4">
+        <a href="/daftarpesertaadmin" class="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500">
+          Kembali
+        </a>
+        <button type="submit" class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700">
+          Submit
+        </button>
+      </div>
+      </form>
+  </div>
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+  const unitSelect = document.getElementById('idunit');
+  const mitraSelect = document.getElementById('idmitra');
+
+  unitSelect.addEventListener('change', function() {
+    const idunit = this.value;
+    mitraSelect.innerHTML = '<option value="">-- Pilih Mitra --</option>';
+    mitraSelect.disabled = true;
+
+    if (idunit) {
+      fetch(`/get-mitra/${idunit}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.length > 0) {
+            data.forEach(mitra => {
+              const opt = document.createElement('option');
+              opt.value = mitra.idmitra;
+              opt.textContent = `${mitra.idmitra} - ${mitra.nama_um}`;
+              mitraSelect.appendChild(opt);
+            });
+            mitraSelect.disabled = false;
+          } else {
+            const opt = document.createElement('option');
+            opt.textContent = 'Tidak ada mitra untuk unit ini';
+            mitraSelect.appendChild(opt);
+          }
+        })
+        .catch(err => console.error('Gagal memuat mitra:', err));
+    }
+  });
+});
+</script>
+
+  </main>
   </div>
 </body>
+
 </html>

@@ -165,8 +165,8 @@
                   <td class="px-4 py-2">{{ $loop->iteration + ($peserta->currentPage() - 1) * $peserta->perPage() }}</td>
                   <td class="px-4 py-2">{{ $p->nopeserta }}</td>
                   <td class="px-4 py-2">{{ $p->nama }}</td>
-                  <td class="px-4 py-2">{{ $p->idmitra }}</td>
-                  <td class="px-4 py-2">{{ $p->idunit }}</td>
+<td class="px-4 py-2">{{ $p->unit->nama_um ?? '-' }}</td>
+<td class="px-4 py-2">{{ $p->mitra->nama_um ?? '-' }}</td>
                   <td class="px-4 py-2">{{ $p->statuspeserta }}</td>
                   <td class="px-4 py-2 space-x-2">
                     <a href="{{ route('peserta.edit', ['idanggota' => $p->idanggota]) }}"

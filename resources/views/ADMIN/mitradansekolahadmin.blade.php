@@ -204,45 +204,30 @@
     </thead>
 
     <tbody class="text-center">
-      <tr>
-        <td class="p-2 border">001</td>
-        <td class="p-2 border">Mitra Contoh</td>
-        <td class="p-2 border">Jl. Mawar No.1</td>
-        <td class="p-2 border">Kel. A</td>
-        <td class="p-2 border">Kec. B</td>
-        <td class="p-2 border">Kota Contoh</td>
-        <td class="p-2 border">Prov. Contoh</td>
-        <td class="p-2 border">Aktif</td>
-        <td class="p-2 border">5%</td>
-        <td class="p-2 border">10%</td>
-
-        <!-- Kolom tombol aksi -->
-        <td class="p-2 border">
-          <div class="flex justify-center space-x-2">
-            <!-- Tombol Edit -->
-            <button
-              class="bg-green-500 hover:bg-green-600 text-white p-2 rounded shadow-md flex items-center justify-center"
-              title="Edit"
-            >
-              ✏️
-            </button>
-            <!-- Tombol Hapus -->
-            <button
-              class="bg-red-500 hover:bg-red-600 text-white p-2 rounded shadow-md flex items-center justify-center"
-              title="Hapus"
-            >
-              🗑️
-            </button>
-          </div>
-        </td>
-      </tr>
-
-      <!-- Placeholder jika tidak ada data -->
-      <tr>
-        <td colspan="11" class="p-2 border text-gray-500" style="height:100px;">
-          Belum ada data tersedia
-        </td>
-      </tr>
-    </tbody>
+  @forelse ($mitra as $m)
+    <tr>
+      <td class="p-2 border">{{ $m->idunit }}</td>
+      <td class="p-2 border">{{ $m->nama_um }}</td>
+      <td class="p-2 border">{{ $m->alamat_um }}</td>
+      <td class="p-2 border">{{ $m->kelurahan }}</td>
+      <td class="p-2 border">{{ $m->kecamatan }}</td>
+      <td class="p-2 border">{{ $m->kotakab }}</td>
+      <td class="p-2 border">{{ $m->provinsi }}</td>
+      <td class="p-2 border">{{ $m->stat_um }}</td>
+      <td class="p-2 border">{{ $m->ip_pct }}%</td>
+      <td class="p-2 border">{{ $m->ipk_pct }}%</td>
+      <td class="p-2 border">
+        <div class="flex justify-center space-x-2">
+          <a href="#" class="bg-green-500 hover:bg-green-600 text-white p-2 rounded">✏️</a>
+          <a href="#" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded">🗑️</a>
+        </div>
+      </td>
+    </tr>
+  @empty
+    <tr>
+      <td colspan="11" class="p-2 border text-gray-500">Belum ada data tersedia</td>
+    </tr>
+  @endforelse
+</tbody>
   </table>
 </div>
