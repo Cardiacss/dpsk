@@ -73,8 +73,8 @@ Route::middleware(['auth', 'role:Administrator'])->group(function () {
         ->name('ahliwarispesertaadmin');
 
     // ---------------- IURAN ----------------
-    Route::get('/iuranpesertaadmin', [App\Http\Controllers\Admin\IuranController::class, 'index'])
-        ->name('iuranpesertaadmin');
+        Route::get('/iuranpesertaadmin', [App\Http\Controllers\Admin\MitraController::class, 'showIuran'])->name('admin.iuranpeserta');
+
 
 
     // ---------------- MITRA  ----------------
@@ -107,7 +107,12 @@ Route::post('/inputsekolahadmin/store', [App\Http\Controllers\Admin\MitraControl
     Route::get('/datanilaiaktuariaadmin', function () {
         return view('ADMIN.datanilaiaktuariaadmin');
     })->name('datanilaiaktuariaadmin');
-
+  Route::get('/listmitraadmin/{idunit}', [App\Http\Controllers\Admin\MitraController::class, 'listMitraByUnit'])
+     ->name('listmitraadmin');
+Route::post('/update-mitra/{idunit}', [App\Http\Controllers\Admin\MitraController::class, 'update'])->name('update.mitra');
+Route::get('/nilaiaktuariaadmin', [App\Http\Controllers\Admin\NilaiAktuariaController::class, 'index'])->name('nilaiaktuariaadmin');
+Route::get('/datanilaiaktuariaadmin', [App\Http\Controllers\Admin\NilaiAktuariaController::class, 'showByMitra'])
+    ->name('datanilaiaktuariaadmin');
     
 });
 

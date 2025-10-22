@@ -184,4 +184,60 @@ class MitraController extends Controller
         return redirect()->route('admin.mitradansekolah')
             ->with('success', 'Data sekolah/mitra baru berhasil disimpan ke tabel t_mitra!');
     }
+public function listMitraByUnit($idunit)
+{
+    // Ambil data unit mitra (induk)
+    $unit = \App\Models\TUnitMitra::where('idunit', $idunit)->first();
+
+    // Ambil daftar mitra/sekolah (anak)
+    $mitras = \App\Models\TMitra::where('idunit', $idunit)->get();
+
+    // Kirim ke view
+    return view('ADMIN.listmitraadmin', compact('unit', 'mitras'));
+}
+
+    // Route get-mitra berdasarkan idunit
+    public function getMitraByUnit($idunit)
+    {
+        $mitra = TunitMitra::where('idunit', $idunit)->get();
+        return response()->json($mitra);
+    }
+     public function edit($idunit)
+    {
+        $mitra = TUnitMitra::findOrFail($idunit);
+        return view('ADMIN.listmitraadmin', compact('mitra'));
+    }
+
+    // Update data ke database
+    public function update(Request $request, $idunit)
+    {
+        $mitra = TUnitMitra::findOrFail($idunit);
+
+        $validated = $request->validate([
+            'nama_um' => 'required|string|max:255',
+            'alamat_um' => 'nullable|string|max:255',
+            'kelurahan' => 'nullable|string|max:255',
+            'kecamatan' => 'nullable|string|max:255',
+            'kotakab' => 'nullable|string|max:255',
+            'provinsi' => 'nullable|string|max:255',
+            'stat_um' => 'nullable|string|max:50',
+            'ip_pct' => 'nullable|numeric',
+            'ipk_pct' => 'nullable|numeric',
+            'urut' => 'nullable|integer',
+            'nilaitambahan' => 'nullable|numeric',
+            'tahunakatuaria' => 'nullable|integer',
+        ]);
+
+        $mitra->update($validated);
+
+        return redirect()->back()->with('success', 'Data mitra berhasil diperbarui!');
+    }
+    public function showIuran()
+{
+    // Ambil semua data dari tabel t_unitmitra
+    $mitras = TUnitMitra::orderBy('idunit')->get();
+
+    // Kirim data ke view
+    return view('ADMIN.iuranpesertaadmin', compact('mitras'));
+}
 }

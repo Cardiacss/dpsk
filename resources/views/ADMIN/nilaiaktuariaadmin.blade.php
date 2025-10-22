@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Operator 2</title>
+  <title>Admin</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="//unpkg.com/alpinejs" defer></script>
 </head>
@@ -11,93 +11,51 @@
 
   <div class="flex h-screen">
     <!-- Sidebar -->
-    <!-- Sidebar -->
-   <aside class="w-64 bg-[#2994A4] text-white flex flex-col">
-            <div class="p-4 text-lg font-bold border-b border-white/20">
-            DANA PENSIUN <br> SEKOLAH KRISTEN
+    <aside class="w-64 bg-[#2994A4] text-white flex flex-col">
+      <div class="p-4 text-lg font-bold border-b border-white/20">
+        DANA PENSIUN <br> SEKOLAH KRISTEN
+      </div>
+
+      <nav class="flex-1 px-4 space-y-2" x-data="{ kepesertaan:false, mitra:false, kepensiunan:false }">
+        <a href="/menuadmin" class="flex items-center space-x-2 px-3 py-2 hover:bg-cyan-800 rounded">
+          <span>🏠</span> <span>Home</span>
+        </a>
+
+        <a href="#" class="flex items-center space-x-2 px-3 py-2 hover:bg-cyan-800 rounded">
+          <span>👤</span> <span>Peserta</span>
+        </a>
+
+        <!-- Dropdown Mitra -->
+        <div x-data="{ mitra: window.location.pathname.includes('mitra') || window.location.pathname.includes('nilaiaktuariaadmin') }">
+          <button @click="mitra = !mitra" 
+                  :class="mitra ? 'bg-cyan-800' : ''"
+                  class="w-full flex justify-between items-center px-3 py-2 rounded hover:bg-cyan-800">
+            <span class="flex items-center space-x-2">
+              <span>🤝</span> <span>Mitra</span>
+            </span>
+            <span x-text="mitra ? '▾' : '▸'"></span>
+          </button>
+
+          <div x-show="mitra" class="pl-10 mt-1 space-y-1" x-cloak>
+            <a href="/mitra&sekolahadmin"
+               :class="window.location.pathname.includes('mitra') 
+                        ? 'bg-white text-[#2994A4] font-semibold rounded block px-3 py-1' 
+                        : 'block px-3 py-1 hover:bg-cyan-800 rounded'">
+              Mitra & Sekolah
+            </a>
+            <a href="/nilaiaktuariaadmin"
+               :class="window.location.pathname.includes('nilaiaktuariaadmin') 
+                        ? 'bg-white text-[#2994A4] font-semibold rounded block px-3 py-1' 
+                        : 'block px-3 py-1 hover:bg-cyan-800 rounded'">
+              Nilai Aktuaria
+            </a>
+          </div>
         </div>
 
-        <nav class="flex-1 px-4 space-y-2" x-data="{ kepesertaan:false, mitra:false, kepensiunan:false }">
-            <!-- Home -->
-            <a href="/menuadmin" class="flex items-center space-x-2 px-3 py-2 hover:bg-cyan-800 rounded">
-                <span>🏠</span> <span>Home</span>
-            </a>
-
-            <!-- Peserta -->
-            <a href="#" class="flex items-center space-x-2 px-3 py-2 hover:bg-cyan-800 rounded">
-                <span>👤</span> <span>Peserta</span>
-            </a>
-
-            <!-- Kepesertaan Dropdown -->
-            <div>
-                <button @click="kepesertaan = !kepesertaan" class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
-                    <span class="flex items-center space-x-2">
-                        <span>🧾</span> <span>Kepesertaan</span>
-                    </span>
-                    <span x-text="mitra ? '▾' : '▸'"></span>
-                </button>
-                <div x-show="kepesertaan" class="pl-10 mt-1 space-y-1" x-cloak>
-                    <a href="#" class="block px-3 py-1 hover:bg-cyan-800 rounded">Iuran Peserta</a>
-                    <a href="#" class="block px-3 py-1 hover:bg-cyan-800 rounded">Simulasi Kepersetaan & Manfaat Pensiun</a>
-                </div>
-            </div>
-
-            <!-- Mitra Dropdown -->
-<div 
-  x-data="{ mitra: window.location.pathname.includes('mitra') || window.location.pathname.includes('nilaiaktuariaadmin') }"
->
-  <button @click="mitra = !mitra" 
-          :class="mitra ? 'bg-cyan-800' : ''"
-          class="w-full flex justify-between items-center px-3 py-2 rounded hover:bg-cyan-800">
-    <span class="flex items-center space-x-2">
-      <span>🤝</span> <span>Mitra</span>
-    </span>
-    <span x-text="mitra ? '▾' : '▸'"></span>
-  </button>
-
-  <div x-show="mitra" class="pl-10 mt-1 space-y-1" x-cloak>
-    <!-- Mitra & Sekolah -->
-    <a href="/mitra&sekolahadmin"
-       :class="window.location.pathname.includes('mitra') 
-                ? 'bg-white text-[#2994A4] font-semibold rounded block px-3 py-1' 
-                : 'block px-3 py-1 hover:bg-cyan-800 rounded'">
-      Mitra & Sekolah
-    </a>
-
-    <!-- Nilai Aktuaria -->
-    <a href="/nilaiaktuariaadmin"
-       :class="window.location.pathname.includes('nilaiaktuariaadmin') 
-                ? 'bg-white text-[#2994A4] font-semibold rounded block px-3 py-1' 
-                : 'block px-3 py-1 hover:bg-cyan-800 rounded'">
-      Nilai Aktuaria
-    </a>
-  </div>
-</div>
-
-
-            <!-- Kepensiunan Dropdown -->
-            <div>
-                <button @click="kepensiunan = !kepensiunan" class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
-                    <span class="flex items-center space-x-2">
-                        <span>📑</span> <span>Kepensiunan</span>
-                    </span>
-                    <span x-text="mitra ? '▾' : '▸'"></span>
-                </button>
-                <div x-show="kepensiunan" class="pl-10 mt-1 space-y-1" x-cloak>
-                    <a href="#" class="block px-3 py-1 hover:bg-cyan-800 rounded">Pengajuan Pensiun</a>
-                    <a href="#" class="block px-3 py-1 hover:bg-cyan-800 rounded">Perubahan Pensiun</a>
-                    <a href="#" class="block px-3 py-1 hover:bg-cyan-800 rounded">Lihat Pensiun</a>
-                    <a href="#" class="block px-3 py-1 hover:bg-cyan-800 rounded">Manfaat</a>
-                    <a href="#" class="block px-3 py-1 hover:bg-cyan-800 rounded">Riwayat</a>
-                    <a href="#" class="block px-3 py-1 hover:bg-cyan-800 rounded">Daftar Terminasi</a>
-                </div>
-            </div>
-
-            <!-- Logout -->
-            <a href="/login" class="flex items-center space-x-2 px-3 py-2 hover:bg-cyan-800 rounded">
-                <span>🚪</span> <span>Logout</span>
-            </a>
-        </nav>
+        <a href="/login" class="flex items-center space-x-2 px-3 py-2 hover:bg-cyan-800 rounded">
+          <span>🚪</span> <span>Logout</span>
+        </a>
+      </nav>
 
       <div class="p-4 text-xs border-t border-white/20">
         Gedung Fakultas Teknologi Informasi <br />
@@ -107,63 +65,60 @@
       </div>
     </aside>
 
-    <!-- Content -->
-  <main class="flex-1 bg-white p-6 overflow-auto">
-    <h1 class="text-2xl font-bold mb-6">NILAI AKTUARIA</h1>
+    <!-- Main Content -->
+    <main class="flex-1 bg-white p-6 overflow-auto">
+      <h1 class="text-2xl font-bold mb-6">NILAI AKTUARIA</h1>
 
-    <!-- Search -->
-    <div class="flex items-center gap-3 mb-4">
-      <input type="text" placeholder="Masukkan data peserta yang ingin dicari"
-        class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2994A4]">
-      <button class="p-2 rounded hover:bg-gray-200 transition" title="Filter">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-          stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-[#2994A4]">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M3 4.5h18M6 9.75h12M9 15h6m-3 4.5v-4.5" />
-        </svg>
-      </button>
-    </div>
+      <!-- Search -->
+<form method="GET" action="{{ route('nilaiaktuariaadmin') }}" class="flex items-center gap-3 mb-4">
+  <input 
+    type="text" 
+    name="search"
+    placeholder="Masukkan Nama Mitra"
+    value="{{ request('search') }}"
+    class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2994A4]"
+  >
+  <button type="submit" class="p-2 rounded hover:bg-gray-200 transition" title="Filter">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+      stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-[#2994A4]">
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M3 4.5h18M6 9.75h12M9 15h6m-3 4.5v-4.5" />
+    </svg>
+  </button>
+</form>
 
-    <!-- Table -->
-    <div class="overflow-x-auto bg-white shadow rounded">
-      <table class="w-full border-collapse">
-        <thead class="bg-[#2994A4] text-white">
-          <tr>
-            <th class="p-2 border">No</th>
-            <th class="p-2 border">Nama Mitra</th>
-            <th class="p-2 border">Action</th>
-          </tr>
-        </thead>
-
-        <tbody class="text-center">
-          <!-- Contoh satu data -->
-          <tr>
-            <td class="p-2 border">1</td>
-            <td class="p-2 border">Mitra A</td>
-            <td class="p-2 border">
-              <div class="flex justify-center">
-                <a href="/datanilaiaktuariaadmin" 
-   class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded flex items-center gap-1">
+      <!-- Table -->
+      <div class="overflow-x-auto bg-white shadow rounded">
+        <table class="w-full border-collapse">
+          <thead class="bg-[#2994A4] text-white">
+            <tr>
+              <th class="p-2 border">No</th>
+              <th class="p-2 border">Nama Mitra</th>
+              <th class="p-2 border">Action</th>
+            </tr>
+          </thead>
+          <tbody class="text-center">
+            @forelse ($mitras as $index => $m)
+              <tr class="hover:bg-gray-100">
+                <td class="p-2 border">{{ $index + 1 }}</td>
+                <td class="p-2 border">{{ $m->nama_um }}</td>
+                <td class="p-2 border">
+<a href="{{ route('datanilaiaktuariaadmin') }}?idunit={{ $m->idunit }}"
+   class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded">
    📂 Buka
 </a>
-
-              </div>
-            </td>
-          </tr>
-
-          <!-- Placeholder jika tidak ada data -->
-          <!--
-          <tr>
-            <td colspan="3" class="p-6 border text-gray-500">
-              Belum ada data tersedia
-            </td>
-          </tr>
-          -->
-        </tbody>
-      </table>
-    </div>
-  </main>
-</div>
+                </td>
+              </tr>
+            @empty
+              <tr>
+                <td colspan="3" class="p-6 border text-gray-500">Belum ada data tersedia</td>
+              </tr>
+            @endforelse
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
 
 </body>
 </html>

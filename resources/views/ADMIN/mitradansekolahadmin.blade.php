@@ -137,12 +137,6 @@
     </aside>
     <!-- Content -->
   <main class="flex-1 bg-white p-6 overflow-auto">
-
-    <!-- Home Page -->
-    <div x-show="currentPage === 'home'" x-cloak>
-      <h1 class="text-center text-2xl font-bold mb-6">SELAMAT DATANG</h1>
-      <p class="text-center text-lg">Anda Masuk Sebagai ADMIN</p>
-    </div>
     <!-- Mitra & Sekolah Page -->
     <div x-show="currentPage === 'mitra'" x-cloak>
       <h1 class="text-2xl font-bold mb-6">MITRA & SEKOLAH</h1>
@@ -153,21 +147,10 @@
            class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded flex items-center space-x-2">
           <span>➕</span><span>Input Mitra</span>
         </a>
-
-        <a href="/editmitraadmin"
-           class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded flex items-center space-x-2">
-          <span>✏️</span><span>Edit Mitra</span>
-        </a>
-
         <a href="/inputsekolahadmin"
            class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded flex items-center space-x-2">
           <span>➕</span><span>Input Sekolah</span>
         </a>
-
-        <a href="/editsekolahadmin"
-   class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded flex items-center space-x-2">
-  <span>✏️</span><span>Edit Sekolah</span>
-</a>
       </div>
 
       <!-- Search -->
@@ -218,8 +201,9 @@
       <td class="p-2 border">{{ $m->ipk_pct }}%</td>
       <td class="p-2 border">
         <div class="flex justify-center space-x-2">
-          <a href="#" class="bg-green-500 hover:bg-green-600 text-white p-2 rounded">✏️</a>
-          <a href="#" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded">🗑️</a>
+         <a href="{{ url('/listmitraadmin/' . $m->idunit) }}" class="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded">Lihat</a>
+          <a href="#" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded">Hapus</a>
+          <a href="#" class="bg-blue-500 hover:bg-red-600 text-blue p-2 rounded">Edit</a>
         </div>
       </td>
     </tr>
