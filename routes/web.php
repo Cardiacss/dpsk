@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Admin\NilaiAktuariaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -96,24 +97,40 @@ Route::middleware(['auth', 'role:Administrator'])->group(function () {
         Route::get('/inputsekolahadmin', function () {
     return view('ADMIN.inputsekolahadmin');
 })->name('inputsekolahadmin');
-Route::get('/nilaiaktuariaadmin', function () {
-    return view('ADMIN.nilaiaktuariaadmin');
-})->name('nilaiaktuariaadmin');
 Route::get('/inputsekolahadmin', [App\Http\Controllers\Admin\MitraController::class, 'createSekolah'])->name('admin.inputsekolah');
 Route::get('/get-mitra/{idunit}', [App\Http\Controllers\Admin\PesertaController::class, 'getMitraByUnit']);
 Route::get('/get-nama-mitra/{idunit}', [App\Http\Controllers\Admin\MitraController::class, 'getNamaMitra']);
 Route::post('/inputsekolahadmin/store', [App\Http\Controllers\Admin\MitraController::class, 'storeSekolah'])
     ->name('admin.storesekolah');
-    Route::get('/datanilaiaktuariaadmin', function () {
-        return view('ADMIN.datanilaiaktuariaadmin');
-    })->name('datanilaiaktuariaadmin');
   Route::get('/listmitraadmin/{idunit}', [App\Http\Controllers\Admin\MitraController::class, 'listMitraByUnit'])
      ->name('listmitraadmin');
 Route::post('/update-mitra/{idunit}', [App\Http\Controllers\Admin\MitraController::class, 'update'])->name('update.mitra');
 Route::get('/nilaiaktuariaadmin', [App\Http\Controllers\Admin\NilaiAktuariaController::class, 'index'])->name('nilaiaktuariaadmin');
-Route::get('/datanilaiaktuariaadmin', [App\Http\Controllers\Admin\NilaiAktuariaController::class, 'showByMitra'])
-    ->name('datanilaiaktuariaadmin');
-    
+    Route::get('/nilaiaktuariaadmin', [NilaiAktuariaController::class, 'index'])
+        ->name('nilaiaktuariaadmin');
+
+    // Halaman data nilai aktuaria per mitra
+    Route::get('/datanilaiaktuariaadmin', [NilaiAktuariaController::class, 'showByMitra'])
+        ->name('datanilaiaktuariaadmin');
+
+    Route::post('/nilaiaktuaria/store', [NilaiAktuariaController::class, 'store'])->name('nilaiaktuaria.store');
+
+    Route::get('/nilaiaktuaria/create/{idunit}', [NilaiAktuariaController::class, 'create'])
+        ->name('nilaiaktuaria.create');
+
+    Route::post('/nilaiaktuaria/store', [NilaiAktuariaController::class, 'store'])
+        ->name('nilaiaktuaria.store');
+
+    Route::get('/nilaiaktuaria/edit/{thnaktuaria}', [NilaiAktuariaController::class, 'edit'])
+        ->name('nilaiaktuaria.edit');
+
+    Route::put('/nilaiaktuaria/update/{thnaktuaria}', [NilaiAktuariaController::class, 'update'])
+        ->name('nilaiaktuaria.update');
+
+    Route::delete('/nilaiaktuaria/delete/{thnaktuaria}', [NilaiAktuariaController::class, 'destroy'])
+        ->name('nilaiaktuaria.destroy');
+        Route::get('/nilaiaktuaria/show', [NilaiAktuariaController::class, 'showByMitra'])
+    ->name('nilaiaktuaria.show');
 });
 
 // ----------------------------

@@ -14,6 +14,7 @@ class TNilaiAktuaria extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'thnaktuaria',
         'idunit',
         'ip',
         'ipk',
