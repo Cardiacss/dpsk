@@ -30,14 +30,14 @@ class TMitra extends Model
         'ipk_pct',
         'urut',
         'nilaitambahan',
-        'tahunaktuaria',
+        'idaktuaria',
     ];
 
     protected $casts = [
         'ip_pct' => 'float',
         'ipk_pct' => 'float',
         'nilaitambahan' => 'float',
-        'tahunaktuaria' => 'integer',
+        'idaktuaria' => 'integer',
     ];
 
     public function unitMitra()

@@ -142,38 +142,24 @@
             <th class="px-4 py-2 border">Action</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td class="px-4 py-2 border">Unit 1</td>
-            <td class="px-4 py-2 border">
-              <a href="/daftarpesertaiuranadmin" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 inline-block">Buka</a>
-            </td>
-          </tr>
-          <tr>
-            <td class="px-4 py-2 border">Unit 2</td>
-            <td class="px-4 py-2 border">
-              <a href="/daftarpesertaiuranadmin" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 inline-block">Buka</a>
-            </td>
-          </tr>
-          <tr>
-            <td class="px-4 py-2 border">Unit 3</td>
-            <td class="px-4 py-2 border">
-              <a href="/daftarpesertaiuranadmin" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 inline-block">Buka</a>
-            </td>
-          </tr>
-          <tr>
-            <td class="px-4 py-2 border">Unit 4</td>
-            <td class="px-4 py-2 border">
-              <a href="/daftarpesertaiuranadmin" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 inline-block">Buka</a>
-            </td>
-          </tr>
-          <tr>
-            <td class="px-4 py-2 border">Unit 5</td>
-            <td class="px-4 py-2 border">
-              <a href="/daftarpesertaiuranadmin" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 inline-block">Buka</a>
-            </td>
-          </tr>
-        </tbody>
+       <<tbody>
+  @forelse($mitras as $mitra)
+  <tr>
+    <td class="px-4 py-2 border text-center">{{ $mitra->nama_um }}</td>
+    <td class="px-4 py-2 border text-center">
+<a href="/daftarpesertaiuranadmin/{{ $mitra->idmitra }}" 
+   class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 inline-block">
+  Lihat Peserta
+</a>
+      </a>
+    </td>
+  </tr>
+  @empty
+  <tr>
+    <td colspan="2" class="text-gray-500 py-3">Tidak ada mitra ditemukan untuk unit ini.</td>
+  </tr>
+  @endforelse
+</tbody>
       </table>
     </div>
   </main>

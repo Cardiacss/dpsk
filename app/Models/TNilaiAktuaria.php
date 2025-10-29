@@ -10,7 +10,9 @@ class TNilaiAktuaria extends Model
     use HasFactory;
 
     protected $table = 't_nilaiaktuaria';
-    protected $primaryKey = 'thnaktuaria';
+    protected $primaryKey = 'idaktuaria';
+    public $incrementing = true;
+    protected $keyType = 'int';
     public $timestamps = false;
 
     protected $fillable = [

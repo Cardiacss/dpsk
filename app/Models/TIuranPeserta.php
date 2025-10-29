@@ -11,6 +11,9 @@ class TIuranPeserta extends Model
 
     protected $table = 't_iuranpeserta';
     protected $primaryKey = 'id_iuran';
+
+    public $incrementing = true; 
+    protected $keyType = 'int';
     public $timestamps = false;
 
     protected $fillable = [
@@ -27,6 +30,7 @@ class TIuranPeserta extends Model
         'bln_iuran',
         'flag_iuran',
         'ip_num0',
+        'ipk_num0',
     ];
 
     protected $casts = [
@@ -37,8 +41,11 @@ class TIuranPeserta extends Model
         'ipk_pct' => 'float',
         'ipk_num' => 'decimal:2',
         'ip_num0' => 'decimal:2',
+        'ipk_num0' => 'decimal:2',
         'tglcatat' => 'date',
         'tglsetor' => 'date',
+        'thn_iuran' => 'integer',
+        'bln_iuran' => 'integer',
     ];
 
     public function peserta()

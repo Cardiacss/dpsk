@@ -54,7 +54,7 @@ class NilaiAktuariaController extends Controller
 public function store(Request $request)
 {
     $validated = $request->validate([
-        'thnaktuaria' => 'required|integer|unique:t_nilaiaktuaria,thnaktuaria',
+        'thnaktuaria' => 'required|integer',
         'idunit' => 'required|string|max:8',
         'ip' => 'required|numeric',
         'ipk' => 'required|numeric',
@@ -64,9 +64,9 @@ public function store(Request $request)
     ]);
 
     try {
-        \App\Models\TNilaiAktuaria::create($validated);
+        // idaktuaria auto increment, tidak perlu dimasukkan
+        TNilaiAktuaria::create($validated);
 
-        // ✅ Redirect ke halaman data nilai aktuaria sesuai unit
         return redirect('/datanilaiaktuariaadmin?idunit=' . $request->idunit)
             ->with('success', 'Data Nilai Aktuaria berhasil disimpan!');
     } catch (\Exception $e) {
@@ -74,41 +74,42 @@ public function store(Request $request)
     }
 }
 
-    // Form edit
-    public function edit($thnaktuaria)
-    {
-        $nilai = TNilaiAktuaria::findOrFail($thnaktuaria);
-        $mitra = TUnitMitra::where('idunit', $nilai->idunit)->first();
+// Form edit
+public function edit($idaktuaria)
+{
+    $nilai = TNilaiAktuaria::findOrFail($idaktuaria);
+    $mitra = TUnitMitra::where('idunit', $nilai->idunit)->first();
 
-        return view('ADMIN.editnilaiaktuariaadmin', compact('nilai', 'mitra'));
-    }
+    return view('ADMIN.editnilaiaktuariaadmin', compact('nilai', 'mitra'));
+}
 
-    // Update data
-    public function update(Request $request, $thnaktuaria)
-    {
-        $validated = $request->validate([
-            'ip' => 'required|numeric',
-            'ipk' => 'required|numeric',
-            'blnberlaku' => 'required|integer',
-            'thnberlaku' => 'required|integer',
-            'nilaitambahan' => 'nullable|numeric',
-        ]);
+// Update data
+public function update(Request $request, $idaktuaria)
+{
+    $validated = $request->validate([
+        'ip' => 'required|numeric',
+        'ipk' => 'required|numeric',
+        'blnberlaku' => 'required|integer|min:1|max:12',
+        'thnberlaku' => 'required|integer',
+        'nilaitambahan' => 'nullable|numeric',
+    ]);
 
-        $nilai = TNilaiAktuaria::findOrFail($thnaktuaria);
-        $nilai->update($validated);
+    $nilai = TNilaiAktuaria::findOrFail($idaktuaria);
+    $nilai->update($validated);
 
-        return redirect()->route('nilaiaktuaria.show', ['idunit' => $nilai->idunit])
-                         ->with('success', 'Data nilai aktuaria berhasil diperbarui.');
-    }
+    return redirect('/datanilaiaktuariaadmin?idunit=' . $nilai->idunit)
+        ->with('success', 'Data nilai aktuaria berhasil diperbarui!');
+}
 
-    // Hapus data
-    public function destroy($thnaktuaria)
-    {
-        $nilai = TNilaiAktuaria::findOrFail($thnaktuaria);
-        $idunit = $nilai->idunit;
-        $nilai->delete();
+// Hapus data
+public function destroy($idaktuaria)
+{
+    $nilai = TNilaiAktuaria::findOrFail($idaktuaria);
+    $idunit = $nilai->idunit;
+    $nilai->delete();
 
-        return redirect()->route('nilaiaktuaria.show', ['idunit' => $idunit])
-                         ->with('success', 'Data nilai aktuaria berhasil dihapus.');
-    }
+    return redirect()->route('nilaiaktuaria.show', ['idunit' => $idunit])
+                     ->with('success', 'Data nilai aktuaria berhasil dihapus.');
+}
+
 }

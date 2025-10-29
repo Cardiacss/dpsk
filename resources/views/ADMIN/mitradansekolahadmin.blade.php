@@ -202,8 +202,19 @@
       <td class="p-2 border">
         <div class="flex justify-center space-x-2">
          <a href="{{ url('/listmitraadmin/' . $m->idunit) }}" class="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded">Lihat</a>
-          <a href="#" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded">Hapus</a>
-          <a href="#" class="bg-blue-500 hover:bg-red-600 text-blue p-2 rounded">Edit</a>
+<form action="{{ route('unit.destroy', $m->idunit) }}" method="POST" 
+      onsubmit="return confirm('Yakin ingin menghapus unit ini?')" 
+      style="display:inline;">
+  @csrf
+  @method('DELETE')
+  <button type="submit" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded">
+  Hapus
+  </button>
+</form>
+<a href="{{ route('unit.edit', ['idunit' => $m->idunit]) }}"
+   class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded">
+   Edit
+</a>
         </div>
       </td>
     </tr>

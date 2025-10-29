@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TUnitMitra;
 use App\Models\TMitra;
+use App\Models\TPeserta;
+use App\Models\TIuranPeserta;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 class MitraController extends Controller
 {
     public function index()
@@ -118,7 +122,7 @@ class MitraController extends Controller
         ];
         return $map[$num] ?? (string) $num;
     }
- public function createSekolah()
+    public function createSekolah()
     {
         // Ambil daftar mitra dari tabel TUnitMitra (mitra pendiri)
         $mitraList = TUnitMitra::select('idunit', 'nama_um')->get();
@@ -184,17 +188,17 @@ class MitraController extends Controller
         return redirect()->route('admin.mitradansekolah')
             ->with('success', 'Data sekolah/mitra baru berhasil disimpan ke tabel t_mitra!');
     }
-public function listMitraByUnit($idunit)
-{
-    // Ambil data unit mitra (induk)
-    $unit = \App\Models\TUnitMitra::where('idunit', $idunit)->first();
+    public function listMitraByUnit($idunit)
+    {
+        // Ambil data unit mitra (induk)
+        $unit = TUnitMitra::where('idunit', $idunit)->first();
 
-    // Ambil daftar mitra/sekolah (anak)
-    $mitras = \App\Models\TMitra::where('idunit', $idunit)->get();
+        // Ambil daftar mitra/sekolah (anak)
+        $mitras = TMitra::where('idunit', $idunit)->get();
 
-    // Kirim ke view
-    return view('ADMIN.listmitraadmin', compact('unit', 'mitras'));
-}
+        // Kirim ke view
+        return view('ADMIN.listmitraadmin', compact('unit', 'mitras'));
+    }
 
     // Route get-mitra berdasarkan idunit
     public function getMitraByUnit($idunit)
@@ -202,16 +206,59 @@ public function listMitraByUnit($idunit)
         $mitra = TunitMitra::where('idunit', $idunit)->get();
         return response()->json($mitra);
     }
-     public function edit($idunit)
+    public function edit($idunit)
     {
-        $mitra = TUnitMitra::findOrFail($idunit);
-        return view('ADMIN.listmitraadmin', compact('mitra'));
+        // Ambil data unit berdasarkan ID
+        $unit = TUnitMitra::findOrFail($idunit);
+
+        // Kirim ke view editmitraadmin.blade.php
+        return view('ADMIN.editmitraadmin', compact('unit'));
     }
 
     // Update data ke database
     public function update(Request $request, $idunit)
     {
-        $mitra = TUnitMitra::findOrFail($idunit);
+        // Validasi input
+        $request->validate([
+            'nama_um' => 'required|string|max:100',
+            'alamat_um' => 'required|string|max:255',
+            'stat_um' => 'required|string',
+            'ip_pct' => 'required|numeric',
+            'ipk_pct' => 'required|numeric',
+        ]);
+
+        // Ambil data yang akan diupdate
+        $unit = TUnitMitra::findOrFail($idunit);
+
+        // Update data
+        $unit->update([
+            'nama_um' => $request->nama_um,
+            'alamat_um' => $request->alamat_um,
+            'stat_um' => $request->stat_um,
+            'ip_pct' => $request->ip_pct,
+            'ipk_pct' => $request->ipk_pct,
+        ]);
+        return redirect()->route('admin.mitradansekolah')
+            ->with('success', 'Data Unit Mitra berhasil diperbarui.');
+    }
+    public function showIuran()
+    {
+        // Ambil semua data dari tabel t_unitmitra
+        $mitras = TUnitMitra::orderBy('idunit')->get();
+
+        // Kirim data ke view
+        return view('ADMIN.iuranpesertaadmin', compact('mitras'));
+    }
+    public function mitraEdit($idmitra)
+    {
+        $mitra = TMitra::findOrFail($idmitra); // pakai model TMitra
+        return view('ADMIN.listmitraadminedit', compact('mitra'));
+    }
+
+    // 🧱 Update Mitra
+    public function mitraUpdate(Request $request, $idmitra)
+    {
+        $mitra = TMitra::findOrFail($idmitra);
 
         $validated = $request->validate([
             'nama_um' => 'required|string|max:255',
@@ -220,24 +267,151 @@ public function listMitraByUnit($idunit)
             'kecamatan' => 'nullable|string|max:255',
             'kotakab' => 'nullable|string|max:255',
             'provinsi' => 'nullable|string|max:255',
-            'stat_um' => 'nullable|string|max:50',
+            'stat_um' => 'nullable|string|max:20',
             'ip_pct' => 'nullable|numeric',
             'ipk_pct' => 'nullable|numeric',
-            'urut' => 'nullable|integer',
             'nilaitambahan' => 'nullable|numeric',
-            'tahunakatuaria' => 'nullable|integer',
         ]);
 
         $mitra->update($validated);
 
-        return redirect()->back()->with('success', 'Data mitra berhasil diperbarui!');
+        return redirect()->route('listmitraadmin', ['idunit' => $mitra->idunit])
+            ->with('success', 'Data mitra berhasil diperbarui!');
     }
-    public function showIuran()
-{
-    // Ambil semua data dari tabel t_unitmitra
-    $mitras = TUnitMitra::orderBy('idunit')->get();
+    public function unitDestroy($idunit)
+    {
+        try {
+            $unit = TUnitMitra::findOrFail($idunit);
 
-    // Kirim data ke view
-    return view('ADMIN.iuranpesertaadmin', compact('mitras'));
-}
+            // Jika ada relasi peserta atau mitra, bisa dicek dulu
+            if ($unit->peserta()->count() > 0) {
+                return redirect()->back()->with('error', 'Unit tidak dapat dihapus karena masih memiliki peserta terdaftar.');
+            }
+
+            $unit->delete();
+
+            return redirect()->route('admin.mitradansekolah')
+                ->with('success', 'Data unit berhasil dihapus!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus unit.');
+        }
+    }
+    public function mitraDestroy($idmitra)
+    {
+        $mitra = TMitra::find($idmitra);
+
+        if (!$mitra) {
+            return redirect()->back()->with('error', 'Data mitra tidak ditemukan.');
+        }
+
+        $mitra->delete();
+
+        return redirect()->back()->with('success', 'Data mitra berhasil dihapus.');
+    }
+
+    public function listUnit()
+    {
+        $units = TMitra::select('idunit')->groupBy('idunit')->get();
+        return view('ADMIN.iuranpesertaadmin', compact('units'));
+    }
+
+    // Menampilkan daftar mitra (sekolah) di dalam satu unit
+    public function bukaMitra($idunit)
+    {
+        $unit = TUnitMitra::where('idunit', $idunit)->first();
+        $mitras = TMitra::where('idunit', $idunit)->get();
+
+        return view('ADMIN.bukamitraadmin', compact('unit', 'mitras'));
+    }
+    public function daftarPeserta($idmitra)
+    {
+        // Ambil mitra sesuai ID
+        $mitra = TMitra::findOrFail($idmitra);
+
+        // Ambil semua peserta dengan idmitra tersebut
+        $peserta = TPeserta::where('idmitra', $idmitra)->get();
+
+        // Kirim ke view
+        return view('ADMIN.daftarpesertaiuranadmin', compact('mitra', 'peserta'));
+    }
+    public function editIPeserta($idanggota)
+    {
+        $peserta = TPeserta::findOrFail($idanggota);
+        return view('ADMIN.editiuranpeserta', compact('peserta'));
+    }
+    public function createIuran($idanggota)
+    {
+        $peserta = TPeserta::findOrFail($idanggota);
+
+        // Ambil 6 iuran terakhir berdasarkan tanggal catat
+        $riwayat = TIuranPeserta::where('idanggota', $idanggota)
+            ->orderByDesc('tglcatat')
+            ->limit(6)
+            ->get();
+
+        // Hitung rata-rata PhDP
+        $rataPhdp = $riwayat->avg('phdp') ?? 0;
+
+        return view('ADMIN.catatiuran', compact('peserta', 'riwayat', 'rataPhdp'));
+    }
+
+    public function storeIuran(Request $request, $idanggota)
+    {
+        $validated = $request->validate([
+            'gajipokok' => 'required|numeric',
+            'phdp' => 'required|numeric',
+            'ip_num' => 'required|numeric',
+            'ip_pct' => 'required|numeric',
+            'ipk_pct' => 'required|numeric',
+            'ipk_num' => 'required|numeric',
+            'tglcatat' => 'required|date',
+            'tglsetor' => 'required|date',
+            'thn_iuran' => 'required|integer',
+            'bln_iuran' => 'required|integer',
+            'flag_iuran' => 'nullable|string|max:12',
+            'ip_num0' => 'nullable|numeric',
+            'ipk_num0' => 'nullable|numeric',
+        ]);
+
+        $validated['idanggota'] = $idanggota;
+        $validated['ip_num0'] = $validated['ip_num0'] ?? 0;
+        $validated['ipk_num0'] = $validated['ipk_num0'] ?? 0;
+
+        TIuranPeserta::create($validated);
+
+        return redirect()
+            ->route('admin.catatiuran', ['idanggota' => $idanggota])
+            ->with('success', 'Iuran peserta berhasil dicatat.');
+    }
+    public function showIuranPeserta($idanggota)
+    {
+        // Ambil data peserta
+        $peserta = TPeserta::findOrFail($idanggota);
+
+        // Ambil semua iuran peserta berdasarkan idanggota
+        $iuranList = TIuranPeserta::where('idanggota', $idanggota)
+            ->orderByDesc('thn_iuran')
+            ->orderByDesc('bln_iuran')
+            ->get();
+
+        return view('ADMIN.editiuranpeserta', compact('peserta', 'iuranList'));
+    }
+    public function cetakIuranPeserta($idanggota)
+    {
+        $peserta = TPeserta::findOrFail($idanggota);
+
+        $iuranList = TIuranPeserta::where('idanggota', $idanggota)
+            ->orderByDesc('thn_iuran')
+            ->orderByDesc('bln_iuran')
+            ->get();
+
+        // Load view ke PDF
+        $pdf = Pdf::loadView('ADMIN.cetak_iuranpeserta_pdf', [
+            'peserta' => $peserta,
+            'iuranList' => $iuranList,
+        ])->setPaper('a4', 'portrait');
+
+        // Unduh otomatis
+        return $pdf->download('IuranPeserta_' . $peserta->idanggota . '.pdf');
+    }
 }

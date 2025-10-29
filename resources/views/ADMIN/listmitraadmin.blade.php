@@ -140,44 +140,59 @@
         Daftar Mitra untuk Unit: {{ $unit->nama_um }} ({{ $unit->idunit }})
       </h2>
 
-      <div class="overflow-x-auto bg-white shadow rounded">
-        <table class="w-full border-collapse border">
-          <thead class="bg-[#2994A4] text-white">
-            <tr>
-              <th class="border px-3 py-2 text-left">ID Mitra</th>
-              <th class="border px-3 py-2 text-left">Nama Mitra</th>
-              <th class="border px-3 py-2 text-left">Alamat</th>
-              <th class="border px-3 py-2 text-left">Kecamatan</th>
-              <th class="border px-3 py-2 text-left">Kota/Kab</th>
-              <th class="border px-3 py-2 text-center">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            @forelse ($mitras as $m)
-            <tr class="hover:bg-gray-100">
-              <td class="border px-3 py-2">{{ $m->idmitra }}</td>
-              <td class="border px-3 py-2">{{ $m->nama_um }}</td>
-              <td class="border px-3 py-2">{{ $m->alamat_um }}</td>
-              <td class="border px-3 py-2">{{ $m->kecamatan }}</td>
-              <td class="border px-3 py-2">{{ $m->kotakab }}</td>
-              <td class="border px-3 py-2 text-center">
-                <a href="{{ url('/editmitraadmin/' . $m->idmitra) }}" 
-                   class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
-                  Edit
-                </a>
-              </td>
-            </tr>
-            @empty
-            <tr>
-              <td colspan="6" class="border text-center py-4 text-gray-500 italic">
-                Tidak ada mitra pada unit ini.
-              </td>
-            </tr>
-            @endforelse
-          </tbody>
-        </table>
-      </div>
+      <div class="overflow-x-auto bg-white shadow-lg rounded-lg border border-gray-200">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-[#2994A4] text-white">
+      <tr>
+        <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">ID Mitra</th>
+        <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">Nama Mitra</th>
+        <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">Alamat</th>
+        <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">Kecamatan</th>
+        <th class="px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider">Kota/Kab</th>
+        <th class="px-4 py-3 text-center text-sm font-semibold uppercase tracking-wider">Aksi</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100">
+      @forelse ($mitras as $m)
+      <tr class="hover:bg-gray-50 transition-colors duration-150">
+        <td class="px-4 py-2 text-gray-700">{{ $m->idmitra }}</td>
+        <td class="px-4 py-2 text-gray-700">{{ $m->nama_um }}</td>
+        <td class="px-4 py-2 text-gray-700">{{ $m->alamat_um }}</td>
+        <td class="px-4 py-2 text-gray-700">{{ $m->kecamatan }}</td>
+        <td class="px-4 py-2 text-gray-700">{{ $m->kotakab }}</td>
+        <td class="px-4 py-2 text-center">
+          <div class="flex justify-center gap-2">
+            <!-- Tombol Edit -->
+            <a href="{{ route('mitra.edit', $m->idmitra) }}" 
+               class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded transition">
+               Edit
+            </a>
+
+            <!-- Tombol Delete -->
+            <form action="{{ route('mitra.destroy', $m->idmitra) }}" 
+                  method="POST" 
+                  onsubmit="return confirm('Yakin ingin menghapus data ini?');" 
+                  class="inline">
+              @csrf
+              @method('DELETE')
+              <button type="submit" 
+                      class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded transition">
+                Delete
+              </button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      @empty
+      <tr>
+        <td colspan="6" class="px-4 py-4 text-center text-gray-500 italic">
+          Tidak ada mitra pada unit ini.
+        </td>
+      </tr>
+      @endforelse
+    </tbody>
+  </table>
+</div>
     </main>
   </div>
 </body>
-</html>

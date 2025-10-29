@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id" x-data="{ mitra:false, kepesertaan:false, kepensiunan:false }" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="id" x-data="{ mitra:false, kepesertaan:false, kepensiunan:false }">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Operator 2</title>
+  <title>Edit Nilai Aktuaria</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="//unpkg.com/alpinejs" defer></script>
 </head>
@@ -11,6 +11,7 @@
 
   <div class="flex h-screen">
     <!-- Sidebar -->
+     <!-- Sidebar -->
     <aside class="w-64 bg-[#2994A4] text-white flex flex-col">
       <div class="p-4 text-lg font-bold border-b border-white/20">
         DANA PENSIUN <br> SEKOLAH KRISTEN
@@ -100,80 +101,67 @@
 
     <!-- Content -->
     <main class="flex-1 bg-white p-6 overflow-auto">
-      <h1 class="text-2xl font-bold mb-3">DATA NILAI AKTUARIA</h1>
+      <h1 class="text-2xl font-bold mb-3">Edit Nilai Aktuaria</h1>
 
-      <!-- Tombol Tambah Nilai Aktuaria -->
-      <div class="mb-6">
-        <a href="{{ route('nilaiaktuaria.create', ['idunit' => $mitra->idunit]) }}"
-           class="inline-flex items-center gap-2 bg-[#2994A4] text-white px-4 py-2 rounded hover:bg-cyan-700 transition">
-          ➕ <span>Tambah Nilai Aktuaria</span>
-        </a>
-      </div>
-
-      <!-- Search -->
-      <div class="flex items-center gap-3 mb-4">
-        <input type="text" placeholder="Masukkan data peserta yang ingin dicari"
-          class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2994A4]">
-        <button class="p-2 rounded hover:bg-gray-200 transition" title="Filter">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-[#2994A4]">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M3 4.5h18M6 9.75h12M9 15h6m-3 4.5v-4.5" />
-          </svg>
-        </button>
-      </div>
-
-      <!-- Table -->
-      <div class="overflow-x-auto bg-white shadow rounded">
-        <table class="w-full border-collapse">
-          <thead class="bg-[#2994A4] text-white">
-            <tr>
-              <th class="p-2 border">No</th>
-              <th class="p-2 border">Tahun</th>
-              <th class="p-2 border">Nama Mitra</th>
-              <th class="p-2 border">Ip</th>
-              <th class="p-2 border">Ipk</th>
-              <th class="p-2 border">Nilai Tambah</th>
-              <th class="p-2 border">Action</th>
-            </tr>
-          </thead>
-          <tbody class="text-center">
-  @forelse ($nilaiAktuarias as $index => $item)
-    <tr>
-      <td class="p-2 border">{{ $index + 1 }}</td>
-      <td class="p-2 border">{{ $item->thnaktuaria }}</td>
-      <td class="p-2 border">{{ $mitra->nama_um ?? 'Tidak Diketahui' }}</td>
-      <td class="p-2 border">{{ $item->ip }}</td>
-      <td class="p-2 border">{{ $item->ipk }}</td>
-      <td class="p-2 border">{{ $item->nilaitambahan ?? '-' }}</td>
-      <td class="p-2 border">
-        <div class="flex justify-center gap-2">
-<a href="{{ route('nilaiaktuaria.edit', $item->idaktuaria) }}"
-   class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded">
-  ✏️ Edit
-</a>
-<form action="{{ route('nilaiaktuaria.destroy', $item->idaktuaria) }}" method="POST"
-      onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+      <div class="card shadow-sm bg-white p-4 rounded">
+        <form action="{{ route('nilaiaktuaria.update', $nilai->idaktuaria) }}" method="POST">
   @csrf
-  @method('DELETE')
-  <button type="submit"
-          class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
-    🗑️ Hapus
-  </button>
+  @method('PUT')
+
+  <div class="grid grid-cols-2 gap-4 mb-4">
+    <div>
+      <label class="block mb-1">Tahun Aktuaria</label>
+      <input type="text" name="thnaktuaria" value="{{ $nilai->thnaktuaria }}" readonly
+             class="w-full border px-3 py-2 rounded">
+    </div>
+    <div>
+      <label class="block mb-1">Nama Mitra</label>
+      <input type="text" name="namamitra" value="{{ $mitra->nama_um ?? '' }}" readonly
+             class="w-full border px-3 py-2 rounded">
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4 mb-4">
+    <div>
+      <label class="block mb-1">Bulan Berlaku</label>
+      <input type="number" name="blnberlaku" value="{{ $nilai->blnberlaku }}" required
+             class="w-full border px-3 py-2 rounded">
+    </div>
+    <div>
+      <label class="block mb-1">Tahun Berlaku</label>
+      <input type="number" name="thnberlaku" value="{{ $nilai->thnberlaku }}" required
+             class="w-full border px-3 py-2 rounded">
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-4 mb-4">
+    <div>
+      <label class="block mb-1">IP</label>
+      <input type="number" name="ip" step="0.01" value="{{ $nilai->ip }}" required
+             class="w-full border px-3 py-2 rounded">
+    </div>
+    <div>
+      <label class="block mb-1">IPK</label>
+      <input type="number" name="ipk" step="0.01" value="{{ $nilai->ipk }}" required
+             class="w-full border px-3 py-2 rounded">
+    </div>
+    <div>
+      <label class="block mb-1">Nilai Tambahan</label>
+      <input type="number" name="nilaitambahan" step="0.01" value="{{ $nilai->nilaitambahan }}"
+             class="w-full border px-3 py-2 rounded">
+    </div>
+  </div>
+
+  <div class="flex gap-4 mt-4">
+    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+      💾 Simpan Perubahan
+    </button>
+    <a href="{{ url('/datanilaiaktuariaadmin?idunit=' . $mitra->idunit) }}" 
+       class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+      ← Kembali
+    </a>
+  </div>
 </form>
-          </form>
-        </div>
-      </td>
-    </tr>
-  @empty
-    <tr>
-      <td colspan="7" class="p-2 border text-gray-500" style="height:100px;">
-        Belum ada data tersedia
-      </td>
-    </tr>
-  @endforelse
-</tbody>
-        </table>
       </div>
     </main>
   </div>

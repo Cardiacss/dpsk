@@ -142,7 +142,7 @@
           <div>
             <label class="block text-sm font-medium">Mitra / Pemberi Kerja</label>
             <input type="text" class="w-full border rounded px-2 py-1 bg-gray-100"
-              value="{{ $peserta->idmitra ?? '-' }}" readonly>
+              value="{{ $peserta->mitra->nama_um ?? '-' }}" readonly>
           </div>
           <div>
             <label class="block text-sm font-medium">Nama Peserta</label>
@@ -151,8 +151,8 @@
           </div>
           <div>
             <label class="block text-sm font-medium">Unit Kerja</label>
-            <input type="text" class="w-full border rounded px-2 py-1 bg-gray-100" value="{{ $peserta->idunit ?? '-' }}"
-              readonly>
+            <input type="text" class="w-full border rounded px-2 py-1 bg-gray-100"
+              value="{{ $peserta->unit->nama_um ?? '-' }}" readonly>
           </div>
           <div>
             <label class="block text-sm font-medium">Status Nikah</label>
@@ -182,7 +182,8 @@
                 <tr class="border-b hover:bg-gray-50">
                   <td class="py-2 px-4">{{ $kel->nm_keluarga }}</td>
                   <td class="py-2 px-4">{{ $kel->tempatlahir }} /
-                    {{ $kel->tgllahir ? \Carbon\Carbon::parse($kel->tgllahir)->format('Y-m-d') : '-' }}</td>
+                    {{ $kel->tgllahir ? \Carbon\Carbon::parse($kel->tgllahir)->format('Y-m-d') : '-' }}
+                  </td>
                   <td class="py-2 px-4">{{ $kel->jeniskelamin }}</td>
                   <td class="py-2 px-4">{{ $kel->hubungan }}</td>
                   <td class="py-2 px-4">{{ $kel->statushidup ?? '-' }}</td>

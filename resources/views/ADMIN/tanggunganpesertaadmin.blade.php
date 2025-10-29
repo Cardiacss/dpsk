@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="id">
 
 <head>
   <meta charset="UTF-8" />
@@ -11,6 +11,7 @@
 
 <body class="bg-gray-900">
   <div class="flex h-screen">
+
     <!-- Sidebar -->
     <aside class="w-64 bg-[#2994A4] text-white flex flex-col"
       x-data="{ kepesertaan:false, mitra:false, kepensiunan:false, master:false }">
@@ -24,12 +25,14 @@
       <nav class="flex-1 px-4 space-y-2">
 
         <!-- Home -->
-        <a href="/admin/menu" class="flex items-center space-x-2 px-3 py-2 hover:bg-cyan-800 rounded">
+        <a href="/admin/menu"
+          class="flex items-center space-x-2 px-3 py-2 hover:bg-cyan-800 rounded">
           <span>🏠</span> <span>Home</span>
         </a>
 
         <!-- Peserta -->
-        <a href="/daftarpesertaadmin" class="block px-3 py-1 bg-gray-200 text-black rounded">
+        <a href="/daftarpesertaadmin"
+          class="block px-3 py-1 bg-gray-200 text-black rounded">
           <span>👤</span> <span>Peserta</span>
         </a>
 
@@ -43,8 +46,10 @@
             <span x-text="kepesertaan ? '▾' : '▸'"></span>
           </button>
           <div x-show="kepesertaan" class="pl-10 mt-1 space-y-1" x-cloak>
-            <a href="/iuranpesertaadmin" class="block px-3 py-1 hover:bg-cyan-800 rounded">Iuran Peserta</a>
-            <a href="#" class="block px-3 py-1 hover:bg-cyan-800 rounded">Simulasi Kepesertaan & Manfaat Pensiun</a>
+            <a href="/iuranpesertaadmin"
+              class="block px-3 py-1 hover:bg-cyan-800 rounded">Iuran Peserta</a>
+            <a href="#"
+              class="block px-3 py-1 hover:bg-cyan-800 rounded">Simulasi Kepesertaan & Manfaat Pensiun</a>
           </div>
         </div>
 
@@ -58,8 +63,10 @@
             <span x-text="mitra ? '▾' : '▸'"></span>
           </button>
           <div x-show="mitra" class="pl-10 mt-1 space-y-1" x-cloak>
-            <a href="/mitra&sekolahadmin" class="block px-3 py-1 hover:bg-cyan-800 rounded">Mitra & Sekolah</a>
-            <a href="/nilaiaktuariaadmin" class="block px-3 py-1 hover:bg-cyan-800 rounded">Nilai Aktuaria</a>
+            <a href="/mitra&sekolahadmin"
+              class="block px-3 py-1 hover:bg-cyan-800 rounded">Mitra & Sekolah</a>
+            <a href="/nilaiaktuariaadmin"
+              class="block px-3 py-1 hover:bg-cyan-800 rounded">Nilai Aktuaria</a>
           </div>
         </div>
 
@@ -73,16 +80,22 @@
             <span x-text="kepensiunan ? '▾' : '▸'"></span>
           </button>
           <div x-show="kepensiunan" class="pl-10 mt-1 space-y-1" x-cloak>
-            <a href="/pengajuanpensiunadmin" class="block px-3 py-1 hover:bg-cyan-800 rounded">Pengajuan Pensiun</a>
-            <a href="#" class="block px-3 py-1 hover:bg-cyan-800 rounded">Perubahan Pensiun</a>
-            <a href="/daftarpensiunadmin" class="block px-3 py-1 hover:bg-cyan-800 rounded">Lihat Pensiun</a>
-            <a href="/pemberianmanfaatadmin" class="block px-3 py-1 hover:bg-cyan-800 rounded">Manfaat</a>
-            <a href="/riwayatmanfaatadmin" class="block px-3 py-1 hover:bg-cyan-800 rounded">Riwayat</a>
-            <a href="/daftarterminasiadmin" class="block px-3 py-1 hover:bg-cyan-800 rounded">Daftar Terminasi</a>
+            <a href="/pengajuanpensiunadmin"
+              class="block px-3 py-1 hover:bg-cyan-800 rounded">Pengajuan Pensiun</a>
+            <a href="#"
+              class="block px-3 py-1 hover:bg-cyan-800 rounded">Perubahan Pensiun</a>
+            <a href="/daftarpensiunadmin"
+              class="block px-3 py-1 hover:bg-cyan-800 rounded">Lihat Pensiun</a>
+            <a href="/pemberianmanfaatadmin"
+              class="block px-3 py-1 hover:bg-cyan-800 rounded">Manfaat</a>
+            <a href="/riwayatmanfaatadmin"
+              class="block px-3 py-1 hover:bg-cyan-800 rounded">Riwayat</a>
+            <a href="/daftarterminasiadmin"
+              class="block px-3 py-1 hover:bg-cyan-800 rounded">Daftar Terminasi</a>
           </div>
         </div>
 
-        <!-- Master -->
+        <!-- Master Dropdown -->
         <div>
           <button @click="master = !master"
             class="w-full flex justify-between items-center px-3 py-2 hover:bg-cyan-800 rounded">
@@ -98,9 +111,11 @@
         </div>
 
         <!-- Logout -->
-        <a href="/login" class="flex items-center space-x-2 px-3 py-2 hover:bg-cyan-800 rounded">
+        <a href="/login"
+          class="flex items-center space-x-2 px-3 py-2 hover:bg-cyan-800 rounded">
           <span>🚪</span> <span>Logout</span>
         </a>
+
       </nav>
 
       <!-- Footer -->
@@ -114,7 +129,7 @@
 
     <!-- Main Content -->
     <main class="flex-1 p-6 bg-gray-100 overflow-y-auto">
-      <div class="bg-white rounded-lg shadow p-6">
+      <div class="bg-white rounded-lg shadow p-6 max-w-5xl mx-auto">
 
         <!-- Breadcrumb -->
         <p class="text-sm text-gray-500 mb-4">
@@ -131,10 +146,8 @@
         <div class="flex space-x-2 mb-6 justify-center">
           <a href="{{ url('/detailpesertaadmin/' . $peserta->idanggota) }}"
             class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">Detail</a>
-
           <a href="{{ url('/tanggunganpesertaadmin/' . $peserta->idanggota) }}"
             class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Tanggungan</a>
-
           <a href="{{ route('ahliwarispesertaadmin', ['idanggota' => $peserta->idanggota]) }}"
             class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">Ahli Waris</a>
         </div>
@@ -142,34 +155,43 @@
         <!-- Form Header -->
         <div class="bg-white p-6 rounded shadow-md max-w-3xl mx-auto mb-6">
           <div class="grid grid-cols-2 gap-4 mb-4">
+
             <div>
               <label class="block text-sm">Nomor Peserta</label>
               <input class="w-full border rounded p-2" value="{{ $peserta->nopeserta ?? '' }}" readonly />
             </div>
+
             <div>
               <label class="block text-sm">Nama Peserta</label>
               <input class="w-full border rounded p-2" value="{{ $peserta->nama ?? '' }}" readonly />
             </div>
+
             <div>
               <label class="block text-sm">Status Nikah</label>
               <input class="w-full border rounded p-2" value="{{ $peserta->statusnikah ?? '' }}" readonly />
             </div>
+
             <div>
-              <label class="block text-sm">Mitra / Pemberi Kerja</label>
-              <input class="w-full border rounded p-2" value="{{ $peserta->idmitra ?? '' }}" readonly />
+              <label class="block text-sm font-medium">Mitra / Pemberi Kerja</label>
+              <input type="text" class="w-full border rounded px-2 py-1"
+                value="{{ $peserta->mitra->nama_um ?? '-' }}" readonly>
             </div>
+
             <div>
-              <label class="block text-sm">Unit Kerja</label>
-              <input class="w-full border rounded p-2" value="{{ $peserta->idunit ?? '' }}" readonly />
+              <label class="block text-sm font-medium">Unit Kerja</label>
+              <input type="text" class="w-full border rounded px-2 py-1"
+                value="{{ $peserta->unit->nama_um ?? '-' }}" readonly>
             </div>
+
           </div>
 
+          <!-- Add Family Member Button -->
           <a href="{{ route('keluarga.create', $peserta->idanggota) }}"
             class="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 mb-4 inline-block">
             + Tambah Anggota Keluarga
           </a>
 
-          <!-- Table -->
+          <!-- Table of Family Members -->
           <div class="overflow-x-auto">
             <table class="w-full text-sm border border-gray-300">
               <thead class="bg-teal-600 text-white">
@@ -201,10 +223,8 @@
                         <a href="/editanggotaahliwarispesertaadmin/{{ $k->idkeluarga }}"
                           class="px-3 py-1 bg-teal-600 text-white rounded-md hover:bg-teal-700 text-sm">Ubah</a>
 
-                        <form action="{{ route('keluarga.destroy', ['idkeluarga' => $k->idkeluarga]) }}"
-                              method="POST"
-                              onsubmit="return confirm('Yakin ingin menghapus anggota ini?')"
-                              class="inline-block">
+                        <form action="{{ route('keluarga.destroy', ['idkeluarga' => $k->idkeluarga]) }}" method="POST"
+                          onsubmit="return confirm('Yakin ingin menghapus anggota ini?')" class="inline-block">
                           @csrf
                           @method('DELETE')
                           <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">
@@ -222,17 +242,18 @@
               </tbody>
             </table>
           </div>
-        </div>
 
-        <!-- Cetak Button -->
-        <div class="flex justify-center mt-6">
-          <a href="{{ route('cetakKeluarga', ['idanggota' => $peserta->idanggota]) }}"
-            class="px-6 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 transition duration-200">
-            Cetak Keluarga
-          </a>
+          <!-- Cetak Button -->
+          <div class="flex justify-center mt-6">
+            <a href="{{ route('cetakKeluarga', ['idanggota' => $peserta->idanggota]) }}"
+              class="px-6 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 transition duration-200">
+              Cetak Keluarga
+            </a>
+          </div>
+
         </div>
-      </div>
     </main>
   </div>
 </body>
+
 </html>

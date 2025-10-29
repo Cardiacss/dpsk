@@ -9,6 +9,7 @@ use App\Models\TMitra;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class PesertaController extends Controller
 {
@@ -97,12 +98,26 @@ class PesertaController extends Controller
             ->with('success', 'Peserta dan seluruh data keluarganya berhasil dihapus.');
     }
 
-    public function edit($idanggota)
-    {
-        $peserta = TPeserta::findOrFail($idanggota);
-        return view('ADMIN.ubahpesertaadmin', compact('peserta'));
+public function edit($idanggota)
+{
+    $peserta = TPeserta::findOrFail($idanggota);
+    $unitmitra = TUnitMitra::all();
+    $mitra = TMitra::all();
+
+    // Format tanggal
+    $tanggalFields = ['tgllahir', 'tmtiuran', 'tglsahpeserta', 'tglkawin'];
+    foreach ($tanggalFields as $field) {
+        if (!empty($peserta->$field)) {
+            try {
+                $peserta->$field = \Carbon\Carbon::parse($peserta->$field)->format('Y-m-d');
+            } catch (\Exception $e) {
+                $peserta->$field = null;
+            }
+        }
     }
 
+    return view('ADMIN.ubahpesertaadmin', compact('peserta', 'unitmitra', 'mitra'));
+}
     public function update(Request $request, $idanggota)
     {
         $peserta = TPeserta::findOrFail($idanggota);
@@ -120,6 +135,7 @@ class PesertaController extends Controller
             'provinsi' => 'nullable|string',
             'pkerjaanakhir' => 'nullable|string',
             'idunit' => 'nullable|string',
+            'idmitra' => 'nullable|string', 
             'tmtkeja' => 'nullable|date',
             'statusnikah' => 'nullable|string',
             'tglkawin' => 'nullable|date',
@@ -130,13 +146,13 @@ class PesertaController extends Controller
             'id_num' => 'nullable|string',
         ]);
 
-        // ✅ Update idmitra berdasarkan idunit baru (jika diubah)
-        if (!empty($validated['idunit'])) {
-            $mitra = TMitra::where('idunit', $validated['idunit'])->first();
-            if ($mitra) {
-                $validated['idmitra'] = $mitra->idmitra;
-            }
-        }
+if (empty($validated['idmitra']) && !empty($validated['idunit'])) {
+    $mitra = TMitra::where('idunit', $validated['idunit'])->first();
+    if ($mitra) {
+        $validated['idmitra'] = $mitra->idmitra;
+    }
+
+}
 
         $peserta->update($validated);
 

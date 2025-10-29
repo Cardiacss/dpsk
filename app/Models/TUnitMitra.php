@@ -30,14 +30,14 @@ class TUnitMitra extends Model
         'ipk_pct',
         'urut',
         'nilaitambahan',
-        'tahunakatuaria',
+        'idaktuaria',
     ];
 
     protected $casts = [
         'ip_pct' => 'float',
         'ipk_pct' => 'float',
         'nilaitambahan' => 'float',
-        'tahunakatuaria' => 'integer',
+        'idaktuaria' => 'integer',
     ];
 
     public function peserta()

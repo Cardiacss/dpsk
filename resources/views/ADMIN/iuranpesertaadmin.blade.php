@@ -159,11 +159,6 @@
           class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
           Buka
         </button>
-        <button 
-          onclick="window.location.href='/editmitraadmin/{{ $m->idunit }}'" 
-          class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
-          Edit
-        </button>
       </td>
     </tr>
   @empty
