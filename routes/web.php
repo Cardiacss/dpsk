@@ -144,6 +144,8 @@ Route::post('/catatiuranadmin/{idanggota}', [App\Http\Controllers\Admin\MitraCon
     ->name('admin.editiuranpeserta');
     Route::get('/cetak-iuranpeserta/{idanggota}', [App\Http\Controllers\Admin\MitraController::class, 'cetakIuranPeserta'])
     ->name('admin.cetakIuranPeserta');
+Route::get('/editcatat/{idanggota}/{id_iuran}', [App\Http\Controllers\Admin\MitraController::class, 'editcatat'])->name('admin.editcatat');
+Route::post('/updatecatat/{idanggota}/{id_iuran}', [App\Http\Controllers\Admin\MitraController::class, 'updatecatat'])->name('admin.updatecatat');
 
     // ---------------- NILAI AKTUARIA ----------------
     Route::get('/datanilaiaktuariaadmin', [NilaiAktuariaController::class, 'showByMitra'])

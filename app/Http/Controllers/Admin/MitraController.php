@@ -414,4 +414,37 @@ class MitraController extends Controller
         // Unduh otomatis
         return $pdf->download('IuranPeserta_' . $peserta->idanggota . '.pdf');
     }
+    public function editcatat($idanggota, $id_iuran)
+    {
+        $iuran = TIuranPeserta::where('idanggota', $idanggota)
+            ->where('id_iuran', $id_iuran)
+            ->firstOrFail();
+
+        return view('ADMIN.editcatat', compact('iuran'));
+    }
+
+    public function updatecatat(Request $request, $idanggota, $id_iuran)
+    {
+        $iuran = TIuranPeserta::where('idanggota', $idanggota)
+            ->where('id_iuran', $id_iuran)
+            ->firstOrFail();
+
+        // Validasi input
+        $request->validate([
+            'tglsetor' => 'required|date',
+            'phdp' => 'required|numeric|min:0',
+            'ip_num' => 'required|numeric|min:0',
+            'ipk_num' => 'required|numeric|min:0',
+        ]);
+
+        // Update data
+        $iuran->update([
+            'tglsetor' => $request->tglsetor,
+            'phdp' => $request->phdp,
+            'ip_num' => $request->ip_num,
+            'ipk_num' => $request->ipk_num,
+        ]);
+
+        return redirect()->route('catatpesertaiuranadmin')->with('success', 'Data iuran peserta berhasil diperbarui.');
+    }
 }
