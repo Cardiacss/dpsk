@@ -36,7 +36,7 @@ class TAPensiun extends Model
         'statushidup',
         'mpawal',
         'idxPCT',
-        'noagendapsk',
+        'noagendadpsk',
         'rmspensiun',
         'nosuratterminasi',
         'tglterminasi',

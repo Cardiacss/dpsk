@@ -49,9 +49,9 @@
                 : 'block px-3 py-1 hover:bg-cyan-800 rounded'">
       Iuran Peserta
     </a>
-    <a href="#" class="block px-3 py-1 hover:bg-cyan-800 rounded">
-      Simulasi Kepesertaan & Manfaat Pensiun
-    </a>
+<a href="{{ route('admin.simulasi') }}" class="block px-3 py-1 hover:bg-cyan-800 rounded">
+  Simulasi Kepesertaan & Manfaat Pensiun
+</a>
   </div>
 </div>
 
@@ -127,10 +127,11 @@
         Kepesertaan > <span class="text-blue-600 font-semibold">Iuran Peserta</span>
       </div>
       <!-- Tombol -->
-      <button class="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600 mb-4 flex items-center space-x-2">
-        <span>➕</span>
-        <span>Riwayat Iuran & Tunggakan</span>
-      </button>
+<a href="{{ route('admin.riwayatiuran') }}" 
+   class="inline-flex items-center space-x-2 bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600 mb-4">
+  <span>➕</span>
+  <span>Riwayat Iuran & Tunggakan</span>
+</a>
 
       <!-- Input Pencarian -->
       <div class="mb-4">

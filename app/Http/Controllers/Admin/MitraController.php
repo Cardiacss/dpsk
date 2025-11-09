@@ -423,28 +423,41 @@ class MitraController extends Controller
         return view('ADMIN.editcatat', compact('iuran'));
     }
 
-    public function updatecatat(Request $request, $idanggota, $id_iuran)
-    {
-        $iuran = TIuranPeserta::where('idanggota', $idanggota)
-            ->where('id_iuran', $id_iuran)
-            ->firstOrFail();
+public function updatecatat(Request $request, $idanggota, $id_iuran)
+{
+    // Ambil data iuran berdasarkan ID
+    $iuran = TIuranPeserta::where('idanggota', $idanggota)
+        ->where('id_iuran', $id_iuran)
+        ->firstOrFail();
 
-        // Validasi input
-        $request->validate([
-            'tglsetor' => 'required|date',
-            'phdp' => 'required|numeric|min:0',
-            'ip_num' => 'required|numeric|min:0',
-            'ipk_num' => 'required|numeric|min:0',
-        ]);
+    // Validasi input
+    $validated = $request->validate([
+        'tglsetor' => 'required|date',
+        'phdp' => 'required|numeric|min:0',
+        'ip_num' => 'required|numeric|min:0',
+        'ipk_num' => 'required|numeric|min:0',
+    ]);
 
-        // Update data
-        $iuran->update([
-            'tglsetor' => $request->tglsetor,
-            'phdp' => $request->phdp,
-            'ip_num' => $request->ip_num,
-            'ipk_num' => $request->ipk_num,
-        ]);
+    // Update data
+    $iuran->update($validated);
 
-        return redirect()->route('catatpesertaiuranadmin')->with('success', 'Data iuran peserta berhasil diperbarui.');
+    // Pastikan ada nilai 'from' di form
+    $from = $request->input('from');
+
+    // Redirect sesuai asal form
+    switch ($from) {
+        case 'detailmitraadmin':
+            return redirect()->to("/detailmitraadmin/{$idanggota}")
+                ->with('success', 'Data iuran peserta berhasil diperbarui.');
+
+        case 'daftarpesertaiuranadmin':
+            return redirect()->to("/editiuranpesertaadmin/{$idanggota}")
+                ->with('success', 'Data iuran peserta berhasil diperbarui.');
+
+        default:
+            // Default aman kalau lupa hidden input
+            return redirect()->back()
+                ->with('success', 'Data iuran peserta berhasil diperbarui.');
     }
+}
 }

@@ -69,4 +69,8 @@ class TPeserta extends Model
     {
         return $this->belongsTo(TMitra::class, 'idmitra', 'idmitra');
     }
+    public function manfaatPensiun()
+{
+    return $this->hasMany(TManfaatPensiun::class, 'idanggota', 'idanggota');
+}
 }

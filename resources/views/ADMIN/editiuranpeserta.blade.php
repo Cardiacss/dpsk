@@ -56,7 +56,10 @@
               <td class="border px-2 py-1">Rp {{ number_format($i->ipk_num, 0, ',', '.') }}</td>
               <td class="border px-2 py-1">Rp {{ number_format($i->ip_num, 0, ',', '.') }}</td>
               <td class="border px-2 py-1 text-blue-600">
-                <a href="{{ url('/editcatat/' . $i->idanggota . '/' . $i->id_iuran) }}" class="hover:underline">Edit</a>
+<a href="{{ url('/editcatat/' . $i->idanggota . '/' . $i->id_iuran . '?from=editpesertaiuranadmin') }}" 
+   class="hover:underline">
+   Edit
+</a>
               </td>
             </tr>
           @empty

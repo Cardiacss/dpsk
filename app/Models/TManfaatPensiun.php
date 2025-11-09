@@ -12,11 +12,12 @@ class TManfaatPensiun extends Model
     protected $table = 't_manfaatpensiun';
     protected $primaryKey = 'idmanfaatpensiun';
     public $timestamps = false;
+    public $incrementing = true;
+    protected $keyType = 'int';
 
     protected $fillable = [
-        'idmanfaatpensiun',
         'idanggota',
-        'tglbermanfaat',
+        'tglberimanfaat', // diperbaiki dari tglbermanfaat
         'thn_setor',
         'bln_setor',
         'nilai_mp',
@@ -24,8 +25,8 @@ class TManfaatPensiun extends Model
     ];
 
     protected $casts = [
-        'tglbermanfaat' => 'date',
-        'nilai_mp' => 'decimal:2',
+        'tglberimanfaat' => 'date',
+        'nilai_mp' => 'decimal:3', // disesuaikan dengan DECIMAL(18,3)
     ];
 
     // Relasi ke peserta

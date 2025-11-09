@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\NilaiAktuariaController;
-
+use App\Http\Controllers\Admin\IuranController;
+use App\Http\Controllers\Admin\PensiunController;
 /*
 |--------------------------------------------------------------------------
 | WEB ROUTES
@@ -44,6 +45,55 @@ Route::middleware(['auth', 'role:Administrator'])->group(function () {
     Route::get('/cetak-kartu-peserta/{idanggota}', [App\Http\Controllers\Admin\PesertaController::class, 'cetakKartu'])
         ->name('peserta.cetakKartu');
         Route::get('/get-mitra/{idunit}', [App\Http\Controllers\Admin\PesertaController::class, 'getMitraByUnit']);
+Route::get('/riwayatiuranadmin', [IuranController::class, 'index'])->name('admin.riwayatiuran');
+
+// Fetch daftar mitra berdasarkan unit
+Route::get('/riwayatiuranadmin/unit/{idunit}', [IuranController::class, 'getMitraByUnit'])->name('admin.getMitraByUnit');   
+
+// Halaman detail daftar peserta riwayat iuran
+Route::get('/detailmitraadmin/{idmitra}', [IuranController::class, 'detail'])->name('admin.detailmitra');
+Route::get('/getIuranPeserta/{idanggota}/{tahun?}', [App\Http\Controllers\Admin\IuranController::class, 'getIuranPeserta'])
+    ->name('admin.getIuranPeserta');
+    Route::get('/editcatat/{idanggota}/{id_iuran}', [App\Http\Controllers\Admin\IuranController::class, 'editCatat'])
+    ->name('admin.editcatat');
+
+// Proses update data iuran peserta
+Route::post('/updatecatat/{idanggota}/{id_iuran}', [App\Http\Controllers\Admin\IuranController::class, 'updateCatat'])
+    ->name('admin.updatecatat');
+Route::get('/getpesertabyunit/{idunit}', [App\Http\Controllers\Admin\IuranController::class, 'getPesertaByUnit']);
+Route::get('/simulasiadmin', [App\Http\Controllers\Admin\IuranController::class, 'simulasiIndex'])
+    ->name('admin.simulasi');  
+    Route::get('/simulasipesertaaktif/{idanggota}', [App\Http\Controllers\Admin\IuranController::class, 'showSimulasiPeserta'])
+    ->name('admin.simulasipesertaaktif');
+        // ---------------- KEPENSIUNAN ----------------
+Route::get('/pengajuanpensiun', [App\Http\Controllers\Admin\PensiunController::class, 'pengajuanPensiun'])
+    ->name('admin.pengajuanpensiun');
+Route::get('/formpengajuanpensiunadmin/{idanggota}', [PensiunController::class, 'create'])
+    ->name('admin.formpengajuanpensiun');
+
+Route::post('/formpengajuanpensiunadmin/store', [PensiunController::class, 'store'])
+    ->name('admin.formpengajuanpensiun.store');
+
+Route::get('/lihatpensiun', [App\Http\Controllers\Admin\PensiunController::class, 'daftarSemua'])
+    ->name('admin.kepensiunan');
+// Halaman Pilih Pensiun
+Route::get('/pilihpensiun/{idmitra}', [App\Http\Controllers\Admin\PensiunController::class, 'index'])
+    ->name('admin.pilihpensiun');
+Route::get('/riwayatmanfaat', [App\Http\Controllers\Admin\ManfaatPensiunController::class, 'riwayatMitra'])
+    ->name('admin.riwayatmanfaat');
+// Halaman Riwayat Manfaat
+Route::get('/detailpesertapensiun/{idanggota}', [App\Http\Controllers\Admin\ManfaatPensiunController::class, 'index'])
+    ->name('detailpesertapensiun');
+    Route::get('/detailpesertaaktif/{idanggota}', [App\Http\Controllers\Admin\PensiunController::class, 'show'])
+    ->name('admin.detailpesertaaktif');
+Route::delete('/hapusmanfaat/{id}', [App\Http\Controllers\Admin\ManfaatPensiunController::class, 'destroy'])->name('hapusmanfaat');
+Route::get('/pensiun/edit/{idanggota}', [App\Http\Controllers\Admin\PensiunController::class, 'edit'])
+    ->name('admin.pensiun.edit');
+
+// Update data ke database
+Route::post('/pensiun/update/{idanggota}', [App\Http\Controllers\Admin\PensiunController::class, 'update'])
+    ->name('admin.pensiun.update');
+    
 
     // ---------------- KELUARGA ----------------
     Route::get('/tambahkeluarga/{idanggota}', [App\Http\Controllers\Admin\KeluargaController::class, 'create'])
