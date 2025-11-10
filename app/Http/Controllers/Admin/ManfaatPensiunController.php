@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TManfaatPensiun;
 use App\Models\TMitra;
+use App\Models\TPeserta;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class ManfaatPensiunController extends Controller
@@ -60,4 +62,18 @@ class ManfaatPensiunController extends Controller
 
         return view('ADMIN.riwayatmanfaat', compact('mitra', 'search'));
     }
+    public function cetakManfaat($idanggota)
+{
+    // Ambil data peserta + relasi unit & mitra
+    $peserta = TPeserta::with(['unit', 'mitra'])->findOrFail($idanggota);
+
+    // Ambil semua data manfaat peserta ini
+    $manfaat = TManfaatPensiun::where('idanggota', $idanggota)->get();
+
+    // Buat PDF dari view
+    $pdf = PDF::loadView('ADMIN.cetakmanfaat', compact('peserta', 'manfaat'))
+              ->setPaper('A4', 'portrait');
+
+    return $pdf->stream('Manfaat_Pensiun_'.$peserta->nama.'.pdf');
+}
 }

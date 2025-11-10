@@ -1,4 +1,4 @@
-@extends('ADMIN.layouts.main')          
+@extends('ADMIN.layouts.main')
 
 @section('title')
     Simulasi Kepersertaan dan Pemberian Manfaat
@@ -24,16 +24,14 @@
         <div class="form-group row mb-2">
             <label class="col-sm-3 col-form-label">No Peserta</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id="nopeserta" 
-                    value="{{ $peserta->nopeserta ?? '' }}" readonly>
+                <input type="text" class="form-control" id="nopeserta" value="{{ $peserta->nopeserta ?? '' }}" readonly>
             </div>
         </div>
 
         <div class="form-group row mb-2">
             <label class="col-sm-3 col-form-label">Nama Peserta</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id="namapeserta" 
-                    value="{{ $peserta->nama ?? '' }}" readonly>
+                <input type="text" class="form-control" id="namapeserta" value="{{ $peserta->nama ?? '' }}" readonly>
             </div>
         </div>
 
@@ -59,17 +57,17 @@
         <div class="form-group row mb-2">
             <label class="col-sm-3 col-form-label">Tanggal Lahir</label>
             <div class="col-sm-9">
-                <input type="date" class="form-control" id="tanggallahir" 
-                    value="{{ $peserta->tgllahir ?? '' }}" readonly>
+                <input type="date" class="form-control" id="tanggallahir"
+                    value="{{ $peserta->tgllahir ? $peserta->tgllahir->format('Y-m-d') : '' }}" readonly>
             </div>
         </div>
 
         <div class="form-group row mb-2">
             <label class="col-sm-3 col-form-label">Tanggal Mulai Kerja</label>
-            <div class="col-sm-9">
-                <input type="date" class="form-control" id="tanggalmulaikerja" 
-                    value="{{ $peserta->tmtkerja ?? '' }}" readonly>
-            </div>
+                <div class="col-sm-9">
+            <input type="date" class="form-control" id="tanggalmulaikerja"
+                value="{{ $peserta->tmtkeja ? $peserta->tmtkeja->format('Y-m-d') : '' }}" readonly>
+        </div>
         </div>
     </div>
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TAPensiun;
 use App\Models\TMitra;
+use App\Models\TUnitMitra;
 use App\Models\TPeserta;
 
 class PensiunController extends Controller
@@ -185,4 +186,56 @@ public function formPengajuan($idanggota)
 
         return redirect('/lihatpensiun')->with('success', 'Data pengajuan pensiun berhasil disimpan.');
     }
+    public function PenEdit($id)
+{
+    $pensiun = TAPensiun::findOrFail($id);
+    return view('ADMIN.ubahpensiun', compact('pensiun'));
+}
+
+public function PenUpdate(Request $request, $id)
+{
+    $pensiun = TAPensiun::findOrFail($id);
+
+    $pensiun->update([
+        'nopensiun' => $request->nopensiun,
+        'idanggota' => $request->idanggota,
+        'tglmohon' => $request->tglmohon,
+        'tmtpensiun' => $request->tmtpensiun,
+        'nosuratberhenti' => $request->nosuratberhenti,
+        'noagendapsk' => $request->noagendapsk,
+        'statushidup' => $request->statushidup,
+        'statusmanfaat' => $request->statusmanfaat,
+        'keterangan' => $request->keterangan,
+    ]);
+
+    return redirect('/lihatpensiunadmin')->with('success', 'Data pensiunan berhasil diperbarui.');
+}
+public function terminasi(Request $request)
+{
+    // Ambil semua unit untuk dropdown
+    $unitmitra = TUnitMitra::orderBy('nama_um')->get();
+
+    // Query dasar
+    $query = TAPensiun::with(['peserta.unit'])
+        ->whereNotNull('tglterminasi');
+
+    // Filter berdasarkan unit (idunit di tabel TPeserta)
+    if ($request->filled('idunit')) {
+        $query->whereHas('peserta', function ($q) use ($request) {
+            $q->where('idunit', $request->idunit);
+        });
+    }
+
+    // Jalankan query
+    $pensiun = $query->get();
+
+    return view('ADMIN.daftarterminasiadmin', compact('pensiun', 'unitmitra'));
+}
+public function showTerminasi($id)
+{
+    // Ambil data pensiun + peserta + unit terkait
+    $pensiun = TAPensiun::with(['peserta.unit'])->findOrFail($id);
+
+    return view('ADMIN.detailterminasipensiunadmin', compact('pensiun'));
+}
 }

@@ -20,13 +20,10 @@
         <div class="riwayatpensiunmitra-tabs mb-4">
             <ul class="nav nav-pills justify-content-center" id="mitrapensiunTab">
                 <li class="nav-item">
-                    <a href="#" class="nav-link">Daftar Pensiun</a>
+                    <a href="/lihatpensiun" class="nav-link">Daftar Pensiun</a>
                 </li>
                 <li class="nav-item">
                     <a href="/pemberianmanfaat" class="nav-link">Pemberian Manfaat</a>
-                </li>
-                <li class="nav-item">
-                    <a href="/cetakmanfaat" class="nav-link">Cetak Manfaat</a>
                 </li>
             </ul>
         </div>
