@@ -77,10 +77,15 @@
                 </table>
             </div>
 
-            <div class="text-left mt-2">
-                <a href="{{ route('admin.pilihpensiun', ['idmitra' => $mitra->idmitra]) }}" class="btn"
-                    style="background-color:#2994A4; color:white;">Kembali</a>
-            </div>
+<div class="text-left mt-2">
+    @if(!empty($mitra) && isset($mitra->idmitra))
+        <a href="{{ route('admin.pilihpensiun', ['idmitra' => $mitra->idmitra]) }}" 
+           class="btn" style="background-color:#2994A4; color:white;">Kembali</a>
+    @else
+        <a href="{{ url()->previous() }}" 
+           class="btn" style="background-color:#2994A4; color:white;">Kembali</a>
+    @endif
+</div>
         </div>
     </div>
 

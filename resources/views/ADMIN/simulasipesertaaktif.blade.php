@@ -68,7 +68,7 @@
             <input type="date" class="form-control" id="tanggalmulaikerja"
                 value="{{ $peserta->tmtkeja ? $peserta->tmtkeja->format('Y-m-d') : '' }}" readonly>
         </div>
-        </div>
+        
     </div>
 
     <hr>

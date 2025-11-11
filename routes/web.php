@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\NilaiAktuariaController;
 use App\Http\Controllers\Admin\IuranController;
+use App\Http\Controllers\Admin\MasterController;
 use App\Http\Controllers\Admin\PensiunController;
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,18 @@ Route::middleware(['auth', 'role:Administrator'])->group(function () {
     Route::get('/admin/menu', function () {
         return view('ADMIN.menuadmin');
     })->name('admin.menu');
+    // Halaman Peraturan
+Route::get('/peraturan', [MasterController::class, 'indexPeraturan'])->name('admin.peraturan');
+Route::post('/peraturan', [MasterController::class, 'storePeraturan'])->name('admin.peraturan.store');
+// Halaman Suku Bunga
+Route::get('/sukubunga', [MasterController::class, 'index'])->name('sukubunga.index');
+Route::post('/sukubunga/store', [MasterController::class, 'store'])->name('sukubunga.store');
+Route::get('/sukubunga/edit/{tahun}', [MasterController::class, 'edit'])->name('sukubunga.edit');
+Route::post('/sukubunga/delete/{tahun}', [MasterController::class, 'destroy'])->name('sukubunga.delete');
+
+// Halaman Indeks Penghargaan
+Route::get('/indeks', [MasterController::class, 'indeksIndex'])->name('indeks.index');
+Route::post('/indeks', [MasterController::class, 'indeksStore'])->name('indeks.store');
 
     // ---------------- PESERTA ----------------
     Route::get('/admin/daftarpeserta', [App\Http\Controllers\Admin\PesertaController::class, 'index'])
@@ -232,11 +245,7 @@ Route::middleware(['auth', 'role:Administrator'])->group(function () {
 // ============================================================================
 // GRUP RUTE UNTUK OPERATOR 1
 // ============================================================================
-Route::middleware(['auth', 'role:Operator1'])->group(function () {
-    Route::get('/operator1/menu', function () {
-        return view('OPERATOR1.menuoperator1');
-    })->name('operator1.menu');
-});
+
 
 // ============================================================================
 // GRUP RUTE UNTUK OPERATOR 2

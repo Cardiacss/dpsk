@@ -53,7 +53,6 @@ class LoginController extends Controller
         } elseif ($user->userid === 'kepala') {
             return redirect()->route('kepala.menu');
         }
-
         return redirect()->route('login')->withErrors(['userid' => 'Role pengguna tidak dikenal.']);
     }
 

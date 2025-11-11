@@ -10,6 +10,8 @@ class TSukuBunga extends Model
     use HasFactory;
 
     protected $table = 't_sukubunga';
+    protected $primaryKey = 'tahun'; 
+    public $incrementing = false; 
     public $timestamps = false;
 
     protected $fillable = [
