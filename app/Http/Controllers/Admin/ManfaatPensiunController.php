@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\TManfaatPensiun;
 use App\Models\TMitra;
 use App\Models\TPeserta;
+use App\Models\TAPensiun;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 
@@ -77,4 +78,71 @@ class ManfaatPensiunController extends Controller
 
         return $pdf->stream('Manfaat_Pensiun_' . $peserta->nama . '.pdf');
     }
+    public function indexManfaat(Request $request)
+    {
+        $query = TAPensiun::with(['peserta', 'peserta.mitra']);
+
+        // Filter nomor peserta
+        if ($request->filled('nopeserta')) {
+            $nopeserta = $request->nopeserta;
+            $query->whereHas('peserta', function ($q) use ($nopeserta) {
+                $q->where('nama', 'like', '%' . $nopeserta . '%');
+            });
+        }
+
+        // Filter mitra
+        if ($request->filled('mitra')) {
+            $mitra = $request->mitra;
+            $query->whereHas('peserta.mitra', function ($q) use ($mitra) {
+                $q->where('nama_um', $mitra);
+            });
+        }
+
+        $manfaat = $query->get();
+        $mitras = \App\Models\TMitra::all();
+
+        return view('ADMIN.manfaat', compact('manfaat', 'mitras'));
+    }
+    public function cekManfaat($idpensiun)
+    {
+        // Ambil data TAPensiun beserta relasi peserta & mitra
+        $manfaat = TAPensiun::with(['peserta', 'peserta.mitra'])->findOrFail($idpensiun);
+
+        return view('ADMIN.cekmanfaat', compact('manfaat'));
+    }
+        public function indexEdit()
+    {
+        $pensiuns = TAPensiun::with('peserta')->get();
+        return view('ADMIN.daftarpesertaaktif', compact('pensiuns'));
+    }
+
+    // Detail Pensiunan
+public function detail($idanggota)
+{
+    // Ambil pensiun beserta relasi peserta (TAnggota)
+    $pensiun = TAPensiun::with('peserta')   // pastikan relasi peserta() ada di model TAPensiun
+                ->where('idanggota', $idanggota)
+                ->firstOrFail();
+
+    return view('ADMIN.detailpesertaaktif', compact('pensiun'));
+}
+    // Edit Pensiunan
+    public function edit($idpensiun)
+    {
+        $pensiun = TAPensiun::with('peserta')->findOrFail($idpensiun);
+        return view('ADMIN.editpensiun', compact('pensiun'));
+    }
+    public function update(Request $request, $idpensiun)
+{
+    $manfaat = TAPensiun::findOrFail($idpensiun);
+
+    // Contoh update field (sesuaikan dengan tabel)
+    $manfaat->field1 = $request->field1;
+    $manfaat->field2 = $request->field2;
+    // dst...
+    $manfaat->save();
+
+    return redirect()->route('cekmanfaat', $idpensiun)
+                     ->with('success', 'Data manfaat berhasil diupdate!');
+}
 }

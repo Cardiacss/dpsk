@@ -22,7 +22,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware(['auth', 'role:Administrator'])->group(function () {
 
     // ---------------- DASHBOARD ----------------
-    Route::get('/admin/menu', function () {
+    Route::get('/home', function () {
         return view('ADMIN.menuadmin');
     })->name('admin.menu');
     // Halaman Peraturan
@@ -81,6 +81,9 @@ Route::post('/indeks', [MasterController::class, 'indeksStore'])->name('indeks.s
     Route::get('/simulasi', [IuranController::class, 'simulasiIndex'])->name('admin.simulasi');
     Route::get('/simulasi/{idanggota}', [IuranController::class, 'showSimulasiPeserta'])
     ->name('admin.simulasipesertaaktif');
+    Route::get('/admin/simulasiView', [App\Http\Controllers\Admin\PensiunController::class, 'simulasiView']);
+Route::get('/faktornilai', [App\Http\Controllers\Admin\MasterController::class, 'indexFaktor'])->name('faktornilai.index');
+Route::post('/faktornilai/update', [App\Http\Controllers\Admin\MasterController::class, 'updateFaktor'])->name('faktornilai.update');
 
 
     // ---------------- KEPENSIUNAN ----------------
@@ -97,8 +100,20 @@ Route::post('/indeks', [MasterController::class, 'indeksStore'])->name('indeks.s
     // Halaman Pilih Pensiun
     Route::get('/pilihpensiun/{idmitra}', [App\Http\Controllers\Admin\PensiunController::class, 'index'])
         ->name('admin.pilihpensiun');
+    Route::get('/manfaat', [App\Http\Controllers\Admin\ManfaatPensiunController::class, 'indexManfaat'])->name('manfaat.index');
+    Route::get('/cekmanfaat/{idpensiun}', [App\Http\Controllers\Admin\ManfaatPensiunController::class, 'cekManfaat'])->name('cekmanfaat');
+
+// Proses update
+Route::put('/cekmanfaat/{idpensiun}', [App\Http\Controllers\Admin\ManfaatPensiunController::class, 'update'])->name('cekmanfaat.update');
     Route::get('/riwayatmanfaat', [App\Http\Controllers\Admin\ManfaatPensiunController::class, 'riwayatMitra'])
         ->name('admin.riwayatmanfaat');
+Route::get('/pengubahanpensiun', [App\Http\Controllers\Admin\ManfaatPensiunController::class, 'indexEdit'])->name('daftarpesertaaktif');
+
+// Detail Pensiunan
+Route::get('/detailpensiun/{idpensiun}', [App\Http\Controllers\Admin\ManfaatPensiunController::class, 'detail'])->name('detailpesertapensiun');
+
+// Edit Pensiunan
+Route::get('/editpensiun/{idpensiun}', [App\Http\Controllers\Admin\ManfaatPensiunController::class, 'edit'])->name('editpensiun');
     // Halaman Riwayat Manfaat
     Route::get('/detailpesertapensiun/{idanggota}', [App\Http\Controllers\Admin\ManfaatPensiunController::class, 'index'])
         ->name('detailpesertapensiun');

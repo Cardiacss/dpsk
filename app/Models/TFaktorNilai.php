@@ -9,7 +9,7 @@ class TFaktorNilai extends Model
 {
     use HasFactory;
 
-    protected $table = 't_faktornilaii';
+    protected $table = 't_faktornilai';
     protected $primaryKey = 'id';
     public $timestamps = false;
 

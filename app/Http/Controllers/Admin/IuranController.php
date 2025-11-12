@@ -58,24 +58,32 @@ public function editCatat($idanggota, $id_iuran)
 
 public function updateCatat(Request $request, $idanggota, $id_iuran)
 {
+    // Validasi
     $request->validate([
-        'tglsetor' => 'nullable|date',
-        'phdp' => 'nullable|numeric',
-        'ipk_num' => 'nullable|numeric',
-        'ip_num' => 'nullable|numeric',
+        'tglsetor'   => 'nullable|date',
+        'phdp'       => 'nullable|numeric',
+        'ipk_num'    => 'nullable|numeric',
+        'ip_num'     => 'nullable|numeric',
+        'bln_iuran'  => 'required|integer|min:1|max:12',
+        'thn_iuran'  => 'required|integer|min:2000|max:2100',
     ]);
 
+    // Ambil record iuran berdasarkan idanggota + id_iuran
     $iuran = TIuranPeserta::where('idanggota', $idanggota)
                 ->where('id_iuran', $id_iuran)
                 ->firstOrFail();
 
+    // Update semua field termasuk bulan & tahun
     $iuran->update([
-        'tglsetor' => $request->tglsetor,
-        'phdp' => $request->phdp,
-        'ipk_num' => $request->ipk_num,
-        'ip_num' => $request->ip_num,
+        'tglsetor'   => $request->tglsetor,
+        'phdp'       => $request->phdp,
+        'ipk_num'    => $request->ipk_num,
+        'ip_num'     => $request->ip_num,
+        'bln_iuran'  => $request->bln_iuran,
+        'thn_iuran'  => $request->thn_iuran,
     ]);
 
+    // Redirect kembali
     return redirect("/editiuranpesertaadmin/{$idanggota}")
             ->with('success', 'Data iuran berhasil diperbarui.');
 }

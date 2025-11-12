@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\TSukuBunga;
 use App\Models\IdxReward;
 use App\Models\TPeraturan;
+use Illuminate\Support\Facades\DB;
+use App\Models\TFaktorNilai;
 
 class MasterController extends Controller
 {
@@ -104,5 +106,31 @@ class MasterController extends Controller
         );
 
         return redirect()->back()->with('success', 'Data berhasil disimpan!');
+    }
+        public function indexFaktor()
+    {
+    
+        // Filter data sesuai status kerja
+        $pegawaiKawin = TFaktorNilai::where('statuskerja', 'pegawai')->get();
+        $pegawaiLajang = TFaktorNilai::where('statuskerja', 'pegawai')->get();
+        $guruKawin = TFaktorNilai::where('statuskerja', 'guru')->get();
+        $guruLajang = TFaktorNilai::where('statuskerja', 'guru')->get();
+
+        return view('ADMIN.faktornilai', compact('pegawaiKawin', 'pegawaiLajang', 'guruKawin', 'guruLajang'));
+    
+}
+public function updateFaktor(Request $request)
+{
+ $request->validate([
+            'id' => 'required|integer',
+            'kolom' => 'required|string',
+            'nilai' => 'required|numeric'
+        ]);
+
+        TFaktorNilai::where('id', $request->id)->update([
+            $request->kolom => $request->nilai
+        ]);
+
+        return redirect()->back()->with('success', 'Nilai berhasil diperbarui!');
     }
 }

@@ -162,30 +162,57 @@ public function formPengajuan($idanggota)
     // Tampilkan view form pengajuan
     return view('ADMIN.formpengajuanpensiunadmin', compact('peserta'));
 }
- public function create($idanggota)
+    public function create($idanggota)
     {
-        // Ambil data peserta berdasarkan idanggota
         $peserta = TPeserta::where('idanggota', $idanggota)->firstOrFail();
-
         return view('ADMIN.formpengajuanpensiunadmin', compact('peserta'));
     }
 
-    public function store(Request $request)
-    {
-        TAPensiun::create([
-            'nopensiun' => $request->nopensiun,
-            'idanggota' => $request->idanggota,
-            'tglmohon' => $request->tglmohon,
-            'tmtpensiun' => $request->tmtpensiun,
-            'nosuratberhenti' => $request->nosuratberhenti,
-            'noagendapsk' => $request->noagendapsk,
-            'statushidup' => $request->statushidup,
-            'statusmanfaat' => $request->statusmanfaat,
-            'keterangan' => $request->keterangan,
-        ]);
+// ✅ Menyimpan data pengajuan pensiun
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'nopensiun' => 'nullable|string|max:100',
+        'idanggota' => 'required|integer',
+        'tglmohon' => 'nullable|date',
+        'tmtpensiun' => 'nullable|date',
+        'nosuratberhenti' => 'nullable|string|max:100',
+        'statusmanfaat' => 'nullable|string|max:50',
+        'noagendadpsk' => 'nullable|string|max:100',
+        'keterangan' => 'nullable|string|max:255',
+        'suratdari' => 'nullable|string|max:150',
+        'tglsuratdari' => 'nullable|date',
+        'nosuratdari' => 'nullable|string|max:100',
+        'dodt' => 'nullable|date', // ✅ Tambahkan validasi dodt
+        'statushidup' => 'nullable',
+    ]);
 
-        return redirect('/lihatpensiun')->with('success', 'Data pengajuan pensiun berhasil disimpan.');
+    // ✅ Simpan ke tabel t_apensiun
+    TAPensiun::create([
+        'nopensiun' => $validated['nopensiun'] ?? null,
+        'idanggota' => $validated['idanggota'],
+        'tglmohon' => $validated['tglmohon'] ?? null,
+        'tmtpensiun' => $validated['tmtpensiun'] ?? null,
+        'nosuratberhenti' => $validated['nosuratberhenti'] ?? null,
+        'statusmanfaat' => $validated['statusmanfaat'] ?? null,
+        'noagendadpsk' => $validated['noagendadpsk'] ?? null,
+        'keterangan' => $validated['keterangan'] ?? null,
+        'suratdari' => $validated['suratdari'] ?? null,
+        'tglsuratdari' => $validated['tglsuratdari'] ?? null,
+        'nosuratdari' => $validated['nosuratdari'] ?? null,
+        'statushidup' => $validated['statushidup'] ?? 1,
+    ]);
+
+    // ✅ Jika user mengisi tanggal meninggal, update ke tabel pengguna
+    if (!empty($validated['dodt'])) {
+        \DB::table('t_peserta')
+            ->where('idanggota', $validated['idanggota'])
+            ->update(['dodt' => $validated['dodt']]);
     }
+
+    return redirect('/lihatpensiun')->with('success', 'Data pengajuan pensiun berhasil disimpan.');
+}
+
     public function PenEdit($id)
 {
     $pensiun = TAPensiun::findOrFail($id);
@@ -237,5 +264,43 @@ public function showTerminasi($id)
     $pensiun = TAPensiun::with(['peserta.unit'])->findOrFail($id);
 
     return view('ADMIN.detailterminasipensiunadmin', compact('pensiun'));
+}
+public function simulasiView(Request $request)
+{
+    $tgllahir = $request->query('tgllahir');
+    $dodt = $request->query('dodt');
+    $tmtkeja = $request->query('tmtkeja');
+    $tmtpensiun = $request->query('tmtpensiun');
+    $pekerjaan = $request->query('pekerjaan');
+
+    // Validasi input
+    if (empty($tgllahir) || empty($tmtkeja) || empty($tmtpensiun)) {
+        return response()->json(['error' => 'Tanggal lahir, TMT kerja, dan tanggal pensiun wajib diisi.']);
+    }
+
+    try {
+        $tglLahir = new \DateTime($tgllahir);
+        $tglMulaiKerja = new \DateTime($tmtkeja);
+        $tglPensiun = new \DateTime($tmtpensiun);
+
+        // Hitung masa kerja
+        $masaKerja = $tglPensiun->diff($tglMulaiKerja)->y;
+
+        // Hitung usia
+        if (!empty($dodt)) {
+            $tglAkhir = new \DateTime($dodt);
+        } else {
+            $tglAkhir = $tglPensiun;
+        }
+        $usia = $tglAkhir->diff($tglLahir)->y;
+
+        return response()->json([
+            'masa_kerja' => $masaKerja,
+            'pekerjaan_terakhir' => $pekerjaan,
+            'usia' => $usia
+        ]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Format tanggal tidak valid.']);
+    }
 }
 }

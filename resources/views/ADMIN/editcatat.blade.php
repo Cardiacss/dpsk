@@ -68,6 +68,34 @@
           <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
         @enderror
       </div>
+      {{-- Bulan dan Tahun Iuran --}}
+<div class="flex gap-4">
+<div class="flex-1">
+    <label class="block font-semibold mb-1">Bulan Iuran</label>
+    <select name="bln_iuran" 
+            class="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-[#2994A4]">
+        @for ($i = 1; $i <= 12; $i++)
+            <option value="{{ $i }}" {{ $iuran->bln_iuran == $i ? 'selected' : '' }}>{{ $i }}</option>
+        @endfor
+    </select>
+    @error('bln_iuran')
+        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+    @enderror
+</div>
+
+  {{-- Tahun --}}
+  <div class="flex-1">
+    <label class="block font-semibold mb-1">Tahun Iuran</label>
+    <input type="number" name="thn_iuran" 
+           value="{{ old('thn_iuran', $iuran->thn_iuran) }}" 
+           placeholder="Tahun" 
+           class="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-[#2994A4]">
+    @error('thn_iuran')
+      <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+    @enderror
+  </div>
+</div>
+
 
       {{-- Tombol Aksi --}}
       <div class="flex justify-between pt-6">
