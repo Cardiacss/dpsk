@@ -97,7 +97,7 @@
     </div>
 
     <div class="mt-6">
-        <a href="/daftarterminasiadmin" class="bg-[#2994A4] hover:bg-[#257f8d] text-white px-4 py-2 rounded shadow">
+        <a href="/terminasipensiun" class="bg-[#2994A4] hover:bg-[#257f8d] text-white px-4 py-2 rounded shadow">
             Kembali
         </a>
     </div>

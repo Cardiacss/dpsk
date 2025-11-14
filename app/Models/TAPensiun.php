@@ -59,4 +59,9 @@ class TAPensiun extends Model
     {
         return $this->belongsTo(TPeserta::class, 'idanggota', 'idanggota');
     }
+    public function manfaat()
+{
+    // relasi ke t_manfaatpensiun berdasarkan idanggota
+    return $this->hasOne(\App\Models\TManfaatPensiun::class, 'idanggota', 'idanggota');
+}
 }

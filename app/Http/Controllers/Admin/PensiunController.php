@@ -8,6 +8,7 @@ use App\Models\TAPensiun;
 use App\Models\TMitra;
 use App\Models\TUnitMitra;
 use App\Models\TPeserta;
+use Illuminate\Support\Facades\DB;
 
 class PensiunController extends Controller
 {
@@ -37,57 +38,62 @@ class PensiunController extends Controller
 
         return view('ADMIN.pilihpensiun', compact('pensiun', 'search', 'mitra'));
     }
-        public function daftarSemua(Request $request)
-    {
-        $search = $request->input('search');
+public function daftarSemua(Request $request)
+{
+    $search = $request->input('search');
 
-        // Query semua data pensiun
-        $query = TAPensiun::with('peserta');
+    // Query semua data pensiun, hanya yang belum terminasi
+    $query = TAPensiun::with('peserta')
+        ->whereNull('tglterminasi'); // 🔹 hanya data aktif
 
-        // Jika ada pencarian
-        if (!empty($search)) {
-            $query->where(function ($q) use ($search) {
-                $q->where('nopensiun', 'like', "%{$search}%")
-                    ->orWhereHas('peserta', function ($q2) use ($search) {
-                        $q2->where('nama', 'like', "%{$search}%");
-                    });
-            });
-        }
-
-        // Pagination 10 data per halaman
-        $pensiun = $query->orderBy('nopensiun', 'asc')->paginate(10);
-
-        return view('ADMIN.kepensiunan', compact('pensiun', 'search'));
+    // Jika ada pencarian
+    if (!empty($search)) {
+        $query->where(function ($q) use ($search) {
+            $q->where('nopensiun', 'like', "%{$search}%")
+              ->orWhereHas('peserta', function ($q2) use ($search) {
+                  $q2->where('nama', 'like', "%{$search}%");
+              });
+        });
     }
+
+    // Ambil hasil dengan pagination
+    $data = $query->paginate(10);
+
+    return view('ADMIN.kepensiunan', compact('data'));
+}
     public function show($idanggota)
 {
     // Ambil data pensiun berdasarkan idanggota
     $pensiun = TAPensiun::with('peserta')->where('idanggota', $idanggota)->first();
+    $peserta = TPeserta::find($pensiun->idanggota);
 
     if (!$pensiun) {
         return redirect()->back()->with('error', 'Data peserta tidak ditemukan.');
     }
 
-    return view('ADMIN.detailpesertaaktif', compact('pensiun'));
+    return view('ADMIN.detailpesertaaktif', compact('pensiun', 'peserta'));
 }
-public function edit($idanggota)
+    public function edit($idanggota)
 {
-    // Ambil data berdasarkan idanggota
-    $pensiun = TAPensiun::where('idanggota', $idanggota)->firstOrFail();
+    // Ambil data pensiun berdasarkan idanggota
+    $pensiun = TAPensiun::with('peserta')->where('idanggota', $idanggota)->first();
+    $peserta = TPeserta::find($pensiun->idanggota);
 
-    // Kirim data ke view
-    return view('ADMIN.ubahpesertaaktif', compact('pensiun'));
+    if (!$pensiun) {
+        return redirect()->back()->with('error', 'Data peserta tidak ditemukan.');
+    }
+
+    return view('ADMIN.ubahpesertaaktif', compact('pensiun', 'peserta'));
 }
-
 public function update(Request $request, $idanggota)
 {
-    // Validasi data (optional, bisa kamu tambahkan lagi sesuai kebutuhan)
+    // Validasi data
     $request->validate([
         'nopensiun' => 'nullable|string',
         'nama' => 'nullable|string',
         'tglmohon' => 'nullable|date',
         'tmtpensiun' => 'nullable|date',
-        'nosurat' => 'nullable|string',
+        'nosuratberhenti' => 'nullable|string',
         'statuspensiun' => 'nullable|string',
         'statusmanfaat' => 'nullable|string',
         'pensiun' => 'nullable|string',
@@ -95,19 +101,20 @@ public function update(Request $request, $idanggota)
         'keterangan' => 'nullable|string',
         'pertama_terima' => 'nullable|string',
         'terakhir_terima' => 'nullable|string',
-        'besaran_manfaat' => 'nullable|string',
+        'mpakhir' => 'nullable|numeric',
+        'besaran_manfaat' => 'nullable|numeric',
         'rekening' => 'nullable|string',
-        'jenis_manfaat' => 'nullable|string',
     ]);
 
-    // Update data
     $pensiun = TAPensiun::where('idanggota', $idanggota)->firstOrFail();
-    $pensiun->update([
+
+    // Siapkan data untuk diupdate
+    $updateData = [
         'nopensiun' => $request->nopensiun,
         'nama' => $request->nama,
         'tglmohon' => $request->tglmohon,
         'tmtpensiun' => $request->tmtpensiun,
-        'nosuratberhenti' => $request->nosuratberhanti,
+        'nosuratberhenti' => $request->nosuratberhenti,
         'statuspensiun' => $request->statuspensiun,
         'statusmanfaat' => $request->statusmanfaat,
         'pensiun' => $request->pensiun,
@@ -115,12 +122,19 @@ public function update(Request $request, $idanggota)
         'keterangan' => $request->keterangan,
         'pertama_terima' => $request->pertama_terima,
         'terakhir_terima' => $request->terakhir_terima,
+        'mpakhir' => $request->mpakhir,
         'besaran_manfaat' => $request->besaran_manfaat,
         'rekening' => $request->rekening,
-        'jenis_manfaat' => $request->jenis_manfaat,
-    ]);
+    ];
 
-return redirect('/lihatpensiun')->with('success', 'Data pensiun berhasil diperbarui.');
+    // Jika pensiun = "Selesai", otomatis set tglterminasi ke tanggal sekarang
+    if ($request->pensiun === 'Selesai') {
+        $updateData['tglterminasi'] = now(); // Carbon::now()
+    }
+
+    $pensiun->update($updateData);
+
+    return redirect('/lihatpensiun')->with('success', 'Data pensiun berhasil diperbarui.');
 }
 
 public function pengajuanPensiun(Request $request)
@@ -153,7 +167,7 @@ public function pengajuanPensiun(Request $request)
 public function formPengajuan($idanggota)
 {
     // Misal ambil data peserta berdasarkan idanggota
-    $peserta = \App\Models\TPeserta::where('idanggota', $idanggota)->first();
+    $peserta = TPeserta::where('idanggota', $idanggota)->first();
 
     if (!$peserta) {
         abort(404, 'Peserta tidak ditemukan');
@@ -205,7 +219,7 @@ public function store(Request $request)
 
     // ✅ Jika user mengisi tanggal meninggal, update ke tabel pengguna
     if (!empty($validated['dodt'])) {
-        \DB::table('t_peserta')
+        DB::table('t_peserta')
             ->where('idanggota', $validated['idanggota'])
             ->update(['dodt' => $validated['dodt']]);
     }
@@ -267,13 +281,12 @@ public function showTerminasi($id)
 }
 public function simulasiView(Request $request)
 {
+    $idanggota = $request->query('idanggota');
     $tgllahir = $request->query('tgllahir');
     $dodt = $request->query('dodt');
     $tmtkeja = $request->query('tmtkeja');
     $tmtpensiun = $request->query('tmtpensiun');
-    $pekerjaan = $request->query('pekerjaan');
 
-    // Validasi input
     if (empty($tgllahir) || empty($tmtkeja) || empty($tmtpensiun)) {
         return response()->json(['error' => 'Tanggal lahir, TMT kerja, dan tanggal pensiun wajib diisi.']);
     }
@@ -283,24 +296,116 @@ public function simulasiView(Request $request)
         $tglMulaiKerja = new \DateTime($tmtkeja);
         $tglPensiun = new \DateTime($tmtpensiun);
 
-        // Hitung masa kerja
-        $masaKerja = $tglPensiun->diff($tglMulaiKerja)->y;
+        // Masa kerja (tahun + bulan/12)
+        $diffKerja = $tglPensiun->diff($tglMulaiKerja);
+        $masaKerja = $diffKerja->y + ($diffKerja->m / 12);
 
-        // Hitung usia
-        if (!empty($dodt)) {
-            $tglAkhir = new \DateTime($dodt);
-        } else {
-            $tglAkhir = $tglPensiun;
+        // Usia peserta saat pensiun (tahun + bulan/12)
+        $tglAkhir = !empty($dodt) ? new \DateTime($dodt) : $tglPensiun;
+        $diffUsia = $tglAkhir->diff($tglLahir);
+        $usiaPeserta = $diffUsia->y + ($diffUsia->m / 12);
+
+        // Hitung umur untuk FNSS (tahun penuh)
+        $umur = (int)$diffUsia->y;
+
+        // Ambil peserta
+        $peserta = DB::table('t_peserta')->where('idanggota', $idanggota)->first();
+        if (!$peserta) {
+            return response()->json(['error' => 'Data peserta tidak ditemukan.']);
         }
-        $usia = $tglAkhir->diff($tglLahir)->y;
+
+        $statusNikah = $peserta->statusnikah ?? 'Belum Kawin';
+        $jenisKelamin = $peserta->jeniskelamin ?? 'Pria';
+        $pekerjaanakhir = $peserta->pkerjaanakhir ?? 'PEGAWAI';
+
+        // Tentukan statusKerja dari pekerjaanakhir (s atau b)
+        // Misal 's' untuk GURU/PEGAWAI, 'b' untuk lainnya (ubah sesuai aturan)
+        $statusKerja = in_array(strtoupper($pekerjaanakhir), ['GURU', 'PEGAWAI']) ? 's' : 'b';
+
+        // Ambil PhDP
+        $phdp = DB::table('t_iuranpeserta')
+                    ->where('idanggota', $idanggota)
+                    ->value('phdp') ?? 0;
+
+        // Ambil FNSS dari t_faktornilai sesuai umur dan statusKerja
+        $faktor = \App\Models\TFaktorNilai::where('umur', '<=', $umur)
+                    ->where('statuskerja', strtoupper($pekerjaanakhir))
+                    ->orderBy('umur', 'desc')
+                    ->first();
+
+        $fnss = 1; // default
+        if ($faktor) {
+            if ($statusKerja == 's') {
+                if ($jenisKelamin == 'Pria' && $statusNikah == 'Kawin') $fnss = $faktor->fns_s_pria_kawin;
+                if ($jenisKelamin == 'Wanita' && $statusNikah == 'Kawin') $fnss = $faktor->fns_s_wanita_kawin;
+                if ($jenisKelamin == 'Pria' && $statusNikah == 'Belum Kawin') $fnss = $faktor->fns_s_pria_lajang;
+                if ($jenisKelamin == 'Wanita' && $statusNikah == 'Belum Kawin') $fnss = $faktor->fns_s_wanita_lajang;
+            } elseif ($statusKerja == 'b') {
+                if ($jenisKelamin == 'Pria' && $statusNikah == 'Kawin') $fnss = $faktor->fns_b_pria_kawin;
+                if ($jenisKelamin == 'Wanita' && $statusNikah == 'Kawin') $fnss = $faktor->fns_b_wanita_kawin;
+                if ($jenisKelamin == 'Pria' && $statusNikah == 'Belum Kawin') $fnss = $faktor->fns_b_pria_lajang;
+                if ($jenisKelamin == 'Wanita' && $statusNikah == 'Belum Kawin') $fnss = $faktor->fns_b_wanita_lajang;
+            }
+        }
+
+        // Hitung manfaat sesuai rumus
+        $selisihUsia = $tglPensiun->diff($tglLahir)->y - $umur; // atau bisa 0 jika sudah dihitung
+        $rumusDasar = 0.6 * ($masaKerja + ($tglPensiun->diff($tglLahir)->y - $umur)) * 0.021 * $phdp;
+
+        $manfaatMP = $rumusDasar; // MP = 60% x (MK + (Usia Pensiun – Usia Peserta)) x 2,1% x PhDP
+        $manfaat100 = 1 * $fnss * $rumusDasar * 12; // 100% = 100% x FNSS x (MP) x 12
+        $manfaat80 = $manfaatMP * 0.8;
+        $manfaat20 = $manfaatMP * 0.2;
 
         return response()->json([
-            'masa_kerja' => $masaKerja,
-            'pekerjaan_terakhir' => $pekerjaan,
-            'usia' => $usia
+            'masa_kerja' => round($masaKerja, 2),
+            'pekerjaan_terakhir' => $pekerjaanakhir,
+            'usia' => round($usiaPeserta, 2),
+            'phdp' => $phdp,
+            'fnss' => $fnss,
+            'manfaat' => [
+                'MP' => round($manfaatMP, 2),
+                '100%' => round($manfaat100, 2),
+                '80%' => round($manfaat80, 2),
+                '20%' => round($manfaat20, 2),
+            ]
         ]);
+
     } catch (\Exception $e) {
-        return response()->json(['error' => 'Format tanggal tidak valid.']);
+        return response()->json(['error' => 'Format tanggal tidak valid.', 'detail' => $e->getMessage()]);
     }
+}
+public function editPensiun($id)
+{
+    $pensiun = TAPensiun::findOrFail($id);
+    $peserta = TPeserta::find($pensiun->idanggota);
+
+    return view('ADMIN.editpensiun', compact('pensiun', 'peserta'));
+}
+
+public function updatePensiun(Request $request, $id)
+{
+    $pensiun = TAPensiun::findOrFail($id);
+
+    $validated = $request->validate([
+        'pekerjaan' => 'nullable|string|max:100',
+        'nopensiun' => 'required|string|max:50',
+        'tglmohon' => 'required|date',
+        'tmtpensiun' => 'required|date',
+        'nosuratberhenti' => 'required|string|max:50',
+        'statusmanfaat' => 'required|string',
+        'nilaivariabel' => 'nullable|numeric',
+        'noagendadpsk' => 'nullable|string|max:50',
+        'batasmp' => 'nullable|numeric',
+        'keterangan' => 'nullable|string',
+        'nosuratdari' => 'nullable|string|max:50',
+        'suratdari' => 'nullable|string|max:100',
+        'tglsuratdari' => 'nullable|date',
+    ]);
+
+    $pensiun->update($validated);
+
+return redirect('/pengubahanpensiun')
+       ->with('success', 'Data pensiun berhasil diperbarui!');
 }
 }

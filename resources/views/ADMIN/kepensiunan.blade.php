@@ -34,7 +34,7 @@
                 </tr>
             </thead>
             <tbody class="text-center">
-                @forelse ($pensiun as $index => $p)
+                @forelse ($data as $index => $p)
                     <tr>
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $p->nopensiun }}</td>

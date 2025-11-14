@@ -105,11 +105,6 @@
           <label class="block text-sm font-medium">Nomor SK Pensiun</label>
           <input type="text" name="nosuratberhenti" class="w-full mt-1 border rounded p-2 bg-gray-50" required>
         </div>
-        <div>
-          <label class="block text-sm font-medium">Nomor Peserta Pensiun</label>
-          <input type="text" name="nopesertapensiun" value="555"
-                 class="w-full mt-1 border rounded p-2 bg-gray-50" required>
-        </div>
       </div>
 
       <div class="grid grid-cols-2 gap-2">
@@ -186,40 +181,47 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-<!-- Script Simulasi -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   const simulasiBtn = document.getElementById('btnSimulasi');
   const hasilDiv = document.getElementById('hasilSimulasi');
 
-  function hitungUsiaLengkap(tgllahir, tmtpensiun) {
+  function hitungUsiaLengkap(tgllahir, tmtpensiun, dodt = null ){
     const lahir = new Date(tgllahir);
     const pensiun = new Date(tmtpensiun);
+    const sekarang = dodt ? new Date(dodt) : new Date(); 
+    let tahun = sekarang.getFullYear() - lahir.getFullYear();
+    let bulan = sekarang.getMonth() - lahir.getMonth();
+    let hari = sekarang.getDate() - lahir.getDate();
 
-    let tahun = pensiun.getFullYear() - lahir.getFullYear();
-    let bulan = pensiun.getMonth() - lahir.getMonth();
-
-    if (bulan < 0) {
-      tahun -= 1;
-      bulan += 12;
+    if (hari < 0) {
+        bulan -= 1;
+        // hitung jumlah hari di bulan sebelumnya
+        const bulanSebelumnya = new Date(sekarang.getFullYear(), sekarang.getMonth(), 0);
+        hari += bulanSebelumnya.getDate();
     }
 
-    return { tahun, bulan };
-  }
+    if (bulan < 0) {
+        tahun -= 1;
+        bulan += 12;
+    }
+
+    return { tahun, bulan, hari };
+}
 
   simulasiBtn.addEventListener('click', function () {
     const pekerjaan = document.querySelector('[name="pekerjaan"]').value;
     const tgllahir = document.querySelector('[name="tgllahir"]').value;
-    const dodt = document.querySelector('[name="dodt"]').value;
     const tmtkeja = document.querySelector('[name="tmtkeja"]').value;
     const tmtpensiun = document.querySelector('[name="tmtpensiun"]').value;
+    const idanggota = document.querySelector('[name="idanggota"]').value;
 
     if (!tgllahir || !tmtkeja || !tmtpensiun) {
       alert("Harap isi Tanggal Lahir, TMT Kerja, dan Tanggal Pensiun terlebih dahulu!");
       return;
     }
 
-    const query = new URLSearchParams({ pekerjaan, tgllahir, dodt, tmtkeja, tmtpensiun });
+    const query = new URLSearchParams({ pekerjaan, tgllahir, tmtkeja, tmtpensiun, idanggota });
 
     fetch(`/admin/simulasiView?${query.toString()}`)
       .then(res => res.json())
@@ -231,7 +233,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const usiaObj = hitungUsiaLengkap(tgllahir, tmtpensiun);
         const usiaTahunDesimal = usiaObj.tahun + usiaObj.bulan / 12;
+        const masaKerja = parseFloat(data.masa_kerja) || 0;
+        const usiaPeserta = parseFloat(data.usia) || 0;
+        const phdp = parseFloat(data.phdp) || 0;
+        const fnss = parseFloat(data.fnss) || 1;
 
+        // Usia Pensiun = tmtpensiun - tgllahir
+        const usiaPensiun = usiaTahunDesimal;
+
+        // Rumus dasar MP
+        const rumusMP = 0.6 * (masaKerja + (usiaPensiun - usiaPeserta)) * 0.021 * phdp;
+
+        // Hitung nilai manfaat
+        const nilaiMP = rumusMP; // MP
+        const nilai100 = 1 * fnss * (0.6 * (masaKerja + (usiaPensiun - usiaPeserta)) * 0.021 * phdp) * 12; // 100%
+        const nilai80 = 0.8 * (0.6 * masaKerja * 0.021 * phdp); // 80%
+        const nilai20 = 0.2 * fnss * (0.6 * (masaKerja + (usiaPensiun - usiaPeserta)) * 0.021 * phdp) * 12; // 20%
+        
         let html = `
           <div class="mt-6 border-t pt-4">
             <h2 class="text-lg font-bold mb-2 text-teal-700">Hasil Simulasi</h2>
@@ -245,48 +263,31 @@ document.addEventListener('DOMContentLoaded', function () {
               </thead>
               <tbody>
                 <tr>
-                  <td class="border p-2 text-center">${data.masa_kerja} tahun</td>
+                  <td class="border p-2 text-center">${masaKerja.toFixed(2)} tahun</td>
                   <td class="border p-2 text-center">${data.pekerjaan_terakhir}</td>
                   <td class="border p-2 text-center">${usiaObj.tahun} tahun ${usiaObj.bulan} bulan</td>
                 </tr>
               </tbody>
             </table>
+
+            <h3 class="text-md font-semibold mb-2">Tabel Jenis Manfaat</h3>
+            <table class="w-full border text-sm">
+              <thead class="bg-gray-100">
+                <tr>
+                  <th class="border p-2">Jenis Manfaat</th>
+                  <th class="border p-2">Perhitungan Manfaat</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="border p-2 text-center">MP</td><td class="border p-2 text-center">${nilaiMP.toFixed(2)}</td></tr>
+                <tr><td class="border p-2 text-center">100%</td><td class="border p-2 text-center">${nilai100.toFixed(2)}</td></tr>
+                <tr><td class="border p-2 text-center">80%</td><td class="border p-2 text-center">${nilai80.toFixed(2)}</td></tr>
+                <tr><td class="border p-2 text-center">20%</td><td class="border p-2 text-center">${nilai20.toFixed(2)}</td></tr>
+              </tbody>
+            </table>
+          </div>
         `;
 
-        const masa_kerja = parseFloat(data.masa_kerja) || 0;
-        const usia_pensiun = usiaTahunDesimal;
-        const usia_peserta = parseFloat(data.usia) || 0;
-        const phdp = 0;
-        const dasar = 0.6 * 0.021 * phdp;
-
-        const manfaat = ['MP', '100%', '80%', '20%'];
-        html += `
-          <h3 class="text-md font-semibold mb-2">Tabel Jenis Manfaat</h3>
-          <table class="w-full border text-sm">
-            <thead class="bg-gray-100">
-              <tr>
-                <th class="border p-2">Jenis Manfaat</th>
-                <th class="border p-2">Perhitungan Manfaat</th>
-              </tr>
-            </thead>
-            <tbody>
-        `;
-
-        manfaat.forEach(jenis => {
-          let nilai = dasar * (masa_kerja + (usia_pensiun - usia_peserta));
-          if (jenis === '80%') nilai *= 0.8;
-          if (jenis === '20%') nilai *= 0.2;
-          if (jenis === '100%') nilai *= 1;
-
-          html += `
-            <tr>
-              <td class="border p-2 text-center">${jenis}</td>
-              <td class="border p-2 text-center">${nilai.toFixed(2)}</td>
-            </tr>
-          `;
-        });
-
-        html += `</tbody></table></div>`;
         hasilDiv.innerHTML = html;
       })
       .catch(err => {
@@ -296,6 +297,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 </script>
+
 
 <!-- tempat hasil -->
 <div id="hasilSimulasi" class="col-span-2"></div>

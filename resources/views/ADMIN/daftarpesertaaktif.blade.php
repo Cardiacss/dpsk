@@ -10,6 +10,7 @@
 <div class="overflow-x-auto">
     <table class="min-w-full text-sm text-center border border-gray-200">
         <thead class="bg-[#2994A4] text-white">
+            
             <tr>
                 <th class="px-4 py-2">No</th>
                 <th class="px-4 py-2">No Pensiun</th>
@@ -32,10 +33,9 @@
                 <td class="px-4 py-2">{{ $item->keterangan }}</td>
                 <td class="px-4 py-2">{{ $item->statushidup ? 'Hidup' : 'Meninggal' }}</td>
                 <td class="px-4 py-2 space-x-2">
-                    <a href="{{ route('detailpesertapensiun', $item->idanggota) }}" class="bg-[#2994A4] text-white px-3 py-1 rounded hover:bg-cyan-700 text-xs">Lihat Detail</a>
-                    <a href="{{ route('editpensiun', $item->idpensiun) }}" class="bg-[#2994A4] text-white px-3 py-1 rounded hover:bg-cyan-700 text-xs">Edit</a>
-                    <a href="{{ route('cekmanfaat', $item->idpensiun) }}" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 text-xs">Cek</a>
-                </td>
+                    <a href="{{ route('admin.editpensiun.edit', $item->idpensiun) }}"
+   class="bg-[#2994A4] text-white px-3 py-1 rounded hover:bg-cyan-700 text-xs">
+   Edit
             </tr>
             @empty
             <tr>

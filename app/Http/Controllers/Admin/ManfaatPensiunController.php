@@ -99,17 +99,17 @@ class ManfaatPensiunController extends Controller
         }
 
         $manfaat = $query->get();
-        $mitras = \App\Models\TMitra::all();
+        $mitras = TMitra::all();
 
         return view('ADMIN.manfaat', compact('manfaat', 'mitras'));
     }
-    public function cekManfaat($idpensiun)
-    {
-        // Ambil data TAPensiun beserta relasi peserta & mitra
-        $manfaat = TAPensiun::with(['peserta', 'peserta.mitra'])->findOrFail($idpensiun);
+   public function cekManfaat($idpensiun)
+{
+    $manfaat = TAPensiun::with(['peserta', 'peserta.mitra', 'manfaat'])
+        ->findOrFail($idpensiun);
 
-        return view('ADMIN.cekmanfaat', compact('manfaat'));
-    }
+    return view('ADMIN.cekmanfaat', compact('manfaat'));
+}
         public function indexEdit()
     {
         $pensiuns = TAPensiun::with('peserta')->get();
@@ -132,17 +132,45 @@ public function detail($idanggota)
         $pensiun = TAPensiun::with('peserta')->findOrFail($idpensiun);
         return view('ADMIN.editpensiun', compact('pensiun'));
     }
-    public function update(Request $request, $idpensiun)
+public function updateManfaat(Request $request, $idpensiun)
 {
-    $manfaat = TAPensiun::findOrFail($idpensiun);
+    $pensiun = TAPensiun::with('peserta')->findOrFail($idpensiun);
 
-    // Contoh update field (sesuaikan dengan tabel)
-    $manfaat->field1 = $request->field1;
-    $manfaat->field2 = $request->field2;
-    // dst...
-    $manfaat->save();
+    $jumlah = (int) $request->manfaat_untuk; // berapa kali insert
+    $bln = (int) $request->bln_setor;        // bulan awal
+    $thn = (int) $request->thn_setor;        // tahun awal
 
-    return redirect()->route('cekmanfaat', $idpensiun)
-                     ->with('success', 'Data manfaat berhasil diupdate!');
+    $mpakhir = str_replace('.', '', $request->mpakhir);
+
+    for ($i = 0; $i < $jumlah; $i++) {
+
+        // jika bulan > 12, reset dan tahun +1
+        if ($bln > 12) {
+            $bln = 1;
+            $thn++;
+        }
+
+        // insert satu baris
+        TManfaatPensiun::create([
+            'idanggota'       => $pensiun->idanggota,
+            'tglberimanfaat'  => $request->tglberimanfaat,
+            'manfaat_untuk'   => 1, // setiap record mewakili 1 bulan
+            'keterangan'      => $request->keterangan,
+            'thn_setor'       => $thn,
+            'bln_setor'       => $bln,
+            'nilai_mp'        => $mpakhir,
+        ]);
+
+        // increment bulan untuk loop berikutnya
+        $bln++;
+    }
+
+    // boleh update mpakhir terbaru di t_apensiun
+    $pensiun->update([
+        'mpakhir' => $mpakhir,
+        'statusmanfaat' => $request->statusmanfaat,
+    ]);
+
+    return redirect('/manfaat')->with('success', 'Data manfaat pensiun baru berhasil ditambahkan!');
 }
 }

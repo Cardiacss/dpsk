@@ -99,89 +99,96 @@
 
     <div class="bg-white rounded-lg shadow p-6">
 
-      <form action="{{ route('admin.catatiuran.store', ['idanggota' => $peserta->idanggota]) }}" method="POST" class="space-y-4">
-        @csrf
+     <form action="{{ route('admin.catatiuran.store', ['idanggota' => $peserta->idanggota]) }}" method="POST" class="space-y-4">
+    @csrf
 
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-semibold">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold">
             No. Peserta: <span class="font-bold">{{ $peserta->idanggota }}</span> | 
             Nama: <span class="font-bold">{{ $peserta->nama }}</span>
-          </h3>
-          <div class="space-x-2">
+        </h3>
+        <div class="space-x-2">
             <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-500">
-              Simpan
+                Simpan
             </button>
             <a href="javascript:history.back()" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">
-              Kembali
+                Kembali
             </a>
-          </div>
         </div>
+    </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div>
-            <label class="block text-sm font-medium mb-1">Tanggal Catat</label>
-            <input type="date" name="tglcatat" value="{{ date('Y-m-d') }}" class="border rounded w-full p-2" required>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1">Tanggal Setor</label>
-            <input type="date" name="tglsetor" value="{{ date('Y-m-d') }}" class="border rounded w-full p-2" required>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1">PhDP</label>
-            <input type="number" name="phdp" step="0.001" class="border rounded w-full p-2" required>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1">Gaji Pokok</label>
-            <input type="number" name="gajipokok" step="0.001" class="border rounded w-full p-2" required>
-          </div>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+            <label for="tglcatat" class="block text-sm font-medium mb-1">Tanggal Catat</label>
+            <input type="date" id="tglcatat" name="tglcatat" value="{{ date('Y-m-d') }}" class="border rounded w-full p-2" required>
         </div>
+        <div>
+            <label for="tglsetor" class="block text-sm font-medium mb-1">Tanggal Setor</label>
+            <input type="date" id="tglsetor" name="tglsetor" value="{{ date('Y-m-d') }}" class="border rounded w-full p-2" required>
+        </div>
+        <div>
+            <label for="phdp" class="block text-sm font-medium mb-1">PhDP</label>
+            <input type="number" id="phdp" name="phdp" step="0.001" class="border rounded w-full p-2" required>
+        </div>
+        <div>
+            <label for="gajipokok" class="block text-sm font-medium mb-1">Gaji Pokok</label>
+            <input type="number" id="gajipokok" name="gajipokok" step="0.001" class="border rounded w-full p-2" required>
+        </div>
+    </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label class="block text-sm font-medium mb-1">IP (%)</label>
-            <input type="number" name="ip_pct" step="0.01" class="border rounded w-full p-2" placeholder="6" required>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1">IPK (%)</label>
-            <input type="number" name="ipk_pct" step="0.01" class="border rounded w-full p-2" placeholder="6" required>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1">Flag Iuran</label>
-            <input type="text" name="flag_iuran" class="border rounded w-full p-2" placeholder="NORMAL">
-          </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+            <label for="ip_pct" class="block text-sm font-medium mb-1">IP (%)</label>
+            <input type="number" id="ip_pct" name="ip_pct" step="0.01" class="border rounded w-full p-2" placeholder="6" required>
         </div>
+        <div>
+            <label for="ipk_pct" class="block text-sm font-medium mb-1">IPK (%)</label>
+            <input type="number" id="ipk_pct" name="ipk_pct" step="0.01" class="border rounded w-full p-2" placeholder="6" required>
+        </div>
+        <div>
+            <label for="flag_iuran" class="block text-sm font-medium mb-1">Flag Iuran</label>
+            <input type="text" id="flag_iuran" name="flag_iuran" class="border rounded w-full p-2" placeholder="NORMAL">
+        </div>
+    </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label class="block text-sm font-medium mb-1">IP (Nominal)</label>
-            <input type="number" name="ip_num" step="0.001" class="border rounded w-full p-2" required>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1">IPK (Nominal)</label>
-            <input type="number" name="ipk_num" step="0.001" class="border rounded w-full p-2" required>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1">IP 0 (Nominal)</label>
-            <input type="number" name="ip_num0" step="0.001" class="border rounded w-full p-2">
-          </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+            <label for="ip_num" class="block text-sm font-medium mb-1">IP (Nominal)</label>
+            <input type="number" id="ip_num" name="ip_num" step="0.001" class="border rounded w-full p-2" required>
         </div>
+        <div>
+            <label for="ipk_num" class="block text-sm font-medium mb-1">IPK (Nominal)</label>
+            <input type="number" id="ipk_num" name="ipk_num" step="0.001" class="border rounded w-full p-2" required>
+        </div>
+        <div>
+            <label for="ip_num0" class="block text-sm font-medium mb-1">IP 0 (Nominal)</label>
+            <input type="number" id="ip_num0" name="ip_num0" step="0.001" class="border rounded w-full p-2">
+        </div>
+    </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label class="block text-sm font-medium mb-1">Bulan Iuran</label>
-            <select name="bln_iuran" class="border rounded w-full p-2" required>
-              <option value="">Pilih Bulan</option>
-              @foreach(['01'=>'Januari','02'=>'Februari','03'=>'Maret','04'=>'April','05'=>'Mei','06'=>'Juni','07'=>'Juli','08'=>'Agustus','09'=>'September','10'=>'Oktober','11'=>'November','12'=>'Desember'] as $num => $bln)
-                <option value="{{ $num }}">{{ $bln }}</option>
-              @endforeach
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1">Tahun Iuran</label>
-            <input type="number" name="thn_iuran" value="{{ date('Y') }}" class="border rounded w-full p-2" required>
-          </div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+        <label for="bln_iuran" class="block text-sm font-medium mb-1">Bulan Iuran</label>
+        <select id="bln_iuran" name="bln_iuran" class="border rounded w-full p-2" required>
+            <option value="">Pilih Bulan</option>
+            @foreach([
+                1=>'Januari',2=>'Februari',3=>'Maret',4=>'April',
+                5=>'Mei',6=>'Juni',7=>'Juli',8=>'Agustus',
+                9=>'September',10=>'Oktober',11=>'November',12=>'Desember'
+            ] as $num => $bln)
+                <option value="{{ $num }}" {{ old('bln_iuran') == $num ? 'selected' : '' }}>
+                    {{ $bln }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+        <div>
+            <label for="thn_iuran" class="block text-sm font-medium mb-1">Tahun Iuran</label>
+            <input type="number" id="thn_iuran" name="thn_iuran" value="{{ date('Y') }}" class="border rounded w-full p-2" required>
         </div>
-      </form>
+    </div>
+</form>
+
 
       <hr class="my-6">
 

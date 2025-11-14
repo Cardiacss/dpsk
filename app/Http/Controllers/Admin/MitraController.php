@@ -9,6 +9,7 @@ use App\Models\TMitra;
 use App\Models\TPeserta;
 use App\Models\TIuranPeserta;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 
 class MitraController extends Controller
 {
@@ -357,6 +358,7 @@ class MitraController extends Controller
 
     public function storeIuran(Request $request, $idanggota)
     {
+        
         $validated = $request->validate([
             'gajipokok' => 'required|numeric',
             'phdp' => 'required|numeric',
@@ -376,7 +378,6 @@ class MitraController extends Controller
         $validated['idanggota'] = $idanggota;
         $validated['ip_num0'] = $validated['ip_num0'] ?? 0;
         $validated['ipk_num0'] = $validated['ipk_num0'] ?? 0;
-
         TIuranPeserta::create($validated);
 
         return redirect()
@@ -460,4 +461,5 @@ public function updatecatat(Request $request, $idanggota, $id_iuran)
                 ->with('success', 'Data iuran peserta berhasil diperbarui.');
     }
 }
+
 }

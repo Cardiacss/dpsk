@@ -57,83 +57,98 @@
         <div class="form-group row mb-2">
             <label class="col-sm-3 col-form-label">Tanggal Lahir</label>
             <div class="col-sm-9">
-                <input type="date" class="form-control" id="tanggallahir"
+                <input type="date" class="form-control" id="tanggallahir" name="tgllahir"
                     value="{{ $peserta->tgllahir ? $peserta->tgllahir->format('Y-m-d') : '' }}" readonly>
             </div>
         </div>
 
+
         <div class="form-group row mb-2">
             <label class="col-sm-3 col-form-label">Tanggal Mulai Kerja</label>
-                <div class="col-sm-9">
-            <input type="date" class="form-control" id="tanggalmulaikerja"
-                value="{{ $peserta->tmtkeja ? $peserta->tmtkeja->format('Y-m-d') : '' }}" readonly>
+            <div class="col-sm-9">
+                <input type="date" class="form-control" id="tanggalmulaikerja" name="tmtkeja"
+                    value="{{ $peserta->tmtkeja ? $peserta->tmtkeja->format('Y-m-d') : '' }}" readonly>
+            </div>
+
         </div>
-        
-    </div>
 
-    <hr>
+        <hr>
 
-    <div class="form-group row mb-2">
-        <label class="col-sm-3 col-form-label">Surat Keterangan Tambahan</label>
-        <div class="col-sm-9">
-            <select class="form-control" id="suratketerangan">
-                <option value="">Pilih jika ada</option>
-                <option value="meninggal">Surat Meninggal</option>
-                <option value="lainnya">Surat Cerai</option>
-            </select>
+        <div class="form-group row mb-2">
+            <label class="col-sm-3 col-form-label">Surat Keterangan Tambahan</label>
+            <div class="col-sm-9">
+                <select class="form-control" id="suratketerangan" onchange="tampilkanFormSurat()">
+                    <option value="">Pilih jika ada</option>
+                    <option value="meninggal">SK Meninggal</option>
+                    <option value="sakit">SK Sakit</option>
+                </select>
+            </div>
         </div>
-    </div>
 
-    <hr>
+        {{-- ✅ Form SK Meninggal --}}
+        <div id="formKematian" style="display: none;">
+            <div class="form-group row mb-2">
+                <label class="col-sm-3 col-form-label">Nomor Surat</label>
+                <div class="col-sm-3">
+                    <input type="text" name="nomor_surat_meninggal" class="form-control" placeholder="Nomor surat">
+                </div>
+                <label class="col-sm-2 col-form-label">Surat Dari</label>
+                <div class="col-sm-4">
+                    <input type="text" name="surat_dari_meninggal" class="form-control"
+                        placeholder="Instansi yang mengeluarkan">
+                </div>
+            </div>
 
-    <div class="form-group row mb-3">
-        <label class="col-sm-3 col-form-label">Rencana Penilaian</label>
-        <div class="col-sm-9">
-            <input type="date" class="form-control" id="rencanapenilaian">
+            <div class="form-group row mb-2">
+                <label class="col-sm-3 col-form-label">Tanggal Surat</label>
+                <div class="col-sm-3">
+                    <input type="date" name="tanggal_surat_meninggal" class="form-control">
+                </div>
+                <label class="col-sm-2 col-form-label">Tanggal Meninggal</label>
+                <div class="col-sm-4">
+                    <input type="date" name="tanggal_meninggal" class="form-control">
+                </div>
+            </div>
         </div>
-    </div>
 
-    <div class="text-center mb-4">
-        <button type="button" class="btn btn-info" onclick="simulasikan()">Simulasikan</button>
-    </div>
+        {{-- ✅ Form SK Sakit --}}
+        <div id="formSakit" style="display: none;">
+            <div class="form-group row mb-2">
+                <label class="col-sm-3 col-form-label">Nomor Surat</label>
+                <div class="col-sm-3">
+                    <input type="text" name="nomor_surat_sakit" class="form-control" placeholder="Nomor surat">
+                </div>
+                <label class="col-sm-2 col-form-label">Surat Dari</label>
+                <div class="col-sm-4">
+                    <input type="text" name="surat_dari_sakit" class="form-control"
+                        placeholder="Instansi yang mengeluarkan">
+                </div>
+            </div>
 
-    <hr id="garisSimulasi" style="display:none;">
+            <div class="form-group row mb-2">
+                <label class="col-sm-3 col-form-label">Tanggal Surat</label>
+                <div class="col-sm-3">
+                    <input type="date" name="tanggal_surat_sakit" class="form-control">
+                </div>
+            </div>
+        </div>
 
-    {{-- ✅ Hasil Simulasi --}}
-    <div id="hasilSimulasi" style="display:none;">
-        <h5>Hasil Simulasi</h5>
-        <p>Masa Kerja: <span id="masaKerja"></span> tahun</p>
-        <p>Pekerjaan Terakhir: <span id="pekerjaanTerakhir"></span></p>
-        <p>Status Pensiun: <span id="statusPensiun"></span></p>
-        <p>Pensiun pada: <span id="tanggalPensiun"></span></p>
+        <hr>
 
-        <table class="table table-bordered mt-3">
-            <thead class="thead-light">
-                <tr>
-                    <th>Jenis Manfaat</th>
-                    <th>Perhitungan Manfaat</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>MP</td>
-                    <td>100%</td>
-                </tr>
-                <tr>
-                    <td>100%</td>
-                    <td>Rp 2.000.000</td>
-                </tr>
-                <tr>
-                    <td>20%</td>
-                    <td>Rp 400.000</td>
-                </tr>
-                <tr>
-                    <td>80%</td>
-                    <td>Rp 1.600.000</td>
-                </tr>
-            </tbody>
-        </table>
-
+        <div class="form-group row mb-3">
+            <label class="col-sm-3 col-form-label">Rencana Pensiun</label>
+            <div class="col-sm-9">
+                <input type="date" class="form-control" id="tmtpensiun" name="tmtpensiun">
+            </div>
+        </div>
+        <input type="hidden" id="idanggota" name="idanggota" value="{{ $peserta->idanggota }}">
+        <div>
+            <label class="block text-sm font-medium">Simulasi</label>
+            <button id="btnSimulasi" type="button"
+                class="w-full mt-1 bg-[#2994A4] hover:bg-[#257F8C] text-white font-semibold py-2 px-4 rounded transition">
+                Jalankan Simulasi
+            </button>
+        </div>
         <div class="d-flex justify-content-center flex-wrap mt-4">
             <button class="btn m-2" style="background-color:#2994A4; color:white;" data-toggle="modal"
                 data-target="#modalPenawaran">
@@ -305,13 +320,113 @@
             </div>
         </div>
     </div>
-@endsection
+<script>
+  function tampilkanFormSurat() {
+    const select = document.getElementById('suratketerangan');
+    const formKematian = document.getElementById('formKematian');
+    const formSakit = document.getElementById('formSakit');
+    formKematian.style.display = 'none';
+    formSakit.style.display = 'none';
 
-@section('script')
-    <script>
-        function simulasikan() {
-            document.getElementById('hasilSimulasi').style.display = 'block';
-            document.getElementById('garisSimulasi').style.display = 'block';
-        }
-    </script>
+    if (select.value === 'meninggal') formKematian.style.display = 'block';
+    else if (select.value === 'sakit') formSakit.style.display = 'block';
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const simulasiBtn = document.getElementById('btnSimulasi');
+    const hasilDiv = document.getElementById('hasilSimulasi');
+    hasilDiv.innerHTML = '';
+
+    function hitungUsiaLengkap(tgllahir, tmtpensiun) {
+      const lahir = new Date(tgllahir);
+      const pensiun = new Date(tmtpensiun);
+      let tahun = pensiun.getFullYear() - lahir.getFullYear();
+      let bulan = pensiun.getMonth() - lahir.getMonth();
+      if (bulan < 0) { tahun -= 1; bulan += 12; }
+      return { tahun, bulan };
+    }
+
+    simulasiBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      const pekerjaan = document.querySelector('[name="pekerjaan"]')?.value;
+      const tgllahir = document.querySelector('[name="tgllahir"]')?.value;
+      const tmtkeja = document.querySelector('[name="tmtkeja"]')?.value;
+      const tmtpensiun = document.querySelector('[name="tmtpensiun"]')?.value;
+      const tanggalMeninggal = document.querySelector('[name="tanggal_meninggal"]')?.value || "";
+      const idanggota = document.getElementById('idanggota')?.value; // ✅ dari input hidden
+
+      if (!tgllahir || !tmtkeja || !tmtpensiun) {
+        alert("⚠️ Harap isi Tanggal Lahir, TMT Kerja, dan Tanggal Pensiun terlebih dahulu!");
+        return;
+      }
+
+      if (!idanggota) {
+        alert("⚠️ ID Anggota tidak ditemukan! Pastikan data peserta sudah dimuat dari database.");
+        return;
+      }
+
+      fetch(`/simulasipesertaaktif/${idanggota}?ajax=1&tmtpensiun=${tmtpensiun}&tanggal_meninggal=${tanggalMeninggal}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) {
+            hasilDiv.innerHTML = `<p class="text-red-600 mt-4">${data.error}</p>`;
+            return;
+          }
+
+          const usiaObj = hitungUsiaLengkap(tgllahir, tmtpensiun);
+          const masaKerja = parseFloat(data.masa_kerja) || 0;
+          const usiaPeserta = parseFloat(data.usia) || 0;
+          const phdp = parseFloat(data.phdp) || 0;
+          const fnss = parseFloat(data.fnss) || 1;
+          const usiaPensiun = usiaObj.tahun + usiaObj.bulan / 12;
+
+          const rumusDasar = 0.6 * (masaKerja + (usiaPensiun - usiaPeserta)) * 0.021 * phdp;
+          const nilaiMP = rumusDasar;
+          const nilai100 = 1 * fnss * rumusDasar * 12;
+          const nilai80 = 0.8 * (0.6 * masaKerja * 0.021 * phdp);
+          const nilai20 = 0.2 * fnss * rumusDasar * 12;
+
+          hasilDiv.innerHTML = `
+            <div class="mt-6 border-t pt-4">
+              <h2 class="text-lg font-bold mb-2 text-teal-700">Hasil Simulasi</h2>
+              <table class="w-full border text-sm mb-4">
+                <thead class="bg-gray-100">
+                  <tr>
+                    <th class="border p-2">Masa Kerja</th>
+                    <th class="border p-2">Pekerjaan Terakhir</th>
+                    <th class="border p-2">Usia Peserta</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="border p-2 text-center">${masaKerja.toFixed(2)} tahun</td>
+                    <td class="border p-2 text-center">${data.pekerjaan_terakhir ?? pekerjaan ?? '-'}</td>
+                    <td class="border p-2 text-center">${usiaObj.tahun} tahun ${usiaObj.bulan} bulan</td>
+                  </tr>
+                </tbody>
+              </table>
+              <h3 class="text-md font-semibold mb-2">Tabel Jenis Manfaat</h3>
+              <table class="w-full border text-sm">
+                <thead class="bg-gray-100">
+                  <tr><th class="border p-2">Jenis Manfaat</th><th class="border p-2">Perhitungan Manfaat</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td class="border p-2 text-center">MP</td><td class="border p-2 text-center">Rp ${nilaiMP.toLocaleString()}</td></tr>
+                  <tr><td class="border p-2 text-center">100%</td><td class="border p-2 text-center">Rp ${nilai100.toLocaleString()}</td></tr>
+                  <tr><td class="border p-2 text-center">80%</td><td class="border p-2 text-center">Rp ${nilai80.toLocaleString()}</td></tr>
+                  <tr><td class="border p-2 text-center">20%</td><td class="border p-2 text-center">Rp ${nilai20.toLocaleString()}</td></tr>
+                </tbody>
+              </table>
+            </div>`;
+        })
+        .catch(err => {
+          console.error("Error:", err);
+          hasilDiv.innerHTML = `<p class="text-red-600 mt-4">Terjadi kesalahan saat menghitung simulasi.</p>`;
+        });
+    });
+  });
+</script>
+
+    <div id="hasilSimulasi" class="mt-4"></div>
 @endsection
