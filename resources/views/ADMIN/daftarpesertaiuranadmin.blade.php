@@ -159,7 +159,7 @@
                       <td class="border px-4 py-2 font-bold">Aksi</td>
                       <td class="border px-4 py-2">
                         <div class="flex space-x-2">
-<a href="{{ route('admin.catatiuran', ['idanggota' => $p->idanggota]) }}" 
+<a href="{{ route('admin.catatiuran', ['idanggota' => $p->idanggota, 'idunit' => $p->idunit]) }}" 
    class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
    Catat
 </a>

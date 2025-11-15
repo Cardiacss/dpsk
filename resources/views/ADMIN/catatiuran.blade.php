@@ -107,14 +107,7 @@
             No. Peserta: <span class="font-bold">{{ $peserta->idanggota }}</span> | 
             Nama: <span class="font-bold">{{ $peserta->nama }}</span>
         </h3>
-        <div class="space-x-2">
-            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-500">
-                Simpan
-            </button>
-            <a href="javascript:history.back()" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">
-                Kembali
-            </a>
-        </div>
+
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -130,41 +123,33 @@
             <label for="phdp" class="block text-sm font-medium mb-1">PhDP</label>
             <input type="number" id="phdp" name="phdp" step="0.001" class="border rounded w-full p-2" required>
         </div>
-        <div>
-            <label for="gajipokok" class="block text-sm font-medium mb-1">Gaji Pokok</label>
-            <input type="number" id="gajipokok" name="gajipokok" step="0.001" class="border rounded w-full p-2" required>
-        </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-            <label for="ip_pct" class="block text-sm font-medium mb-1">IP (%)</label>
-            <input type="number" id="ip_pct" name="ip_pct" step="0.01" class="border rounded w-full p-2" placeholder="6" required>
-        </div>
-        <div>
-            <label for="ipk_pct" class="block text-sm font-medium mb-1">IPK (%)</label>
-            <input type="number" id="ipk_pct" name="ipk_pct" step="0.01" class="border rounded w-full p-2" placeholder="6" required>
-        </div>
-        <div>
-            <label for="flag_iuran" class="block text-sm font-medium mb-1">Flag Iuran</label>
-            <input type="text" id="flag_iuran" name="flag_iuran" class="border rounded w-full p-2" placeholder="NORMAL">
-        </div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+        <label for="ip_pct" class="block text-sm font-medium mb-1">
+            IP ({{ $nilai?->ip ?? 'Belum Ada Data' }}%) 
+        </label>
+        <input type="number" id="ip_pct" name="ip_pct" step="0.01"
+               class="border rounded w-full p-2"
+               placeholder="IP"
+               value=""
+               readonly
+               required>
     </div>
+    <div>
+        <label for="ipk_pct" class="block text-sm font-medium mb-1">
+            IPK ({{ $nilai?->ipk ?? 'Belum Ada Data' }}%) 
+        </label>
+        <input type="number" id="ipk_pct" name="ipk_pct" step="0.01"
+               class="border rounded w-full p-2"
+               placeholder="IPK"
+               value=""
+               readonly
+               required>
+    </div>
+</div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-            <label for="ip_num" class="block text-sm font-medium mb-1">IP (Nominal)</label>
-            <input type="number" id="ip_num" name="ip_num" step="0.001" class="border rounded w-full p-2" required>
-        </div>
-        <div>
-            <label for="ipk_num" class="block text-sm font-medium mb-1">IPK (Nominal)</label>
-            <input type="number" id="ipk_num" name="ipk_num" step="0.001" class="border rounded w-full p-2" required>
-        </div>
-        <div>
-            <label for="ip_num0" class="block text-sm font-medium mb-1">IP 0 (Nominal)</label>
-            <input type="number" id="ip_num0" name="ip_num0" step="0.001" class="border rounded w-full p-2">
-        </div>
-    </div>
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
     <div>
@@ -187,6 +172,14 @@
             <input type="number" id="thn_iuran" name="thn_iuran" value="{{ date('Y') }}" class="border rounded w-full p-2" required>
         </div>
     </div>
+            <div class="space-x-2">
+            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-500">
+                Simpan
+            </button>
+            <a href="javascript:history.back()" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">
+                Kembali
+            </a>
+        </div>
 </form>
 
 
@@ -233,6 +226,29 @@
     </div>
   </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Ambil elemen input
+    const phdpInput = document.getElementById('phdp');
+    const ipInput = document.getElementById('ip_pct');
+    const ipkInput = document.getElementById('ipk_pct');
 
+    // Ambil persentase dari server (Blade)
+    const ipPercent = parseFloat("{{ $nilai?->ip ?? 0 }}");
+    const ipkPercent = parseFloat("{{ $nilai?->ipk ?? 0 }}");
+
+    phdpInput.addEventListener('input', function() {
+        const phdp = parseFloat(this.value) || 0;
+
+        // Hitung IP dan IPK
+        const ipValue = (phdp * ipPercent / 100).toFixed(2);
+        const ipkValue = (phdp * ipkPercent / 100).toFixed(2);
+
+        // Tampilkan hasil di textbox
+        ipInput.value = ipValue;
+        ipkInput.value = ipkValue;
+    });
+});
+</script>
 </body>
 </html>

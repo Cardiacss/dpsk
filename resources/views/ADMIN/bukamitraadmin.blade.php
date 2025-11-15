@@ -142,7 +142,7 @@
             <th class="px-4 py-2 border">Action</th>
           </tr>
         </thead>
-       <<tbody>
+       <tbody>
   @forelse($mitras as $mitra)
   <tr>
     <td class="px-4 py-2 border text-center">{{ $mitra->nama_um }}</td>

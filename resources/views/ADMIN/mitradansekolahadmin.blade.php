@@ -58,7 +58,7 @@
 
      <!-- Mitra Dropdown -->
 <div 
-  x-data="{ mitra: window.location.pathname.includes('mitra&sekolahadmin') || window.location.pathname.includes('nilaiaktuariaadmin') }">
+  x-data="{ mitra: window.location.pathname.includes('mitradansekolahadmin') || window.location.pathname.includes('nilaiaktuariaadmin') }">
   
   <button @click="mitra = !mitra" 
           :class="mitra ? 'bg-cyan-800' : ''"
@@ -71,8 +71,8 @@
 
   <div x-show="mitra" class="pl-10 mt-1 space-y-1" x-cloak>
     <!-- Mitra & Sekolah -->
-    <a href="/mitra&sekolahadmin"
-       :class="window.location.pathname.includes('mitra&sekolahadmin') 
+    <a href="/mitradansekolahadmin"
+       :class="window.location.pathname.includes('mitradansekolahadmin') 
                 ? 'bg-white text-[#2994A4] font-semibold rounded block px-3 py-1' 
                 : 'block px-3 py-1 hover:bg-cyan-800 rounded'">
       Mitra & Sekolah
@@ -154,17 +154,18 @@
       </div>
 
       <!-- Search -->
-      <div class="flex items-center gap-3 mb-4">
-        <input type="text" placeholder="Masukkan data peserta yang ingin dicari"
-          class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2994A4]">
-        <button class="p-2 rounded hover:bg-gray-200 transition" title="Filter">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-[#2994A4]">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M3 4.5h18M6 9.75h12M9 15h6m-3 4.5v-4.5" />
-          </svg>
-        </button>
-      </div>
+<form method="GET" action="/mitradansekolahadmin" class="flex items-center gap-3 mb-4 w-full">
+    <input type="text" 
+           name="search"
+           value="{{ request('search') }}"
+           placeholder="Masukkan data mitra yang ingin dicari"
+           class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2994A4]">
+
+    <button type="submit"
+      class="p-2 rounded hover:bg-gray-200 transition" title="Cari">
+      🔍
+    </button>
+</form>
 
       <!-- Table -->
       <div class="overflow-x-auto bg-white shadow rounded">
@@ -187,7 +188,7 @@
     </thead>
 
     <tbody class="text-center">
-  @forelse ($mitra as $m)
+  @forelse ($mitras as $m)
     <tr>
       <td class="p-2 border">{{ $m->idunit }}</td>
       <td class="p-2 border">{{ $m->nama_um }}</td>
@@ -197,8 +198,8 @@
       <td class="p-2 border">{{ $m->kotakab }}</td>
       <td class="p-2 border">{{ $m->provinsi }}</td>
       <td class="p-2 border">{{ $m->stat_um }}</td>
-      <td class="p-2 border">{{ $m->ip_pct }}%</td>
-      <td class="p-2 border">{{ $m->ipk_pct }}%</td>
+      <td class="p-2 border">{{ $m->nilaiaktuaria->ip ?? 'Belum Ada Data' }}%</td>
+      <td class="p-2 border">{{ $m->nilaiaktuaria->ipk ?? 'Belum Ada Data' }}%</td>
       <td class="p-2 border">
         <div class="flex justify-center space-x-2">
          <a href="{{ url('/listmitraadmin/' . $m->idunit) }}" class="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded">Lihat</a>

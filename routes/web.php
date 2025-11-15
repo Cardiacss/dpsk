@@ -225,8 +225,8 @@ Route::put('/editpensiun/{id}', [PensiunController::class, 'updatePensiun'])->na
         ->name('admin.daftarpesertaiuran');
     Route::get('/editiuranpesertaadmin/{idanggota}', [App\Http\Controllers\Admin\MitraController::class, 'editIPeserta'])
         ->name('admin.editiuranpeserta');
-    Route::get('/catatiuranadmin/{idanggota}', [App\Http\Controllers\Admin\MitraController::class, 'createIuran'])
-            ->name('admin.catatiuran');
+Route::get('/catatiuranadmin/{idanggota}/{idunit}', [App\Http\Controllers\Admin\MitraController::class, 'createIuran'])
+    ->name('admin.catatiuran');
     Route::post('/catatiuranadmin/{idanggota}', [App\Http\Controllers\Admin\MitraController::class, 'storeIuran'])
         ->name('admin.catatiuran.store');
     Route::get('/editiuranpesertaadmin/{idanggota}', [App\Http\Controllers\Admin\MitraController::class, 'showIuranPeserta'])

@@ -8,16 +8,29 @@ use App\Models\TUnitMitra;
 use App\Models\TMitra;
 use App\Models\TPeserta;
 use App\Models\TIuranPeserta;
+use App\Models\TNilaiAktuaria;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 
 class MitraController extends Controller
 {
-    public function index()
-    {
-        $mitra = TUnitMitra::all();
-        return view('ADMIN.mitradansekolahadmin', compact('mitra'));
-    }
+public function index(Request $request)
+{
+    $search = $request->search;
+
+    $mitras = TUnitMitra::with('nilaiaktuaria')
+        ->when($search, function ($query) use ($search) {
+            $query->where('nama_um', 'like', "%{$search}%")
+                  ->orWhere('alamat_um', 'like', "%{$search}%")
+                  ->orWhere('kelurahan', 'like', "%{$search}%")
+                  ->orWhere('kecamatan', 'like', "%{$search}%")
+                  ->orWhere('kotakab', 'like', "%{$search}%")
+                  ->orWhere('provinsi', 'like', "%{$search}%");
+        })
+        ->get();
+
+    return view('ADMIN.mitradansekolahadmin', compact('mitras'));
+}
 
     public function create()
     {
@@ -207,41 +220,44 @@ class MitraController extends Controller
         $mitra = TunitMitra::where('idunit', $idunit)->get();
         return response()->json($mitra);
     }
-    public function edit($idunit)
-    {
-        // Ambil data unit berdasarkan ID
-        $unit = TUnitMitra::findOrFail($idunit);
+public function edit($idunit)
+{
+    // Ambil data unit
+    $unit = TUnitMitra::findOrFail($idunit);
 
-        // Kirim ke view editmitraadmin.blade.php
-        return view('ADMIN.editmitraadmin', compact('unit'));
-    }
+    // Ambil nilai IP & IPK dari tabel TNilaiAktuaria
+    $nilaiAktuaria = TNilaiAktuaria::first(); // atau where('tahun', ...) jika per tahun
+
+    // Kirim ke view
+    return view('ADMIN.editmitraadmin', [
+        'unit' => $unit,
+        'nilaiAktuaria' => $nilaiAktuaria
+    ]);
+}
 
     // Update data ke database
     public function update(Request $request, $idunit)
-    {
-        // Validasi input
-        $request->validate([
-            'nama_um' => 'required|string|max:100',
-            'alamat_um' => 'required|string|max:255',
-            'stat_um' => 'required|string',
-            'ip_pct' => 'required|numeric',
-            'ipk_pct' => 'required|numeric',
-        ]);
+{
+    $request->validate([
+        'nama_um' => 'required|string|max:100',
+        'alamat_um' => 'required|string|max:255',
+        'stat_um' => 'required|string',
+    ]);
 
-        // Ambil data yang akan diupdate
-        $unit = TUnitMitra::findOrFail($idunit);
+    $unit = TUnitMitra::findOrFail($idunit);
+    $nilaiAktuaria = TNilaiAktuaria::first();
 
-        // Update data
-        $unit->update([
-            'nama_um' => $request->nama_um,
-            'alamat_um' => $request->alamat_um,
-            'stat_um' => $request->stat_um,
-            'ip_pct' => $request->ip_pct,
-            'ipk_pct' => $request->ipk_pct,
-        ]);
-        return redirect()->route('admin.mitradansekolah')
-            ->with('success', 'Data Unit Mitra berhasil diperbarui.');
-    }
+    $unit->update([
+        'nama_um' => $request->nama_um,
+        'alamat_um' => $request->alamat_um,
+        'stat_um' => $request->stat_um,
+        'ip_pct' => $nilaiAktuaria->ip,
+        'ipk_pct' => $nilaiAktuaria->ipk,
+    ]);
+
+    return redirect()->route('admin.mitradansekolah')
+        ->with('success', 'Data Unit Mitra berhasil diperbarui.');
+}
     public function showIuran()
     {
         // Ambil semua data dari tabel t_unitmitra
@@ -340,9 +356,10 @@ class MitraController extends Controller
         $peserta = TPeserta::findOrFail($idanggota);
         return view('ADMIN.editiuranpeserta', compact('peserta'));
     }
-    public function createIuran($idanggota)
+    public function createIuran($idanggota, $idunit)
     {
         $peserta = TPeserta::findOrFail($idanggota);
+        $nilai = TNilaiAktuaria::where('idunit', $idunit)->first();
 
         // Ambil 6 iuran terakhir berdasarkan tanggal catat
         $riwayat = TIuranPeserta::where('idanggota', $idanggota)
@@ -353,37 +370,51 @@ class MitraController extends Controller
         // Hitung rata-rata PhDP
         $rataPhdp = $riwayat->avg('phdp') ?? 0;
 
-        return view('ADMIN.catatiuran', compact('peserta', 'riwayat', 'rataPhdp'));
+        return view('ADMIN.catatiuran', compact('peserta', 'riwayat', 'rataPhdp','nilai'));
     }
 
-    public function storeIuran(Request $request, $idanggota)
-    {
-        
-        $validated = $request->validate([
-            'gajipokok' => 'required|numeric',
-            'phdp' => 'required|numeric',
-            'ip_num' => 'required|numeric',
-            'ip_pct' => 'required|numeric',
-            'ipk_pct' => 'required|numeric',
-            'ipk_num' => 'required|numeric',
-            'tglcatat' => 'required|date',
-            'tglsetor' => 'required|date',
-            'thn_iuran' => 'required|integer',
-            'bln_iuran' => 'required|integer',
-            'flag_iuran' => 'nullable|string|max:12',
-            'ip_num0' => 'nullable|numeric',
-            'ipk_num0' => 'nullable|numeric',
-        ]);
+public function storeIuran(Request $request, $idanggota)
+{
+    // Validasi input
+    $validated = $request->validate([
+        'tglcatat' => 'required|date',
+        'tglsetor' => 'required|date',
+        'phdp'     => 'required|numeric',
+        'bln_iuran'=> 'required|integer',
+        'thn_iuran'=> 'required|integer',
+    ]);
 
-        $validated['idanggota'] = $idanggota;
-        $validated['ip_num0'] = $validated['ip_num0'] ?? 0;
-        $validated['ipk_num0'] = $validated['ipk_num0'] ?? 0;
-        TIuranPeserta::create($validated);
+    // Ambil peserta untuk mendapatkan idunit
+    $peserta = TPeserta::findOrFail($idanggota);
 
-        return redirect()
-            ->route('admin.catatiuran', ['idanggota' => $idanggota])
-            ->with('success', 'Iuran peserta berhasil dicatat.');
-    }
+    // Ambil nilai aktuaria sesuai unit peserta
+    $nilai = TNilaiAktuaria::where('idunit', $peserta->idunit)->first();
+
+    // Hitung IP & IPK berdasarkan PhDP
+    $ip_pct = $nilai?->ip ?? 0;
+    $ipk_pct = $nilai?->ipk ?? 0;
+
+    $phdp = $validated['phdp'];
+    $ip_num = $phdp * $ip_pct / 100;
+    $ipk_num = $phdp * $ipk_pct / 100;
+
+    // Simpan ke database
+    TIuranPeserta::create([
+        'idanggota' => $idanggota,
+        'tglcatat'  => $validated['tglcatat'],
+        'tglsetor'  => $validated['tglsetor'],
+        'phdp'      => $phdp,
+        'ip_pct'    => $ip_pct,
+        'ip_num'    => $ip_num,
+        'ipk_pct'   => $ipk_pct,
+        'ipk_num'   => $ipk_num,
+        'bln_iuran' => $validated['bln_iuran'],
+        'thn_iuran' => $validated['thn_iuran'],
+    ]);
+
+    return redirect()->back()->with('success', 'Iuran peserta berhasil dicatat!');
+}
+
     public function showIuranPeserta($idanggota)
     {
         // Ambil data peserta
@@ -437,6 +468,7 @@ public function updatecatat(Request $request, $idanggota, $id_iuran)
         'phdp' => 'required|numeric|min:0',
         'ip_num' => 'required|numeric|min:0',
         'ipk_num' => 'required|numeric|min:0',
+        'gajipokok' => 'required|numeric|min:0',
     ]);
 
     // Update data

@@ -44,4 +44,8 @@ class TUnitMitra extends Model
     {
         return $this->hasMany(TPeserta::class, 'idunit', 'idunit');
     }
+    public function nilaiaktuaria()
+{
+    return $this->hasOne(TNilaiAktuaria::class, 'idunit', 'idunit');
+}
 }
