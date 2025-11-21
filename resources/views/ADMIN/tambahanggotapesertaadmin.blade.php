@@ -44,10 +44,14 @@
                 </select>
             </div>
 
-            <div class="col-md-6 d-flex flex-column">
-                <label class="form-label">Hubungan</label>
-                <input type="text" name="hubungan" class="form-control flex-grow-1">
-            </div>
+<div class="col-md-6 d-flex flex-column">
+    <label class="form-label">Hubungan</label>
+    <select name="hubungan" class="form-control flex-grow-1">
+        <option value="Suami">Suami</option>
+        <option value="Istri">Istri</option>
+        <option value="Anak">Anak</option>
+    </select>
+</div>
 
             <div class="col-md-6 d-flex flex-column">
                 <label class="form-label">Pekerjaan</label>

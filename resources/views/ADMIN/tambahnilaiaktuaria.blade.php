@@ -66,18 +66,22 @@
                 </div>
 
                 <!-- IP -->
-                <div class="mb-3">
-                    <label class="form-label fw-bold">IP</label>
-                    <input type="number" name="ip" step="0.01" placeholder="Masukkan nilai IP" class="form-control"
-                        required>
-                </div>
+<div class="mb-3">
+    <label class="form-label fw-bold">IP</label>
+    <div class="input-group">
+        <input type="number" name="ip" step="0.01" value="6" class="form-control" required>
+        <span class="input-group-text">%</span>
+    </div>
+</div>
 
                 <!-- IPK -->
-                <div class="mb-3">
-                    <label class="form-label fw-bold">IPK</label>
-                    <input type="number" name="ipk" step="0.01" placeholder="Masukkan nilai IPK"
-                        class="form-control" required>
-                </div>
+<div class="mb-3">
+    <label class="form-label fw-bold">IPK</label>
+    <div class="input-group">
+        <input type="number" name="ipk" step="0.01" placeholder="Masukkan nilai IPK" class="form-control" required>
+        <span class="input-group-text">%</span>
+    </div>
+</div>
 
                 <!-- Nilai Tambahan -->
                 <div class="mb-3">

@@ -64,11 +64,11 @@
             </div>
 
             <div class="col-md-6">
-                <label class="form-label">Mitra / Pemberi Kerja</label>
+                <label class="form-label">Unit Sekolah</label>
                 <input type="text" class="form-control" value="{{ $peserta->mitra->nama_um ?? '-' }}" disabled>
             </div>
             <div class="col-md-6">
-                <label class="form-label">Unit Kerja</label>
+                <label class="form-label">Mitra Pemberi Kerja</label>
                 <input type="text" class="form-control" value="{{ $peserta->unit->nama_um ?? '-' }}" disabled>
             </div>
         </form>
@@ -106,6 +106,18 @@
                             <td>{{ $k->statushidup ? 'Hidup' : 'Meninggal' }}</td>
                             <td>{{ $k->bolehwaris ? 'Ya' : 'Tidak' }}</td>
                             <td class="text-center">
+                                @if(!$k->bolehwaris)
+<form action="{{ route('keluarga.setWaris', $k->idkeluarga) }}" 
+      method="POST" 
+      onsubmit="return confirm('Jadikan anggota ini sebagai ahli waris?')"
+      style="display:inline-block; margin-left:5px;">
+    @csrf
+    @method('PATCH')
+    <button type="submit" class="btn btn-sm px-3" style="background-color:#17A2B8; color:white;">
+        <i class="bi bi-star-fill"></i> Jadikan Ahli Waris
+    </button>
+</form>
+@endif
                                 <div class="d-flex justify-content-center align-items-center">
                                     <a href="/editanggotaahliwarispesertaadmin/{{ $k->idkeluarga }}"
                                         class="btn btn-sm px-3"

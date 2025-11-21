@@ -27,6 +27,14 @@
             @method('PUT')
 
             {{-- Informasi Peserta --}}
+                        <div class="mb-4">
+                <div class="row mb-3 align-items-center">
+                    <label class="col-md-3 col-form-label">No Pensiun :</label>
+                    <div class="col-md-9">
+                        <input type="text" name="idanggota" value="{{ $manfaat->nopensiun ?? '' }}" readonly
+                            class="form-control bg-light">
+                    </div>
+                </div>
             <div class="mb-4">
                 <div class="row mb-3 align-items-center">
                     <label class="col-md-3 col-form-label">No Peserta :</label>

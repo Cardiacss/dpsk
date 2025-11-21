@@ -53,8 +53,8 @@
                     <th class="text-center">No</th>
                     <th class="text-center">Nomor Peserta</th>
                     <th class="text-center">Nama Peserta</th>
-                    <th class="text-center">Mitra</th>
-                    <th class="text-center">Unit</th>
+                    <th class="text-center">Unit Sekolah</th>
+                    <th class="text-center">Mitra Pemberi Kerja</th>
                     <th class="text-center">Status</th>
                     <th class="text-center">Aksi</th>
                 </tr>
@@ -104,8 +104,20 @@
         </table>
     </div>
 
-    {{-- Pagination --}}
+    {{-- Pagination
     <div class="mt-3">
         {{ $peserta->appends(request()->query())->links() }}
     </div>
+<style>
+    .pagination svg {
+        width: 16px !important;
+        height: 16px !important;
+    }
+
+    .pagination .page-link {
+        padding: 4px 10px !important;
+        font-size: 14px !important;
+    }
+</style> --}}
+
 @endsection

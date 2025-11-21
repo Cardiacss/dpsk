@@ -33,7 +33,7 @@
                 <tr class="text-center">
                     <th>No</th>
                     <th>Nomor Mitra</th>
-                    <th>Nama Mitra</th>
+                    <th>Nama Pemberi Kerja</th>
                     <th>Action</th>
                 </tr>
             </thead>

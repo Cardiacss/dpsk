@@ -468,7 +468,6 @@ public function updatecatat(Request $request, $idanggota, $id_iuran)
         'phdp' => 'required|numeric|min:0',
         'ip_num' => 'required|numeric|min:0',
         'ipk_num' => 'required|numeric|min:0',
-        'gajipokok' => 'required|numeric|min:0',
     ]);
 
     // Update data

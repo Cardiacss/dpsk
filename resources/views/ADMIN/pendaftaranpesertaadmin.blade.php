@@ -115,9 +115,9 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label>Pilih Unit Mitra</label>
+                        <label>Pilih Pemberi Kerja</label>
                         <select id="idunit" name="idunit" class="form-control">
-                            <option value="">-- Pilih Unit Mitra --</option>
+                            <option value="">-- Pilih Pemberi Kerja --</option>
                             @foreach ($unitmitra as $unit)
                                 <option value="{{ $unit->idunit }}">{{ $unit->idunit }} - {{ $unit->nama_um }}</option>
                             @endforeach
@@ -125,19 +125,22 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label>Pilih Mitra</label>
+                        <label>Pilih Unit Sekolah</label>
                         <select id="idmitra_select" class="form-control" disabled>
-                            <option value="">-- Pilih Mitra --</option>
+                            <option value="">-- Pilih Unit Sekolah --</option>
                         </select>
                     </div>
 
                     <input type="hidden" name="idmitra" id="idmitra">
                     <input type="hidden" name="namamitra" id="namamitra">
 
-                    <div class="form-group mb-3">
-                        <label>Pekerjaan</label>
-                        <input name="pekerjaanakhir" class="form-control">
-                    </div>
+<div class="form-group mb-3">
+    <label>Pekerjaan</label>
+    <select name="pekerjaanakhir" class="form-control">
+        <option value="Guru" selected>Guru</option>
+        <option value="Pegawai">Pegawai</option>
+    </select>
+</div>
 
                 </div>
             </div>
@@ -186,11 +189,11 @@
                 </div>
 
                 <div class="form-group col-md-6">
-                    <label>Status Kartu</label>
+                    <label>Status Peserta</label>
                     <select name="statuspeserta" class="form-control">
-                        <option value="">-- Pilih Status Kartu --</option>
-                        <option value="Belum">Belum</option>
-                        <option value="Sudah">Sudah</option>
+                        <option value="">-- Pilih Status Peserta--</option>
+                        <option value="AKTIF">AKTIF</option>
+                        <option value="TIDAK">TIDAK</option>
                     </select>
                 </div>
 

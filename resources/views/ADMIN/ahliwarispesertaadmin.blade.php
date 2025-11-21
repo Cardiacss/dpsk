@@ -55,11 +55,11 @@
             </div>
 
             <div class="col-md-4">
-                <label class="form-label">Mitra / Pemberi Kerja</label>
+                <label class="form-label">Unit Sekolah</label>
                 <input type="text" class="form-control" value="{{ $peserta->mitra->nama_um ?? '-' }}" disabled>
             </div>
             <div class="col-md-4">
-                <label class="form-label">Unit Kerja</label>
+                <label class="form-label">Mitra Pemberi Kerja</label>
                 <input type="text" class="form-control" value="{{ $peserta->unit->nama_um ?? '-' }}" disabled>
             </div>
             <div class="col-md-4">
@@ -83,22 +83,23 @@
                         <th>Status Hidup</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @forelse ($keluarga as $kel)
-                        <tr>
-                            <td>{{ $kel->nm_keluarga }}</td>
-                            <td>{{ $kel->tempatlahir }} /
-                                {{ $kel->tgllahir ? \Carbon\Carbon::parse($kel->tgllahir)->format('d-m-Y') : '-' }}</td>
-                            <td>{{ $kel->jeniskelamin }}</td>
-                            <td>{{ $kel->hubungan }}</td>
-                            <td>{{ $kel->statushidup ?? '-' }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="text-muted py-3">Tidak ada anggota keluarga untuk peserta ini.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
+<tbody>
+    @forelse ($ahliwaris as $kel)
+        <tr>
+            <td>{{ $kel->nm_keluarga }}</td>
+            <td>{{ $kel->tempatlahir }} /
+                {{ $kel->tgllahir ? \Carbon\Carbon::parse($kel->tgllahir)->format('d-m-Y') : '-' }}
+            </td>
+            <td>{{ $kel->jeniskelamin }}</td>
+            <td>{{ $kel->hubungan }}</td>
+            <td>{{ $kel->statushidup == 1 ? 'Hidup' : 'Meninggal' }}</td>
+        </tr>
+    @empty
+        <tr>
+            <td colspan="5" class="text-muted py-3">Tidak ada ahli waris untuk peserta ini.</td>
+        </tr>
+    @endforelse
+</tbody>
             </table>
         </div>
 

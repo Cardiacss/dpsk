@@ -1,6 +1,6 @@
 @extends('ADMIN.layouts.main')
 
-@section('title', 'List Mitra Admin')
+@section('title', 'List Unit Sekolah')
 
 @section('breadcrumb')
     <p class="text-muted" style="font-size: 14px;">
@@ -13,16 +13,16 @@
 @section('artikel')
 
     <h2 class="mb-4" style="color:#2994A4; font-weight:bold; font-size:1.5rem;">
-        Daftar Mitra untuk Unit: {{ $unit->nama_um }} ({{ $unit->idunit }})
+        Daftar Sekolah untuk : {{ $unit->nama_um }} ({{ $unit->idunit }})
     </h2>
 
     <div class="table-responsive bg-white rounded p-2">
         <table class="table table-bordered mb-0">
             <thead style="background-color:#2994A4; color:white;">
                 <tr>
-                    <th>ID Mitra</th>
-                    <th>Nama Mitra</th>
-                    <th>Alamat</th>
+                    <th>ID Sekolah</th>
+                    <th>Nama Sekolah</th>
+                    <th>Alamat Sekolah</th>
                     <th>Kecamatan</th>
                     <th>Kota/Kab</th>
                     <th class="text-center">Aksi</th>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\NilaiAktuariaController;
 use App\Http\Controllers\Admin\IuranController;
 use App\Http\Controllers\Admin\MasterController;
 use App\Http\Controllers\Admin\PensiunController;
+use App\Http\Controllers\Admin\CetakController;
 /*
 |--------------------------------------------------------------------------
 | WEB ROUTES
@@ -89,6 +90,9 @@ Route::get('/simulasi/{idanggota}', [IuranController::class, 'showSimulasiPesert
     Route::get('/admin/simulasiView', [App\Http\Controllers\Admin\PensiunController::class, 'simulasiView']);
 Route::get('/faktornilai', [App\Http\Controllers\Admin\MasterController::class, 'indexFaktor'])->name('faktornilai.index');
 Route::post('/faktornilai/update', [App\Http\Controllers\Admin\MasterController::class, 'updateFaktor'])->name('faktornilai.update');
+Route::get('/cetak-penawaran-pensiun', [CetakController::class, 'cetakPenawaran']);
+Route::get('/cetak-data-pembuatan-sk', [CetakController::class, 'cetakPembuatanSK']);
+Route::get('/cetak-sk', [CetakController::class, 'cetakSK']);
 
 
     // ---------------- KEPENSIUNAN ----------------
@@ -156,12 +160,15 @@ Route::put('/editpensiun/{id}', [PensiunController::class, 'updatePensiun'])->na
     // ---------------- TANGGUNGAN ----------------
     Route::get('/tanggunganpesertaadmin/{idanggota}', [App\Http\Controllers\Admin\TanggunganPesertaController::class, 'index'])
         ->name('tanggunganpesertaadmin');
+        Route::patch('/keluarga/waris/{idkeluarga}', 
+    [App\Http\Controllers\Admin\AhliWarisPesertaController::class, 'setWaris'])->name('keluarga.setWaris');
     Route::get('/tambahanggotapesertaadmin', [App\Http\Controllers\Admin\TanggunganPesertaController::class, 'create'])
         ->name('tambahanggotapesertaadmin');
 
     // ---------------- AHLI WARIS ----------------
     Route::get('/ahliwarispesertaadmin/{idanggota}', [App\Http\Controllers\Admin\AhliWarisPesertaController::class, 'index'])
         ->name('ahliwarispesertaadmin');
+
 
     // ---------------- IURAN ----------------
     Route::get('/iuranpesertaadmin', [App\Http\Controllers\Admin\MitraController::class, 'showIuran'])

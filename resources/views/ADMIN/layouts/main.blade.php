@@ -432,7 +432,7 @@
 
                                 <a class="nav-link {{ isActiveSubMenu(['manfaat*', 'cetakmanfaat*','cekmanfaat*']) ? 'active' : '' }}"
                                     href="/manfaat">
-                                    Manfaat
+                                    Pemberian Manfaat
                                 </a>
 
                                 <a class="nav-link {{ isActiveSubMenu(['riwayatmanfaat*', 'pilihpensiun*','detailpesertapensiun*']) ? 'active' : '' }}"

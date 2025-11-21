@@ -44,8 +44,8 @@
             <thead class="table-light">
                 <tr>
                     <th>Kode</th>
-                    <th>Nama Unit/Mitra</th>
-                    <th>Alamat Unit/Mitra</th>
+                    <th>Mitra Pemberi Kerja</th>
+                    <th>Alamat Pemberi Kerja</th>
                     <th>Kelurahan</th>
                     <th>Kecamatan</th>
                     <th>Kota/Kabupaten</th>

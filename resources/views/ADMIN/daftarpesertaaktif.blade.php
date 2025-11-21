@@ -45,9 +45,9 @@
                                 <td>{{ $item->keterangan }}</td>
                                 <td>
                                     @if ($item->statushidup)
-                                        <span class="badge bg-success">Hidup</span>
+                                        <span class="badge">Hidup</span>
                                     @else
-                                        <span class="badge bg-danger">Meninggal</span>
+                                        <span class="badge">Meninggal</span>
                                     @endif
                                 </td>
                                 <td>

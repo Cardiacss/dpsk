@@ -120,104 +120,116 @@ class IuranController extends Controller
 
         return view('ADMIN.simulasi', compact('peserta'));
     }
-public function simulasiPesertaAktif($idanggota)
-{
-    $peserta = TPeserta::findOrFail($idanggota);
+    public function simulasiPesertaAktif($idanggota)
+    {
+        $peserta = TPeserta::findOrFail($idanggota);
 
-    // Ambil data pensiun jika ada
-    $pensiun = TAPensiun::where('idanggota', $idanggota)->first();
+        // Ambil data pensiun jika ada
+        $pensiun = TAPensiun::where('idanggota', $idanggota)->first();
 
-    return view('ADMIN.simulasipesertaaktif', compact('peserta', 'pensiun'));
-}
-public function hitungSimulasi(Request $request)
-{
-    $idanggota = $request->idanggota;
-    $dodt      = $request->dodt;
+        return view('ADMIN.simulasipesertaaktif', compact('peserta', 'pensiun'));
+    }
+    private function toTahunBulan($value)
+    {
+        $tahun = floor($value);
+        $bulan = round(($value - $tahun) * 12);
 
-    // Ambil data peserta
-    $peserta = TPeserta::findOrFail($idanggota);
-    $pensiun = TAPensiun::where('idanggota', $idanggota)->first();
+        return $tahun . " tahun " . $bulan . " bulan";
+    }
+    private function round500($value)
+    {
+        return round($value / 500) * 500;
+    }
+    public function hitungSimulasi(Request $request)
+    {
+        $idanggota = $request->idanggota;
+        $dodt      = $request->dodt;
 
-    $tgllahir = new \DateTime($peserta->tgllahir);
-    $tmtkeja  = new \DateTime($peserta->tmtkeja);
-    $tmtpensiun = new \DateTime($request->tmtpensiun);
+        // Ambil data peserta
+        $peserta = TPeserta::findOrFail($idanggota);
+        $pensiun = TAPensiun::where('idanggota', $idanggota)->first();
 
-    // Ambil pekerjaan terakhir & status
-    $pekerjaanakhir = $peserta->pkerjaanakhir ?? '-';
-    $statuspensiun  = $pensiun->statuspensiun ?? '-';
+        $tgllahir = new \DateTime($peserta->tgllahir);
+        $tmtkeja  = new \DateTime($peserta->tmtkeja);
+        $tmtpensiun = new \DateTime($request->tmtpensiun);
 
-    // CASE NORMAL (tidak meninggal)
-    if (empty($dodt)) {
+        // Ambil pekerjaan terakhir & status
+        $pekerjaanakhir = $peserta->pkerjaanakhir ?? '-';
+        $statuspensiun  = $pensiun->statuspensiun ?? '-';
 
-        $diffKerja = $tmtpensiun->diff($tmtkeja);
-        $masaKerja = $diffKerja->y + ($diffKerja->m / 12);
+        // CASE NORMAL (tidak meninggal)
+        if (empty($dodt)) {
 
-        $diffUsiaPeserta = (new \DateTime())->diff($tgllahir);
-        $usiaPeserta = $diffUsiaPeserta->y + ($diffUsiaPeserta->m / 12);
+            $diffKerja = $tmtpensiun->diff($tmtkeja);
+            $masaKerja = $diffKerja->y + ($diffKerja->m / 12);
 
-        $diffUsiaPensiun = $tmtpensiun->diff($tgllahir);
-        $usiaPensiun = $diffUsiaPensiun->y + ($diffUsiaPensiun->m / 12);
+            $diffUsiaPeserta = (new \DateTime())->diff($tgllahir);
+            $usiaPeserta = $diffUsiaPeserta->y + ($diffUsiaPeserta->m / 12);
 
-        $phdp = DB::table('t_iuranpeserta')->where('idanggota', $idanggota)->value('phdp') ?? 0;
+            $diffUsiaPensiun = $tmtpensiun->diff($tgllahir);
+            $usiaPensiun = $diffUsiaPensiun->y + ($diffUsiaPensiun->m / 12);
 
-        // fnss
-        $statusNikah = $peserta->statusnikah ?? 'Belum Kawin';
-        $jenisKelamin = $peserta->jeniskelamin ?? 'Pria';
-        $umur = (int)$diffUsiaPeserta->y;
-        $faktor = \App\Models\TFaktorNilai::where('umur','<=',$umur)
-                    ->where('statuskerja', strtoupper($pekerjaanakhir))
-                    ->orderBy('umur','desc')
-                    ->first();
+            $phdp = DB::table('t_iuranpeserta')->where('idanggota', $idanggota)->value('phdp') ?? 0;
 
-        $fnss = 1;
-        if ($faktor) {
-            if ($jenisKelamin == 'Pria' && $statusNikah == 'Kawin') $fnss = $faktor->fns_s_pria_kawin;
-            if ($jenisKelamin == 'Wanita' && $statusNikah == 'Kawin') $fnss = $faktor->fns_s_wanita_kawin;
-            if ($jenisKelamin == 'Pria' && $statusNikah == 'Belum Kawin') $fnss = $faktor->fns_s_pria_lajang;
-            if ($jenisKelamin == 'Wanita' && $statusNikah == 'Belum Kawin') $fnss = $faktor->fns_s_wanita_lajang;
+            // fnss
+            $statusNikah = $peserta->statusnikah ?? 'Belum Kawin';
+            $jenisKelamin = $peserta->jeniskelamin ?? 'Pria';
+            $umur = (int)$diffUsiaPeserta->y;
+            $faktor = \App\Models\TFaktorNilai::where('umur', '<=', $umur)
+                ->where('statuskerja', strtoupper($pekerjaanakhir))
+                ->orderBy('umur', 'desc')
+                ->first();
+
+            $fnss = 1;
+            if ($faktor) {
+                if ($jenisKelamin == 'Pria' && $statusNikah == 'Kawin') $fnss = $faktor->fns_s_pria_kawin;
+                if ($jenisKelamin == 'Wanita' && $statusNikah == 'Kawin') $fnss = $faktor->fns_s_wanita_kawin;
+                if ($jenisKelamin == 'Pria' && $statusNikah == 'Belum Kawin') $fnss = $faktor->fns_s_pria_lajang;
+                if ($jenisKelamin == 'Wanita' && $statusNikah == 'Belum Kawin') $fnss = $faktor->fns_s_wanita_lajang;
+            }
+
+            $rumusMP = 0.6 * ($masaKerja + ($usiaPensiun - $usiaPeserta)) * 0.021 * $phdp;
+
+            return response()->json([
+                'tipe' => 'normal',
+                'masa_kerja' => $this->toTahunBulan($masaKerja),
+                'usia' => $this->toTahunBulan($usiaPeserta),
+                'usia_pensiun' => $this->toTahunBulan($usiaPensiun),
+                'phdp' => $phdp,
+                'fnss' => $fnss,
+                'status_kawin' => $peserta->statusnikah,
+                'jenis_kelamin' => $peserta->jeniskelamin,
+                'pkerjaanakhir' => $pekerjaanakhir,
+                'manfaat' => [
+                    'MP' => $this->round500($rumusMP),
+                    '100%' => $this->round500($fnss * $rumusMP * 12),
+                    '80%' => $this->round500(0.8 * ($masaKerja * 0.021 * $phdp)),
+                    '20%' => $this->round500(0.2 * $fnss * $rumusMP * 12),
+                ]
+            ]);
         }
 
-        $rumusMP = 0.6 * ($masaKerja + ($usiaPensiun - $usiaPeserta)) * 0.021 * $phdp;
+        // CASE MENINGGAL (dodt ada)
+        $manfaat_bulan = (float)$request->batasmanfaatbulanan;
+
+        $masaKerja = $tmtpensiun->diff($tmtkeja);
+        $masaKerjaTahun = $masaKerja->y + ($masaKerja->m / 12);
+
+        $usiaPensiun = $tgllahir->diff($tmtpensiun);
+        $usiaPensiunTahun = $usiaPensiun->y + ($usiaPensiun->m / 12);
+
+        $mp = 0.60 * $manfaat_bulan;
 
         return response()->json([
-            'tipe' => 'normal',
-            'masa_kerja' => round($masaKerja, 2),
-            'usia' => round($usiaPeserta, 2),
-            'usia_pensiun' => round($usiaPensiun, 2),
-            'phdp' => $phdp,
-            'fnss' => $fnss,
-            'pkerjaanakhir' => $pekerjaanakhir,
-            'manfaat' => [
-                'MP' => round($rumusMP, 2),
-                '100%' => round($fnss * $rumusMP * 12, 2),
-                '80%' => round(0.8 * ($masaKerja * 0.021 * $phdp), 2),
-                '20%' => round(0.2 * $fnss * $rumusMP * 12, 2),
-            ]
+            'tipe' => 'meninggal',
+            'mp' => $this->round500($mp),
+            'masakerja' => $this->toTahunBulan($masaKerjaTahun),
+            'usiapensiun' => $this->toTahunBulan($usiaPensiunTahun),
+            'statuspensiun' => $statuspensiun,
+            'jenis_kelamin' => $peserta->jeniskelamin,
+            'pekerjaan_terakhir' => $pekerjaanakhir,
+            'batasmanfaatbulanan' => $manfaat_bulan,
+            'status_kawin' => $peserta->statusnikah,
         ]);
     }
-
-    // CASE MENINGGAL (dodt ada)
-    $manfaat_bulan = (float)$request->batasmanfaatbulanan;
-
-    $masaKerja = $tmtpensiun->diff($tmtkeja);
-    $masaKerjaTahun = $masaKerja->y + ($masaKerja->m / 12);
-
-    $usiaPensiun = $tgllahir->diff($tmtpensiun);
-    $usiaPensiunTahun = $usiaPensiun->y + ($usiaPensiun->m / 12);
-
-    $mp = 0.60 * $manfaat_bulan;
-
-    return response()->json([
-        'tipe' => 'meninggal',
-        'mp' => round($mp, 2),
-        'masakerja' => round($masaKerjaTahun, 2),
-        'usiapensiun' => round($usiaPensiunTahun, 2),
-        'statuspensiun' => $statuspensiun,
-        'pekerjaan_terakhir' => $pekerjaanakhir,
-        'batasmanfaatbulanan' => $manfaat_bulan,
-    ]);
 }
-
-
-}
-

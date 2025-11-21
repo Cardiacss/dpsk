@@ -79,7 +79,7 @@ class PesertaController extends Controller
             }
         }
 
-        $peserta = $query->paginate(10);
+        $peserta = $query->paginate(20);
         return view('ADMIN.daftarpesertaadmin', compact('peserta', 'filter', 'search'));
     }
 

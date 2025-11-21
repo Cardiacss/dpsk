@@ -1,6 +1,6 @@
 @extends('ADMIN.layouts.main')
 
-@section('title', 'Manfaat')
+@section('title', 'Daftar Pensiun')
 
 @section('breadcrumb')
     <p class="text-muted" style="font-size: 14px;">

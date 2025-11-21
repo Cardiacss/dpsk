@@ -53,11 +53,14 @@
             </select>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Hubungan</label>
-            <input type="text" name="hubungan" value="{{ old('hubungan', $keluarga->hubungan) }}" class="form-control">
-        </div>
-
+<div class="mb-3">
+    <label class="form-label">Hubungan</label>
+    <select name="hubungan" class="form-control">
+        <option value="Suami" {{ old('hubungan', $keluarga->hubungan) == 'Suami' ? 'selected' : '' }}>Suami</option>
+        <option value="Istri" {{ old('hubungan', $keluarga->hubungan) == 'Istri' ? 'selected' : '' }}>Istri</option>
+        <option value="Anak" {{ old('hubungan', $keluarga->hubungan) == 'Anak' ? 'selected' : '' }}>Anak</option>
+    </select>
+</div>
         <div class="mb-3">
             <label class="form-label">Pekerjaan</label>
             <input type="text" name="pekerjaan" value="{{ old('pekerjaan', $keluarga->pekerjaan) }}"
