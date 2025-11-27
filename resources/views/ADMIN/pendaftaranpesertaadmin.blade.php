@@ -103,75 +103,72 @@
 
             </div>
 
-            {{-- ======================== PEKERJAAN ======================== --}}
-            <h5 class="mt-4 mb-3 text-dark fw-bold">Pekerjaan</h5>
+           {{-- ======================== PEKERJAAN & KELUARGA ======================== --}}
+<div class="row mt-4">
 
-            <div class="row justify-content-start">
-                <div class="col-md-6">
+    {{-- PEKERJAAN --}}
+    <div class="col-md-6">
+        <h5 class="mb-3 text-dark fw-bold">Pekerjaan</h5>
 
-                    <div class="form-group mb-3">
-                        <label>Tanggal Mulai Kerja</label>
-                        <input type="date" name="tmtkeja" class="form-control">
-                    </div>
+        <div class="form-group mb-3">
+            <label>Tanggal Mulai Kerja</label>
+            <input type="date" name="tmtkeja" class="form-control">
+        </div>
 
-                    <div class="form-group mb-3">
-                        <label>Pilih Pemberi Kerja</label>
-                        <select id="idunit" name="idunit" class="form-control">
-                            <option value="">-- Pilih Pemberi Kerja --</option>
-                            @foreach ($unitmitra as $unit)
-                                <option value="{{ $unit->idunit }}">{{ $unit->idunit }} - {{ $unit->nama_um }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+        <div class="form-group mb-3">
+            <label>Pilih Pemberi Kerja</label>
+            <select id="idunit" name="idunit" class="form-control">
+                <option value="">-- Pilih Pemberi Kerja --</option>
+                @foreach ($unitmitra as $unit)
+                    <option value="{{ $unit->idunit }}">{{ $unit->idunit }} - {{ $unit->nama_um }}</option>
+                @endforeach
+            </select>
+        </div>
 
-                    <div class="form-group mb-3">
-                        <label>Pilih Unit Sekolah</label>
-                        <select id="idmitra_select" class="form-control" disabled>
-                            <option value="">-- Pilih Unit Sekolah --</option>
-                        </select>
-                    </div>
+        <div class="form-group mb-3">
+            <label>Pilih Unit Sekolah</label>
+            <select id="idmitra_select" class="form-control" disabled>
+                <option value="">-- Pilih Unit Sekolah --</option>
+            </select>
+        </div>
 
-                    <input type="hidden" name="idmitra" id="idmitra">
-                    <input type="hidden" name="namamitra" id="namamitra">
+        <input type="hidden" name="idmitra" id="idmitra">
+        <input type="hidden" name="namamitra" id="namamitra">
 
-<div class="form-group mb-3">
-    <label>Pekerjaan</label>
-    <select name="pekerjaanakhir" class="form-control">
-        <option value="Guru" selected>Guru</option>
-        <option value="Pegawai">Pegawai</option>
-    </select>
+        <div class="form-group mb-3">
+            <label>Pekerjaan</label>
+            <select name="pekerjaanakhir" class="form-control">
+                <option value="Guru" selected>Guru</option>
+                <option value="Pegawai">Pegawai</option>
+            </select>
+        </div>
+    </div>
+
+    {{-- KELUARGA --}}
+    <div class="col-md-6">
+        <h5 class="mb-3 text-dark fw-bold">Keluarga</h5>
+
+        <div class="form-group mb-3">
+            <label>Status Nikah</label>
+            <select name="statusnikah" class="form-control" required>
+                <option value="">-- Pilih Status --</option>
+                <option value="Kawin">Kawin</option>
+                <option value="Tidak Kawin">Tidak Kawin</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Tanggal Perkawinan</label>
+            <input type="date" name="tglkawin" class="form-control">
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Jumlah Anak</label>
+            <input type="number" name="jumlahanak" class="form-control">
+        </div>
+    </div>
+
 </div>
-
-                </div>
-            </div>
-
-            {{-- ======================== KELUARGA ======================== --}}
-            <h5 class="mt-4 mb-3 text-dark fw-bold">Keluarga</h5>
-
-            <div class="row">
-                <div class="col-md-6">
-
-                    <div class="form-group mb-3">
-                        <label>Status Nikah</label>
-                        <select name="statusnikah" class="form-control" required>
-                            <option value="">-- Pilih Status --</option>
-                            <option value="Kawin">Kawin</option>
-                            <option value="Tidak Kawin">Tidak Kawin</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group mb-3">
-                        <label>Tanggal Perkawinan</label>
-                        <input type="date" name="tglkawin" class="form-control">
-                    </div>
-
-                    <div class="form-group mb-3">
-                        <label>Jumlah Anak</label>
-                        <input type="number" name="jumlahanak" class="form-control">
-                    </div>
-
-                </div>
-            </div>
 
             {{-- ======================== KEANGGOTAAN ======================== --}}
             <h5 class="mt-4 mb-3 text-dark fw-bold">Keanggotaan</h5>

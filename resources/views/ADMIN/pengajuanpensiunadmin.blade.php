@@ -1,6 +1,6 @@
 @extends('ADMIN.layouts.main')
 
-@section('title', 'Pengajuan Pensiun')
+@section('title', 'Pencatatan Pensiun')
 
 @section('breadcrumb')
     <p class="text-muted" style="font-size: 14px;">
@@ -11,7 +11,7 @@
 
         <a href="/pengajuanpensiun" style="text-decoration:none; color:#2994A4;">
             Pengajuan Pensiun
-        </a> 
+        </a>
     </p>
 @endsection
 
@@ -54,42 +54,57 @@
 
     </form>
 
-    <!-- Tabel Peserta -->
-    <div class="table-responsive bg-white shadow rounded-lg">
-        <table class="table table-bordered mb-0">
-            <thead style="background-color:#2994A4; color:white;">
-                <tr>
-                    <th>No</th>
-                    <th>No Peserta</th>
-                    <th>Nama Peserta</th>
-                    <th>Mitra</th>
-                    <th class="text-center">Action</th>
-                </tr>
-            </thead>
+<!-- Tabel Peserta -->
+<div class="table-responsive bg-white shadow rounded-lg">
+    <table class="table table-bordered mb-0">
+        <thead style="background-color:#2994A4; color:white;">
+            <tr class="text-center">
+                <th>No</th>
+                <th>No Peserta</th>
+                <th>Nama Peserta</th>
+                <th>Unit Sekolah</th>
+                <th>Action</th>
+            </tr>
+        </thead>
 
-            <tbody>
-                @forelse ($peserta as $index => $p)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $p->nopeserta }}</td>
-                        <td>{{ $p->nama }}</td>
-                        <td>{{ $p->mitra->nama_um ?? '-' }}</td>
-                        <td class="text-center">
-                            <a href="{{ url('formpengajuanpensiunadmin/' . $p->idanggota) }}" class="btn btn-sm text-white"
-                                style="background-color:#2994A4;">
-                                Pilih
+        <tbody>
+            @forelse ($peserta as $index => $p)
+                <tr>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $p->nopeserta }}</td>
+                    <td>{{ $p->nama }}</td>
+                    <td>{{ $p->mitra->nama_um ?? '-' }}</td>
+                    <td class="text-center">
+                        <a href="{{ url('formpengajuanpensiunadmin/' . $p->idanggota) }}" class="btn btn-sm text-white"
+                            style="background-color:#2994A4;">
+                            Pilih
+                        </a>
+
+                        @php
+                            $pensiun = \App\Models\TAPensiun::where('idanggota', $p->idanggota)->first();
+                        @endphp
+
+                        @if($pensiun)
+                            <a href="{{ route('admin.editpensiun.editByAnggota', $p->idanggota) }}" class="btn btn-sm btn-warning">
+                                Edit
                             </a>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="text-center py-3 text-muted">
-                            Tidak ada peserta ditemukan
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+                        @else
+                            <button class="btn btn-sm btn-secondary" disabled>
+                                Data Pensiun Belum Ada
+                            </button>
+                        @endif
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="5" class="text-center py-3 text-muted">
+                        Tidak ada peserta ditemukan
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
+
 
 @endsection

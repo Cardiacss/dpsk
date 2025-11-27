@@ -27,13 +27,14 @@
     </a>
 
     <!-- Input Pencarian + Tombol Cari -->
-    <div class="mb-3 d-flex align-items-center">
-        <input type="text" class="form-control mr-2" placeholder="Silahkan Masukan Kode/Nama Peserta">
+<form action="{{ route('admin.iuranpeserta') }}" method="GET" class="mb-3 d-flex align-items-center">
+    <input type="text" name="search" value="{{ request('search') }}"
+        class="form-control mr-2" placeholder="Silahkan Masukan Kode/Nama Mitra">
 
-        <button class="btn" style="background-color:#2994A4; color:white; min-width:100px;">
-            Cari
-        </button>
-    </div>
+    <button class="btn" style="background-color:#2994A4; color:white; min-width:100px;">
+        Cari
+    </button>
+</form>
 
 
     <!-- Tabel tanpa garis hitam -->

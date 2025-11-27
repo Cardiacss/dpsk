@@ -16,6 +16,10 @@ use App\Http\Controllers\Admin\CetakController;
 Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/logout', function() {
+    auth()->logout();
+    return redirect('/');
+});
 
 // ============================================================================
 // GRUP RUTE UNTUK ADMINISTRATOR
@@ -60,6 +64,7 @@ Route::post('/indeks', [MasterController::class, 'indeksStore'])->name('indeks.s
         ->name('peserta.cetakKartu');
     Route::get('/get-mitra/{idunit}', [App\Http\Controllers\Admin\PesertaController::class, 'getMitraByUnit']);
     Route::get('/riwayatiuranadmin', [IuranController::class, 'index'])->name('admin.riwayatiuran');
+        Route::get('/manfaat/detail/{id}', [App\Http\Controllers\Admin\ManfaatPensiunController::class, 'detail']);
 
     // Fetch daftar mitra berdasarkan unit
     Route::get('/riwayatiuranadmin/unit/{idunit}', [IuranController::class, 'getMitraByUnit'])->name('admin.getMitraByUnit');
@@ -100,6 +105,8 @@ Route::get('/cetak-sk', [CetakController::class, 'cetakSK']);
         ->name('admin.pengajuanpensiun');
     Route::get('/formpengajuanpensiunadmin/{idanggota}', [PensiunController::class, 'create'])
         ->name('admin.formpengajuanpensiun');
+        Route::get('/editpensiun/anggota/{idanggota}/edit', [PensiunController::class, 'editPensiunByAnggota'])->name('admin.editpensiun.editByAnggota');
+
 
     Route::post('/formpengajuanpensiunadmin/store', [PensiunController::class, 'store'])
         ->name('admin.formpengajuanpensiun.store');
@@ -168,6 +175,13 @@ Route::put('/editpensiun/{id}', [PensiunController::class, 'updatePensiun'])->na
     // ---------------- AHLI WARIS ----------------
     Route::get('/ahliwarispesertaadmin/{idanggota}', [App\Http\Controllers\Admin\AhliWarisPesertaController::class, 'index'])
         ->name('ahliwarispesertaadmin');
+            Route::get('/tambahahliwarispeserta/{idanggota}', [App\Http\Controllers\Admin\AhliWarisPesertaController::class, 'create'])
+        ->name('tambahahliwarispeserta');
+    Route::post('/tambahahliwarispeserta/{idanggota}', [App\Http\Controllers\Admin\AhliWarisPesertaController::class, 'store'])
+        ->name('simpanahliwarispeserta');
+        Route::delete('/ahliwarispesertaadmin/{id}', [App\Http\Controllers\Admin\AhliWarisPesertaController::class, 'destroy'])
+    ->name('hapusahliwarispeserta');
+
 
 
     // ---------------- IURAN ----------------

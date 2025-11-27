@@ -8,7 +8,7 @@
         <a href="/daftarpesertaadmin" style="text-decoration:none; color:#555;">Daftar Peserta</a> /
         <a href="{{ url('/ahliwarispesertaadmin/' . $peserta->idanggota) }}" style="text-decoration:none; color:#2994A4;">
             Ahli Waris
-        </a> 
+        </a>
     </p>
 @endsection
 
@@ -69,46 +69,71 @@
         </form>
 
         {{-- Judul Tabel --}}
-        <h5 class="mt-4 mb-3 text-center" style="color:#2994A4;">Daftar Anggota Keluarga</h5>
+        @if ($peserta->statusnikah != 'Kawin')
+            <div class="text-end mb-3">
+                <a href="{{ route('tambahahliwarispeserta', $peserta->idanggota) }}" class="btn btn-success"
+                    style="background-color:#2994A4; color:white;">
+                    + Tambah Ahli Waris
+                </a>
+            </div>
+        @endif
 
-        {{-- Tabel Keluarga --}}
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover text-center w-100">
-                <thead style="background-color:#2994A4; color:white;">
+    </div>
+    <h5 class="mt-4 mb-3 text-center" style="color:#2994A4;">Daftar Anggota Keluarga</h5>
+
+    {{-- Tabel Keluarga --}}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover text-center w-100">
+            <thead style="background-color:#2994A4; color:white;">
+                <tr>
+                    <th>Nama Lengkap</th>
+                    <th>Tempat / Tgl Lahir</th>
+                    <th>Jenis Kelamin</th>
+                    <th>Hubungan</th>
+                    <th>Status Hidup</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($ahliwaris as $kel)
                     <tr>
-                        <th>Nama Lengkap</th>
-                        <th>Tempat / Tgl Lahir</th>
-                        <th>Jenis Kelamin</th>
-                        <th>Hubungan</th>
-                        <th>Status Hidup</th>
-                    </tr>
-                </thead>
-<tbody>
-    @forelse ($ahliwaris as $kel)
-        <tr>
-            <td>{{ $kel->nm_keluarga }}</td>
-            <td>{{ $kel->tempatlahir }} /
-                {{ $kel->tgllahir ? \Carbon\Carbon::parse($kel->tgllahir)->format('d-m-Y') : '-' }}
-            </td>
-            <td>{{ $kel->jeniskelamin }}</td>
-            <td>{{ $kel->hubungan }}</td>
-            <td>{{ $kel->statushidup == 1 ? 'Hidup' : 'Meninggal' }}</td>
-        </tr>
-    @empty
-        <tr>
-            <td colspan="5" class="text-muted py-3">Tidak ada ahli waris untuk peserta ini.</td>
-        </tr>
-    @endforelse
-</tbody>
-            </table>
-        </div>
+                        <td>{{ $kel->nm_keluarga }}</td>
+                        <td>{{ $kel->tempatlahir }} /
+                            {{ $kel->tgllahir ? \Carbon\Carbon::parse($kel->tgllahir)->format('d-m-Y') : '-' }}
+                        </td>
+                        <td>{{ $kel->jeniskelamin }}</td>
+                        <td>{{ $kel->hubungan }}</td>
+                        <td>{{ $kel->statushidup == 1 ? 'Hidup' : 'Meninggal' }}</td>
+                        <td class="d-flex justify-content-center align-items-center gap-2">
+                            <a href="#" class="btn btn-sm px-3" style="background-color:#FFC107; color:white;">
+                                <i class="bi bi-pencil-square"></i> Ubah
+                            </a>
 
-        {{-- Tombol Aksi --}}
-        <div class="text-end mt-4 mb-4">
-            <a href="/daftarpesertaadmin" class="btn btn-secondary px-4 me-2">
-                Kembali
-            </a>
-        </div>
+                            <form action="{{ route('hapusahliwarispeserta', $kel->idkeluarga) }}" method="POST"
+                                onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="bi bi-trash"></i> Hapus
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="text-muted py-3">Tidak ada ahli waris untuk peserta ini.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    {{-- Tombol Aksi --}}
+    <div class="text-end mt-4 mb-4">
+        <a href="/daftarpesertaadmin" class="btn btn-secondary px-4 me-2">
+            Kembali
+        </a>
+    </div>
 
     </div>
 

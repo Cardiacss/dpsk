@@ -26,17 +26,24 @@
     <i class="bi bi-plus-lg"></i> Riwayat Iuran & Tunggakan
 </a>
 
-<!-- Search -->
-<div class="mb-3">
-    <input type="text" class="form-control" placeholder="Silahkan Cari Unit Anda">
-</div>
+<form method="GET" action="">
+    <div class="mb-3 d-flex">
+        <input type="text" name="search" class="form-control"
+               placeholder="Silahkan Cari Sekolah Anda"
+               value="{{ request('search') }}">
+
+        <button class="btn btn-primary ms-2" type="submit">
+            Cari
+        </button>
+    </div>
+</form>
 
 <!-- Table -->
 <div class="table-responsive">
     <table class="table table-bordered table-hover text-center mb-0">
         <thead class="table-primary">
             <tr>
-                <th>Unit</th>
+                <th>Sekolah</th>
                 <th>Action</th>
             </tr>
         </thead>

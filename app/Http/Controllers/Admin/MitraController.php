@@ -258,15 +258,19 @@ public function edit($idunit)
     return redirect()->route('admin.mitradansekolah')
         ->with('success', 'Data Unit Mitra berhasil diperbarui.');
 }
-    public function showIuran()
-    {
-        // Ambil semua data dari tabel t_unitmitra
-        $mitras = TUnitMitra::orderBy('idunit')->get();
+    public function showIuran(Request $request)
+{
+    $search = $request->input('search');
 
-        // Kirim data ke view
-        return view('ADMIN.iuranpesertaadmin', compact('mitras'));
-    }
-    public function mitraEdit($idmitra)
+    $mitras = TUnitMitra::when($search, function ($query) use ($search) {
+        $query->where('nama_um', 'LIKE', "%$search%")
+              ->orWhere('idunit', 'LIKE', "%$search%");
+    })
+    ->orderBy('idunit')
+    ->get();
+
+    return view('ADMIN.iuranpesertaadmin', compact('mitras'));
+}    public function mitraEdit($idmitra)
     {
         $mitra = TMitra::findOrFail($idmitra); // pakai model TMitra
         return view('ADMIN.listmitraadminedit', compact('mitra'));
@@ -333,24 +337,45 @@ public function edit($idunit)
     }
 
     // Menampilkan daftar mitra (sekolah) di dalam satu unit
-    public function bukaMitra($idunit)
-    {
-        $unit = TUnitMitra::where('idunit', $idunit)->first();
-        $mitras = TMitra::where('idunit', $idunit)->get();
+    public function bukaMitra(Request $request, $idunit)
+{
+    $unit = TUnitMitra::where('idunit', $idunit)->first();
+    $search = $request->input('search');
 
-        return view('ADMIN.bukamitraadmin', compact('unit', 'mitras'));
+    // Query dasar
+    $query = TMitra::where('idunit', $idunit);
+
+    // Filter hanya berdasarkan nama_um
+    if ($search) {
+        $query->where('nama_um', 'LIKE', '%' . $search . '%');
     }
-    public function daftarPeserta($idmitra)
-    {
-        // Ambil mitra sesuai ID
-        $mitra = TMitra::findOrFail($idmitra);
 
-        // Ambil semua peserta dengan idmitra tersebut
-        $peserta = TPeserta::where('idmitra', $idmitra)->get();
+    $mitras = $query->get();
 
-        // Kirim ke view
-        return view('ADMIN.daftarpesertaiuranadmin', compact('mitra', 'peserta'));
+    return view('ADMIN.bukamitraadmin', compact('unit', 'mitras', 'search'));
+}
+public function daftarPeserta(Request $request, $idmitra)
+{
+    // Ambil mitra berdasarkan ID
+    $mitra = TMitra::findOrFail($idmitra);
+
+    // Ambil input pencarian
+    $search = $request->input('search');
+
+    // Query peserta
+    $query = TPeserta::where('idmitra', $idmitra);
+
+    // Filter nama peserta
+    if ($search) {
+        $query->where('nama', 'LIKE', '%' . $search . '%');
     }
+
+    $peserta = $query->get();
+
+    $nilai = TNilaiAktuaria::where('idunit', $mitra->idunit)->first();
+
+    return view('ADMIN.daftarpesertaiuranadmin', compact('mitra', 'peserta', 'nilai', 'search'));
+}
     public function editIPeserta($idanggota)
     {
         $peserta = TPeserta::findOrFail($idanggota);

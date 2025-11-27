@@ -233,7 +233,6 @@
 
 <body>
     @php
-        // ✅ Fungsi aktif menu & submenu (cukup 1x di sini)
         function isActiveMenu($patterns)
         {
             foreach ((array) $patterns as $pattern) {
@@ -278,6 +277,7 @@
                         request()->is('detailpesertaadmin*') ||
                         request()->is('tanggunganpesertaadmin*') ||
                         request()->is('ahliwarispesertaadmin*') ||
+                        request()->is('tambahahliwarispeserta*') ||
                         request()->is('tambahkeluarga*') ||
                         request()->is('tambahkeluarga*') ||
                         request()->is('editanggotaahliwarispesertaadmin*')
@@ -306,7 +306,7 @@
                         <a class="nav-link d-flex align-items-left {{ isActiveMenu($mitraPatterns) ? 'active-parent' : '' }}"
                             href="#mitraMenu" data-toggle="collapse"
                             aria-expanded="{{ isActiveMenu($mitraPatterns) ? 'true' : 'false' }}">
-                            <i class="bi bi-building mr-2"></i> Mitra
+                            <i class="bi bi-building mr-2"></i> Mitra 
                             <i class="bi bi-caret-down-fill ml-auto"></i>
                         </a>
                         <div class="collapse {{ isActiveMenu($mitraPatterns) ? 'show' : '' }}" id="mitraMenu">
@@ -349,8 +349,6 @@
                                 'daftarpesertaiuranadmin*',
                                 'catatiuran*',
                                 'editiuranpeserta*',
-                                
-
                             ];
                         @endphp
 
@@ -364,7 +362,7 @@
                         <div class="collapse {{ isActiveMenu($kepersertaanPatterns) ? 'show' : '' }}"
                             id="kepersertaanMenu">
                             <div class="submenu">
-                                <a class="nav-link {{ isActiveSubMenu(['iuranpesertaadmin*', 'detailmitraadmin*', 'riwayatiuranadmin*', 'bukamitraadmin*', 'daftarpesertaiuranadmin*','catatiuran*','editiuranpeserta*','editcatat*']) ? 'active' : '' }}"
+                                <a class="nav-link {{ isActiveSubMenu(['iuranpesertaadmin*', 'detailmitraadmin*', 'riwayatiuranadmin*', 'bukamitraadmin*', 'daftarpesertaiuranadmin*', 'catatiuran*', 'editiuranpeserta*', 'editcatat*']) ? 'active' : '' }}"
                                     href="/iuranpesertaadmin">
                                     Iuran Peserta
                                 </a>
@@ -381,7 +379,6 @@
                             $kepensiunanPatterns = [
                                 'pengajuanpensiun*',
                                 'formpengajuanpensiunadmin*',
-                                'pengubahanpensiun*',
                                 'daftarpensiunadmin*',
                                 'lihatpensiun*',
                                 'pilihpensiun*',
@@ -413,34 +410,29 @@
                         <div class="collapse {{ isActiveMenu($kepensiunanPatterns) ? 'show' : '' }}"
                             id="kepensiunanMenu">
                             <div class="submenu">
-                                <a class="nav-link {{ isActiveSubMenu(['pengajuanpensiun*', 'formpengajuanpensiunadmin*']) ? 'active' : '' }}"
+                                <a class="nav-link {{ isActiveSubMenu(['pengajuanpensiun*', 'formpengajuanpensiunadmin*','editpensiun*']) ? 'active' : '' }}"
                                     href="/pengajuanpensiun">
-                                    Pengajuan Pensiun
-                                </a>
-
-                                <a class="nav-link {{ isActiveSubMenu(['pengubahanpensiun*', 'editpensiun*',]) ? 'active' : '' }}"
-                                    href="/pengubahanpensiun">
-                                    Pengubahan
+                                    Pencatatan Pensiun
                                 </a>
 
 
-                                <a class="nav-link {{ isActiveSubMenu(['Kepensiunan*', 'lihatpensiun*','detailpesertaaktif*', 'pensiun/edit*']) ? 'active' : '' }}"
+                                <a class="nav-link {{ isActiveSubMenu(['Kepensiunan*', 'lihatpensiun*', 'detailpesertaaktif*', 'pensiun/edit*']) ? 'active' : '' }}"
                                     href="/lihatpensiun">
                                     Lihat
                                 </a>
 
 
-                                <a class="nav-link {{ isActiveSubMenu(['manfaat*', 'cetakmanfaat*','cekmanfaat*']) ? 'active' : '' }}"
+                                <a class="nav-link {{ isActiveSubMenu(['manfaat*', 'cetakmanfaat*', 'cekmanfaat*']) ? 'active' : '' }}"
                                     href="/manfaat">
                                     Pemberian Manfaat
                                 </a>
 
-                                <a class="nav-link {{ isActiveSubMenu(['riwayatmanfaat*', 'pilihpensiun*','detailpesertapensiun*']) ? 'active' : '' }}"
+                                <a class="nav-link {{ isActiveSubMenu(['riwayatmanfaat*', 'pilihpensiun*', 'detailpesertapensiun*']) ? 'active' : '' }}"
                                     href="/riwayatmanfaat">
                                     Riwayat
                                 </a>
 
-                                <a class="nav-link {{ isActiveSubMenu(['terminasipensiun*','detailterminasipensiunadmin*']) ? 'active' : '' }}"
+                                <a class="nav-link {{ isActiveSubMenu(['terminasipensiun*', 'detailterminasipensiunadmin*']) ? 'active' : '' }}"
                                     href="/terminasipensiun">
                                     Terminasi
                                 </a>
@@ -450,12 +442,7 @@
 
                         <!-- MASTER -->
                         @php
-                            $masterPatterns = [
-                                'faktornilai*',
-                                'indeks*',
-                                'sukubunga*',
-                                'peraturan*',
-                            ];
+                            $masterPatterns = ['faktornilai*', 'indeks*', 'sukubunga*', 'peraturan*'];
                         @endphp
                         <a class="nav-link d-flex align-items-left {{ isActiveMenu($masterPatterns) ? 'active-parent' : '' }}"
                             href="#masterMenu" data-toggle="collapse"

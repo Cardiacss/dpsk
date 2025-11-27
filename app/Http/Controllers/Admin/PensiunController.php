@@ -409,4 +409,11 @@ public function updatePensiun(Request $request, $id)
 return redirect('/pengubahanpensiun')
        ->with('success', 'Data pensiun berhasil diperbarui!');
 }
+public function editPensiunByAnggota($idanggota)
+{
+    $pensiun = TAPensiun::where('idanggota', $idanggota)->firstOrFail();
+    $peserta = TPeserta::find($idanggota);
+
+    return view('ADMIN.editpensiun', compact('pensiun', 'peserta'));
+}
 }

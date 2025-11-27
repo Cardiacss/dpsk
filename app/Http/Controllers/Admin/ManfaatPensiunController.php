@@ -117,14 +117,11 @@ class ManfaatPensiunController extends Controller
     }
 
     // Detail Pensiunan
-public function detail($idanggota)
+public function detail($id)
 {
-    // Ambil pensiun beserta relasi peserta (TAnggota)
-    $pensiun = TAPensiun::with('peserta')   // pastikan relasi peserta() ada di model TAPensiun
-                ->where('idanggota', $idanggota)
-                ->firstOrFail();
+    $manfaat = TAPensiun::with('peserta.mitra')->find($id);
 
-    return view('ADMIN.detailpesertaaktif', compact('pensiun'));
+    return response()->json($manfaat);
 }
     // Edit Pensiunan
     public function edit($idpensiun)
