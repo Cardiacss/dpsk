@@ -40,6 +40,16 @@
                         <a href="{{ route('manfaat.index') }}" class="btn btn-secondary">Clear</a>
                     </div>
                 </form>
+<div class="mb-4">
+    <h5>Upload Excel Manfaat</h5>
+    <form action="{{ route('manfaat.import') }}" method="POST" enctype="multipart/form-data" class="d-flex gap-2 align-items-end">
+        @csrf
+        <div>
+            <input type="file" name="file" class="form-control" accept=".xls,.xlsx" required>
+        </div>
+        <button type="submit" class="btn btn-success">Import</button>
+    </form>
+</div>
 
                 <!-- Tabel Daftar Manfaat -->
                 <div class="card shadow-sm">
@@ -58,7 +68,7 @@
                                 <tbody>
                                     @forelse ($manfaat as $index => $item)
                                         <tr class="text-center">
-                                            <td>{{ $index + 1 }}</td>
+                                            <td>{{ $manfaat->firstItem() + $index }}</td>
                                             <td>{{ $item->nopensiun }}</td>
                                             <td>{{ $item->peserta->nama ?? '-' }}</td>
                                             <td>{{ $item->peserta->mitra->nama_um ?? '-' }}</td>
@@ -76,6 +86,9 @@
                                     @endforelse
                                 </tbody>
                             </table>
+                            <div class="mt-3">
+    {{ $manfaat->links('pagination::bootstrap-5') }}
+</div>
                         </div>
                     </div>
                 </div>
@@ -169,12 +182,13 @@
                 </div>
             </div>
 
-            <div class="mb-3 row">
-                <label class="col-md-4 col-form-label">Tanggal Beri:</label>
-                <div class="col-md-8">
-                    <input type="date" name="tglberimanfaat" class="form-control" value="${data.tglberimanfaat ?? ''}">
-                </div>
-            </div>
+<div class="mb-3 row">
+    <label class="col-md-4 col-form-label">Bulan & Tahun Beri:</label>
+    <div class="col-md-8">
+        <input type="month" name="tglberimanfaat" class="form-control" 
+            value="${data.tglberimanfaat ? data.tglberimanfaat.substr(0,7) : ''}">
+    </div>
+</div>
 
             <div class="mb-3 row">
                 <label class="col-md-4 col-form-label">Manfaat Untuk:</label>

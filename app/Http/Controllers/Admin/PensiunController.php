@@ -57,7 +57,7 @@ public function daftarSemua(Request $request)
     }
 
     // Ambil hasil dengan pagination
-    $data = $query->paginate(10);
+    $data = $query->paginate(20);
 
     return view('ADMIN.kepensiunan', compact('data'));
 }
@@ -159,7 +159,12 @@ public function pengajuanPensiun(Request $request)
         $query->where('nopeserta', 'like', '%' . $search . '%');
     }
 
-    $peserta = $query->get();
+   $peserta = $query->orderBy('nama')   // optional, biar rapi
+                 ->paginate(20)
+                 ->appends([
+                     'search' => $search,
+                     'idmitra' => $idmitra
+                 ]);
 
     return view('ADMIN.pengajuanpensiunadmin', compact('peserta', 'mitraList', 'idmitra', 'search'));
 }
@@ -315,7 +320,16 @@ public function simulasiView(Request $request)
             return response()->json(['error' => 'Data peserta tidak ditemukan.']);
         }
 
-        $statusNikah     = $peserta->statusnikah ?? 'Belum Kawin';
+$statusNikah = trim($peserta->statusnikah ?? 'Belum Kawin');
+
+// Konversi K / TK menjadi teks lengkap
+if ($statusNikah === 'K') {
+    $statusNikah = 'Kawin';
+} elseif ($statusNikah === 'TK') {
+    $statusNikah = 'Tidak Kawin';
+} elseif (strtolower($statusNikah) === 'belum kawin') {
+    $statusNikah = 'Tidak Kawin';
+}
         $jenisKelamin    = $peserta->jeniskelamin ?? 'Pria';
         $pekerjaanakhir  = $peserta->pkerjaanakhir ?? 'PEGAWAI';
 
@@ -357,15 +371,17 @@ public function simulasiView(Request $request)
             'pekerjaan_terakhir' => $pekerjaanakhir,
             'usia' => round($usiaPeserta, 2),
             'usia_pensiun' => round($usiaPensiun, 2),
+            'status_kawin' => $statusNikah,
             'phdp' => $phdp,
             'fnss' => $fnss,
             'perhitungan' => $steps, // <<<<<<<<<< INI YANG TAMPILKAN LANGKAH
-            'manfaat' => [
-                'MP'   => round($rumusMP, 2),
-                '100%' => round($fnss * $rumusMP * 12, 2),
-                '80%'  => round(0.8 * ($masaKerja * 0.021 * $phdp), 2),
-                '20%'  => round(0.2 * $fnss * $rumusMP * 12, 2),
-            ]
+'manfaat' => [
+    'MP'   => round($rumusMP, 2),
+    '100%' => round($fnss * $rumusMP * 12, 2),
+    'status_kawin' => $statusNikah,
+    '20%'  => round(0.2 * $fnss * $rumusMP * 12, 2),
+    '80%'  => round(0.8 * ($masaKerja * 0.021 * $phdp), 2),
+]
         ]);
 
     } catch (\Exception $e) {
@@ -406,7 +422,7 @@ public function updatePensiun(Request $request, $id)
 
     $pensiun->update($validated);
 
-return redirect('/pengubahanpensiun')
+return redirect('/pengajuanpensiun')
        ->with('success', 'Data pensiun berhasil diperbarui!');
 }
 public function editPensiunByAnggota($idanggota)

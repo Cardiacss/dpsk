@@ -40,7 +40,7 @@
             <tbody>
                 @forelse ($mitra as $index => $m)
                     <tr class="text-center">
-                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $mitra->firstItem() + $index }}</td>
                         <td>{{ $m->idmitra }}</td>
                         <td>{{ $m->nama_um }}</td>
                         <td>
@@ -56,5 +56,8 @@
                 @endforelse
             </tbody>
         </table>
+        <div class="mt-3">
+    {{ $mitra->links('pagination::bootstrap-5') }}
+</div>
     </div>
 @endsection

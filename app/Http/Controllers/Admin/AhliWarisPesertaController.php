@@ -89,5 +89,35 @@ public function store(Request $request, $idanggota)
     return redirect('/ahliwarispesertaadmin/' . $idanggota)
         ->with('success', 'Ahli waris berhasil dihapus.');
 }
+public function edit($id)
+{
+    $keluarga = TKeluarga::findOrFail($id); // ambil data keluarga
+    $peserta = $keluarga->peserta;         // ambil peserta terkait
+
+    return view('ADMIN.editahliwaris', compact('keluarga', 'peserta'));
+}
+
+    // Menyimpan perubahan dari form edit
+    public function update(Request $request, $idkeluarga)
+    {
+        $data = TKeluarga::findOrFail($idkeluarga);
+
+        // Update fields
+        $data->nm_keluarga = $request->nm_keluarga;
+        $data->tempatlahir = $request->tempatlahir;
+        $data->tgllahir = $request->tgllahir;
+        $data->jeniskelamin = $request->jeniskelamin;
+        $data->hubungan = $request->hubungan;
+        $data->statushidup = $request->statushidup;
+        $data->pekerjaan = $request->pekerjaan;
+        $data->keterangan_kel = $request->keterangan_kel;
+        $data->notunjukwaris = $request->notunjukwaris;
+        $data->nomohonwaris = $request->nomohonwaris;
+
+        $data->save();
+
+        return redirect('/ahliwarispesertaadmin/' . $data->idanggota)
+    ->with('success', 'Data ahli waris berhasil diupdate');
+    }
 
 }

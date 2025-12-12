@@ -105,9 +105,9 @@
                         <td>{{ $kel->hubungan }}</td>
                         <td>{{ $kel->statushidup == 1 ? 'Hidup' : 'Meninggal' }}</td>
                         <td class="d-flex justify-content-center align-items-center gap-2">
-                            <a href="#" class="btn btn-sm px-3" style="background-color:#FFC107; color:white;">
-                                <i class="bi bi-pencil-square"></i> Ubah
-                            </a>
+<a href="{{ route('ahliwaris.edit', $kel->idkeluarga) }}" class="btn btn-sm px-3" style="background-color:#FFC107; color:white;">
+    <i class="bi bi-pencil-square"></i> Ubah
+</a>
 
                             <form action="{{ route('hapusahliwarispeserta', $kel->idkeluarga) }}" method="POST"
                                 onsubmit="return confirm('Yakin ingin menghapus data ini?')">

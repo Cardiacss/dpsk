@@ -65,31 +65,44 @@
                         required>
                 </div>
 
-                <!-- IP -->
 <div class="mb-3">
-    <label class="form-label fw-bold">IP</label>
+    <label class="form-label fw-bold">IP (Iuran Peserta)</label>
     <div class="input-group">
-        <input type="number" name="ip" step="0.01" value="6" class="form-control" required>
+        <input type="number" name="ip" id="ip" step="0.01" value="6" class="form-control" readonly>
         <span class="input-group-text">%</span>
     </div>
 </div>
 
-                <!-- IPK -->
+<!-- Iuran Normal (yang diinput user) -->
 <div class="mb-3">
-    <label class="form-label fw-bold">IPK</label>
+    <label class="form-label fw-bold">Iuran Normal</label>
     <div class="input-group">
-        <input type="number" name="ipk" step="0.01" placeholder="Masukkan nilai IPK" class="form-control" required>
+        <input type="number" name="nilaitambahan" id="nilaitambahan" step="0.01"
+               placeholder="Masukkan Iuran Normal" class="form-control" required
+               oninput="hitungIPK()">
         <span class="input-group-text">%</span>
     </div>
 </div>
 
-                <!-- Nilai Tambahan -->
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Nilai Tambahan</label>
-                    <input type="number" name="nilaitambahan" step="0.01"
-                        placeholder="Masukkan nilai tambahan (opsional)" class="form-control">
-                </div>
+<!-- IPK = Iuran Normal - 6% (otomatis) -->
+<div class="mb-3">
+    <label class="form-label fw-bold">IPK (Iuran Pemberi Kerja)</label>
+    <div class="input-group">
+        <input type="number" name="ipk" id="ipk" step="0.01" class="form-control" readonly>
+        <span class="input-group-text">%</span>
+    </div>
+</div>
 
+<script>
+function hitungIPK() {
+    let ip = 6; // fixed 6%
+    let iuranNormal = parseFloat(document.getElementById('nilaitambahan').value) || 0;
+    let ipk = iuranNormal - ip;
+
+    // Tidak boleh minus
+    document.getElementById('ipk').value = ipk > 0 ? ipk.toFixed(2) : 0;
+}
+</script>
                 <!-- Tombol -->
                 <div class="d-flex justify-content-center mt-4" style="gap:10px;">
                     <a href="/datanilaiaktuariaadmin?idunit={{ $mitra->idunit }}" class="btn btn-secondary"

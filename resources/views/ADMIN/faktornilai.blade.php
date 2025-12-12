@@ -17,6 +17,13 @@
     <p class="text-center mb-4">
         Faktor Nilai (FNS s/b) Pegawai/Guru, Pria/Wanita, Kawin/Lajang
     </p>
+    <form action="{{ route('faktornilai.import') }}" method="POST" enctype="multipart/form-data" class="mb-3">
+    @csrf
+    <div class="input-group">
+        <input type="file" name="file" class="form-control" accept=".xlsx,.xls" required>
+        <button class="btn btn-primary" type="submit">Import Excel</button>
+    </div>
+</form>
 
     <div class="row">
 

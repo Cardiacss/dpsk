@@ -1,6 +1,6 @@
 @extends('ADMIN.layouts.main')
 
-@section('title', 'Form Pengajuan Pensiun')
+@section('title', 'Form Pencatatan Pensiun')
 
 @section('breadcrumb')
     <p class="text-muted" style="font-size: 14px;">
@@ -38,22 +38,12 @@
 
                     <div class="mb-3">
                         <label class="form-label">Pekerjaan</label>
-                        <input type="text" name="pekerjaan" value="GURU" class="form-control" />
+                        <input type="text" name="pekerjaan" value="GURU" class="form-control" readonly/>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">No Pensiun</label>
                         <input type="text" name="nopensiun" class="form-control" required />
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Surat keterangan tambahan</label>
-                        <select id="sk_tambahan" name="sk_tambahan" class="form-select form-control w-100">
-                            <option value="">-- Pilih Surat Keterangan --</option>
-                            <option value="SK Kematian">SK Kematian</option>
-                            <option value="SK Sakit">SK Sakit</option>
-                        </select>
-
                     </div>
 
                     <div id="form_sk_tambahan" class="mb-3 d-none">
@@ -92,7 +82,7 @@
                         <div class="col">
                             <label class="form-label">Tanggal Lahir</label>
                             <input type="date" name="tgllahir"
-                                value="{{ $peserta->tgllahir ? date('Y-m-d', strtotime($peserta->tgllahir)) : '' }}"
+                                value="{{ $peserta->tgllahir ? date('Y-m-d', strtotime($peserta->tgllahir)) : '' }}" readonly
                                 class="form-control">
                         </div>
                         <div class="col">
@@ -102,13 +92,6 @@
                                 class="form-control">
                         </div>
                     </div>
-
-                    <div class="mb-3 mt-2">
-                        <label class="form-label">Keterangan</label>
-                        <textarea name="keterangan" rows="3" class="form-control" placeholder="Masukkan keterangan tambahan jika ada..."
-                            required></textarea>
-                    </div>
-
                     <div class="mb-3">
                         <label class="form-label">Nomor SK Pensiun</label>
                         <input type="text" name="nosuratberhenti" class="form-control" required>
@@ -117,11 +100,6 @@
                     <div class="mb-3">
                         <label class="form-label">Tgl Pensiun (TMP)</label>
                         <input type="date" name="tmtpensiun" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Nilai Variabel</label>
-                        <input type="text" name="nilaivariabel" value="0.021" class="form-control">
                     </div>
 
                     <div class="mb-3">
@@ -142,13 +120,6 @@
                     <div class="mb-3">
                         <label class="form-label">Batas maksimum MP</label>
                         <input type="text" name="batasmp" value="2000000" class="form-control">
-                    </div>
-
-                    <div class="mb-3">
-                        <button id="btnSimulasi" type="button" class="btn text-white w-100"
-                            style="background-color:#2994A4;">
-                            Jalankan Simulasi
-                        </button>
                     </div>
                 </div>
             </div>

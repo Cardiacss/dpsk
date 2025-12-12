@@ -94,6 +94,7 @@ Route::get('/simulasi/{idanggota}', [IuranController::class, 'showSimulasiPesert
     ->name('admin.simulasi.show');
     Route::get('/admin/simulasiView', [App\Http\Controllers\Admin\PensiunController::class, 'simulasiView']);
 Route::get('/faktornilai', [App\Http\Controllers\Admin\MasterController::class, 'indexFaktor'])->name('faktornilai.index');
+Route::post('faktornilai/import', [MasterController::class, 'importFaktorNilai'])->name('faktornilai.import');
 Route::post('/faktornilai/update', [App\Http\Controllers\Admin\MasterController::class, 'updateFaktor'])->name('faktornilai.update');
 Route::get('/cetak-penawaran-pensiun', [CetakController::class, 'cetakPenawaran']);
 Route::get('/cetak-data-pembuatan-sk', [CetakController::class, 'cetakPembuatanSK']);
@@ -117,6 +118,7 @@ Route::get('/cetak-sk', [CetakController::class, 'cetakSK']);
     Route::get('/pilihpensiun/{idmitra}', [App\Http\Controllers\Admin\PensiunController::class, 'index'])
         ->name('admin.pilihpensiun');
     Route::get('/manfaat', [App\Http\Controllers\Admin\ManfaatPensiunController::class, 'indexManfaat'])->name('manfaat.index');
+    Route::post('/manfaat/import', [App\Http\Controllers\Admin\ManfaatPensiunController::class, 'import'])->name('manfaat.import');
     Route::get('/cekmanfaat/{idpensiun}', [App\Http\Controllers\Admin\ManfaatPensiunController::class, 'cekManfaat'])->name('cekmanfaat');
 
 Route::put('/cekmanfaat/{idpensiun}', [App\Http\Controllers\Admin\ManfaatPensiunController::class, 'updateManfaat'])->name('cekmanfaat.update');
@@ -181,7 +183,11 @@ Route::put('/editpensiun/{id}', [PensiunController::class, 'updatePensiun'])->na
         ->name('simpanahliwarispeserta');
         Route::delete('/ahliwarispesertaadmin/{id}', [App\Http\Controllers\Admin\AhliWarisPesertaController::class, 'destroy'])
     ->name('hapusahliwarispeserta');
+Route::get('ahliwaris/edit/{id}', [App\Http\Controllers\Admin\AhliWarisPesertaController::class, 'edit'])->name('ahliwaris.edit');
 
+// Menyimpan perubahan dari form edit
+Route::post('ahliwaris/update/{id}', [App\Http\Controllers\Admin\AhliWarisPesertaController::class, 'update'])->name('ahliwaris.update');
+Route::put('/ahliwaris/update/{id}', [App\Http\Controllers\Admin\AhliWarisPesertaController::class, 'update'])->name('ahliwaris.update');
 
 
     // ---------------- IURAN ----------------
@@ -196,6 +202,8 @@ Route::put('/editpensiun/{id}', [PensiunController::class, 'updatePensiun'])->na
 
     Route::get('/mitradansekolahadmin', [App\Http\Controllers\Admin\MitraController::class, 'index'])
         ->name('admin.mitradansekolah');
+        Route::put('/unit/toggle/{idunit}', [App\Http\Controllers\Admin\MitraController::class, 'toggleStatus'])
+    ->name('unit.toggle');
 
     Route::get('/inputmitraadmin', [App\Http\Controllers\Admin\MitraController::class, 'create'])
         ->name('admin.inputmitra');
@@ -247,6 +255,8 @@ Route::put('/editpensiun/{id}', [PensiunController::class, 'updatePensiun'])->na
         ->name('admin.bukamitra');
     Route::get('/daftarpesertaiuranadmin/{idmitra}', [App\Http\Controllers\Admin\MitraController::class, 'daftarPeserta'])
         ->name('admin.daftarpesertaiuran');
+        Route::post('/import-iuran/{idmitra}', [IuranController::class, 'importExcel'])
+    ->name('peserta.import');
     Route::get('/editiuranpesertaadmin/{idanggota}', [App\Http\Controllers\Admin\MitraController::class, 'editIPeserta'])
         ->name('admin.editiuranpeserta');
 Route::get('/catatiuranadmin/{idanggota}/{idunit}', [App\Http\Controllers\Admin\MitraController::class, 'createIuran'])
@@ -275,6 +285,33 @@ Route::get('/catatiuranadmin/{idanggota}/{idunit}', [App\Http\Controllers\Admin\
         ->name('nilaiaktuaria.destroy');
     Route::get('/nilaiaktuaria/show', [NilaiAktuariaController::class, 'showByMitra'])
         ->name('nilaiaktuaria.show');
+        Route::get('/otorisasi', function () {
+    // Variabel dummy untuk tampilan
+    $direkturUtama = collect([
+        (object)['nama_pengurus' => 'John Doe', 'jabatan' => 'Direktur Utama']
+    ]);
+    $direktur = collect([
+        (object)['nama_pengurus' => 'Jane Smith', 'jabatan' => 'Direktur']
+    ]);
+
+    return view('admin.otorisasi', compact('direkturUtama', 'direktur'));
+})->name('admin.otorisasi');
+
+Route::post('/otorisasi/store', function () {
+    // Hanya dummy, sementara tidak menyimpan
+    return redirect()->route('admin.otorisasi')->with('success', 'Teks otorisasi berhasil disimpan (dummy).');
+})->name('admin.otorisasi.store');
+
+Route::get('/otorisasi', function () {
+    $direkturUtama = collect([
+        (object)['isi' => '', 'jabatan' => 'Direktur Utama']
+    ]);
+    $direktur = collect([
+        (object)['isi' => '', 'jabatan' => 'Direktur']
+    ]);
+
+    return view('admin.otorisasi', compact('direkturUtama', 'direktur'));
+})->name('admin.otorisasi');
 
     Route::get('/editnilaiaktuariaadmin', function () {
         //

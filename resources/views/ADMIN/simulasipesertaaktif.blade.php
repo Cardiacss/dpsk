@@ -173,89 +173,219 @@ function tampilkanFormSurat() {
     document.getElementById("formSakit").style.display = jenis === "sakit" ? "block" : "none";
 }
 
+/**
+ * Utility formatting
+ */
+function formatRp(value) {
+    if (value === undefined || value === null || value === "") return "-";
+    // if it's a string, try parse
+    const n = typeof value === 'string' ? parseFloat(value) : value;
+    if (isNaN(n)) return value;
+    return new Intl.NumberFormat('id-ID').format(n);
+}
+
+/**
+ * Get manfaat value safely (backend may send res.manfaat or res.mp)
+ */
+function getManfaat(res, key) {
+    // key examples: 'MP', '100%', '80%', '20%'
+    if (res.manfaat && res.manfaat[key] !== undefined) return res.manfaat[key];
+    // sometimes backend returns mp as res.mp (single)
+    if (key === 'MP' && res.mp !== undefined) return res.mp;
+    // 100% may be under '100' or 'manfaat100' in some endpoints — try common fallbacks
+    if ((key === '100%' || key === '100') && (res.manfaat && (res.manfaat['100%'] !== undefined || res.manfaat['100'] !== undefined))) {
+        return res.manfaat['100%'] ?? res.manfaat['100'];
+    }
+    return '';
+}
+
 document.getElementById("btnSimulasi").addEventListener("click", function () {
+    const btn = this;
+    btn.disabled = true;
+    btn.innerText = "Memproses...";
 
     const data = {
         idanggota: document.getElementById("idanggota").value,
         tmtpensiun: document.getElementById("tmtpensiun").value,
         dodt: document.getElementById("dodt")?.value || '',
         batasmanfaatbulanan: document.getElementById("batasmanfaatbulanan").value,
+        suratketerangan: document.getElementById("suratketerangan").value || '',
         _token: "{{ csrf_token() }}"
     };
 
     fetch("{{ route('admin.simulasipesertaaktif.hitung') }}", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": "{{ csrf_token() }}"
-        },
-        body: JSON.stringify(data)
+    method: "POST",
+    mode: "same-origin",
+    credentials: "same-origin",
+    headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+    },
+    body: JSON.stringify(data)
+})
+    .then(async res => {
+        btn.disabled = false;
+        btn.innerText = "Jalankan Simulasi";
+        if (!res.ok) {
+            const txt = await res.text().catch(()=>null) || 'Terjadi kesalahan server';
+            throw new Error(txt);
+        }
+        return res.json();
     })
-    .then(res => res.json())
     .then(res => {
         let html = '';
+        let judul = '';
+        let warna = 'primary';
 
-        if (res.tipe === 'normal') {
+        // Tentukan teks & warna kartu dari response
+        if (res.tipe === 'meninggal') {
+            judul = "Pensiun Janda / Duda Pasif";
+            warna = "danger";
+        } else if (res.tipe === 'disabilitas' || res.jenis === 'disabilitas') {
+            judul = "Pensiun Disabilitas";
+            warna = "warning";
+        } else if (res.tipe === 'cepat') {
+            judul = "Pensiun Cepat";
+            warna = "info";
+        } else if (res.tipe === 'tunda') {
+    judul = "Pensiun Tunda";
+    warna = "secondary";
+        } else {
+            judul = "Pensiun Normal";
+            warna = "primary";
+        }
 
+        // Render per tipe
+        if (res.tipe === 'meninggal') {
             html = `
-                <div class="card mt-4 shadow-sm">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">📘 Simulasi Normal (Tidak Meninggal)</h5>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-bordered">
-                            <tr><th>Masa Kerja</th><td>${res.masa_kerja} </td></tr>
-                            <tr><th>Usia</th><td>${res.usia}</td></tr>
-                            <tr><th>Usia Pensiun</th><td>${res.usia_pensiun}</td></tr>
-                            <tr><th>Status Perkawinan</th><td>${res.status_kawin}</td></tr>
-                            <tr><th>Jenis Kelamin</th><td>${res.jenis_kelamin}</td></tr>
-                            <tr><th>Pekerjaan Terakhir</th><td>${res.pkerjaanakhir}</td></tr>
-                            <tr><th>MP</th><td><strong>Rp ${new Intl.NumberFormat('id-ID').format(res.manfaat.MP)}</strong></td></tr>
-                            <tr><th>100%</th><td><strong>Rp ${new Intl.NumberFormat('id-ID').format(res.manfaat['100%'])}</strong></td></tr>
-                            <tr><th>80%</th><td><strong>Rp ${new Intl.NumberFormat('id-ID').format(res.manfaat['80%'])}</strong></td></tr>
-                            <tr><th>20%</th><td><strong>Rp ${new Intl.NumberFormat('id-ID').format(res.manfaat['20%'])}</strong></td></tr>
-                        </table>
-                    </div>
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-${warna} text-white">
+                    <h5 class="mb-0"> ${judul}</h5>
                 </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tr><th>Jenis Pensiun</th><td>${judul}</td></tr>
+                        <tr><th>Masa Kerja</th><td>${res.masakerja ?? '-'}</td></tr>
+                        <tr><th>Usia Saat Pensiun</th><td>${res.usiapensiun ?? '-'}</td></tr>
+                        <tr><th>Status Kawin</th><td>${res.status_kawin ?? res.statuspensiun ?? '-'}</td></tr>
+                        <tr><th>Jenis Kelamin</th><td>${res.jenis_kelamin ?? '-'}</td></tr>
+                        <tr><th>Pekerjaan Terakhir</th><td>${res.pekerjaan_terakhir ?? '-'}</td></tr>
+                        <tr class="table-success">
+                            <th>Manfaat 60%</th>
+                            <td style="font-size: 18px;"><strong>Rp ${formatRp(res.mp ?? getManfaat(res,'MP'))}</strong></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
             `;
+        }
+        else if (res.tipe === 'disabilitas' || res.jenis === 'disabilitas') {
+            html = `
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-${warna} text-dark">
+                    <h5 class="mb-0">♿ ${judul}</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tr><th>Jenis Pensiun</th><td>${judul}</td></tr>
+<tr><th>Jenis Kelamin</th><td>${res.jenis_kelamin ?? '-'}</td></tr>
+<tr><th>Status Kawin</th><td>${res.status_kawin ?? '-'}</td></tr>
+<tr><th>Pekerjaan Terakhir</th><td>${res.pekerjaan_terakhir ?? '-'}</td></tr>
+<tr><th>MP Bulanan</th>
+    <td><strong>Rp ${formatRp(res.mp_bulanan ?? '-')}</strong></td></tr>
 
-        } else if (res.tipe === 'meninggal') {
+<tr><th>100%</th>
+    <td><strong>Rp ${formatRp(res["100%"] ?? '-')}</strong></td></tr>
+
+<tr><th>80% dari manfaat pensiun</th>
+    <td><strong>Rp ${formatRp(res["80%"] ?? '-')}</strong></td></tr>
+
+<tr><th>20% dari 100% </th>
+    <td><strong>Rp ${formatRp(res["20%"] ?? '-')}</strong></td></tr>
+                    </table>
+                </div>
+            </div>
+            `;
+        }
+        else if (res.tipe === 'tunda') {
+    judul = "Pensiun Tunda";
+    warna = "secondary";
+
+    html = `
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-${warna} text-white">
+            <h5 class="mb-0">⏳ ${judul}</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+
+                <tr><th>Jenis Pensiun</th><td>${judul}</td></tr>
+                <tr><th>Usia Saat Berhenti</th><td>${res.usia ?? '-'}</td></tr>
+                <tr><th>Usia Peserta Saat Rencana Pensiun</th><td>${res.usia_pensiun ?? '-'}</td></tr>
+                <tr><th>Masa Kerja</th><td>${res.masa_kerja ?? res.masakerja ?? '-'}</td></tr>
+
+                <tr class="table-warning">
+                    <th>Keterangan</th>
+                    <td><strong>${res.pesan ?? 'Peserta masuk kategori pensiun tunda'}</strong></td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+    `;
+}
+        else {
+            // Normal / Cepat
+            // Use res.manfaat if present; fallback to res.mp
+            const mpVal = getManfaat(res,'MP');
+            const mp100 = getManfaat(res,'100%');
+            const mp80 = getManfaat(res,'80%');
+            const mp20 = getManfaat(res,'20%');
 
             html = `
-                <div class="card mt-4 shadow-sm">
-                    <div class="card-header bg-danger text-white">
-                        <h5 class="mb-0">⚰️ Simulasi Meninggal</h5>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-striped table-bordered mt-2">
-                            <tbody>
-                                <tr><th>Masa Kerja</th><td>${res.masakerja}</td></tr>
-                                <tr><th>Usia Saat Pensiun</th><td>${res.usiapensiun}</td></tr>
-                                <tr><th>Status Perkawinan</th><td>${res.status_kawin}</td></tr>
-                                <tr><th>Jenis Kelamin</th><td>${res.jenis_kelamin}</td></tr>
-                                <tr><th>Status Pensiun</th><td>${res.statuspensiun}</td></tr>
-                                <tr><th>Pekerjaan Terakhir</th><td>${res.pekerjaan_terakhir}</td></tr>
-                                <tr class="table-secondary">
-                                    <th>Manfaat Bulanan</th>
-                                    <td><strong>Rp ${new Intl.NumberFormat('id-ID').format(res.batasmanfaatbulanan)}</strong></td>
-                                </tr>
-                                <tr class="table-success">
-                                    <th>MP 60%</th>
-                                    <td><strong style="font-size: 18px;">Rp ${new Intl.NumberFormat('id-ID').format(res.mp)}</strong></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-${warna} text-white">
+                    <h5 class="mb-0">📘 ${judul}</h5>
                 </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tr><th>Jenis Pensiun</th><td>${judul}</td></tr>
+                        <tr><th>Masa Kerja</th><td>${res.masa_kerja ?? res.masakerja ?? '-'}</td></tr>
+                        <tr><th>Usia Saat Ini</th><td>${res.usia ?? '-'}</td></tr>
+                        <tr><th>Usia Pensiun</th><td>${res.usia_pensiun ?? res.usiapensiun ?? '-'}</td></tr>
+                        <tr><th>Status Kawin</th><td>${res.status_kawin ?? res.statuspensiun ?? '-'}</td></tr>
+                        <tr><th>Jenis Kelamin</th><td>${res.jenis_kelamin ?? '-'}</td></tr>
+                        <tr><th>Pekerjaan Terakhir</th><td>${res.pekerjaan_terakhir ?? '-'}</td></tr>
+
+                        <tr><th>MP</th>
+                            <td><strong>Rp ${formatRp(mpVal)}</strong></td></tr>
+
+                        <tr><th>100%</th>
+                            <td><strong>Rp ${formatRp(mp100)}</strong></td></tr>
+
+                        <tr><th>80% Manfaat Pensiun</th>
+                            <td><strong>Rp ${formatRp(mp80)}</strong></td></tr>
+
+                        <tr><th>20% dari 100%</th>
+                            <td><strong>Rp ${formatRp(mp20)}</strong></td></tr>
+                    </table>
+                </div>
+            </div>
             `;
         }
 
-        // Tambahkan hidden input + tombol modal
+        // Hidden fields for modals (safe fallback)
+        const hiddenMP = getManfaat(res,'MP') || res.mp || '';
+        const hidden100 = getManfaat(res,'100%') || '';
+        const hidden80 = getManfaat(res,'80%') || '';
+        const hidden20 = getManfaat(res,'20%') || '';
+
         html += `
-            <input type="hidden" id="mp" value="${res.manfaat?.MP || ''}">
-            <input type="hidden" id="manfaat100" value="${res.manfaat?.['100%'] || ''}">
-            <input type="hidden" id="manfaat80" value="${res.manfaat?.['80%'] || ''}">
-            <input type="hidden" id="manfaat20" value="${res.manfaat?.['20%'] || ''}">
+            <input type="hidden" id="mp" value="${hiddenMP}">
+            <input type="hidden" id="manfaat100" value="${hidden100}">
+            <input type="hidden" id="manfaat80" value="${hidden80}">
+            <input type="hidden" id="manfaat20" value="${hidden20}">
 
             <div class="mt-3 row">
                 <div class="col-md-4 mb-2">
@@ -277,6 +407,14 @@ document.getElementById("btnSimulasi").addEventListener("click", function () {
         `;
 
         document.getElementById("hasilSimulasi").innerHTML = html;
+    })
+    .catch(err => {
+        console.error(err);
+        document.getElementById("hasilSimulasi").innerHTML = `
+            <div class="alert alert-danger">Terjadi kesalahan: ${err.message || err}</div>
+        `;
+        btn.disabled = false;
+        btn.innerText = "Jalankan Simulasi";
     });
 });
 
@@ -288,6 +426,7 @@ function cetakPenawaran() {
         tmtpensiun: document.getElementById("tmtpensiun").value,
         dodt: document.getElementById("dodt")?.value || '',
         batasmanfaatbulanan: document.getElementById("batasmanfaatbulanan").value,
+        suratketerangan: document.getElementById("suratketerangan").value || ''
     };
     window.location.href = "/cetak-penawaran-pensiun?" + new URLSearchParams(data);
 }
@@ -298,6 +437,7 @@ function cetakDataPembuatanSK() {
         tmtpensiun: document.getElementById("tmtpensiun").value,
         dodt: document.getElementById("dodt")?.value || '',
         batasmanfaatbulanan: document.getElementById("batasmanfaatbulanan").value,
+        suratketerangan: document.getElementById("suratketerangan").value || ''
     };
     window.location.href = "/cetak-data-pembuatan-sk?" + new URLSearchParams(data);
 }
@@ -308,10 +448,12 @@ function cetakSK() {
         tmtpensiun: document.getElementById("tmtpensiun").value,
         dodt: document.getElementById("dodt")?.value || '',
         batasmanfaatbulanan: document.getElementById("batasmanfaatbulanan").value,
+        suratketerangan: document.getElementById("suratketerangan").value || ''
     };
     window.location.href = "/cetak-sk?" + new URLSearchParams(data);
 }
 </script>
+
     <div class="modal fade" id="modalPenawaran" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -388,6 +530,7 @@ function cetakSK() {
     </div>
   </div>
 </div>
+
 <script>
 function submitPenawaranModal() {
     let nomor = document.getElementById('nomor_surat').value;
@@ -401,6 +544,7 @@ function submitPenawaranModal() {
         tmtpensiun: document.getElementById("tmtpensiun").value,
         dodt: document.getElementById("dodt")?.value || '',
         batasmanfaatbulanan: document.getElementById("batasmanfaatbulanan").value,
+        suratketerangan: (document.getElementById("suratketerangan")?.value || '').toLowerCase().trim(),
 
         // data popup
         nomor_surat: nomor,
@@ -409,11 +553,11 @@ function submitPenawaranModal() {
         tahun_surat: tahun,
         alamat_tujuan: alamat,
 
-        // TAMBAHKAN INI
-        mp: document.getElementById("mp").value,
-        manfaat100: document.getElementById("manfaat100").value,
-        manfaat80: document.getElementById("manfaat80").value,
-        manfaat20: document.getElementById("manfaat20").value,
+        // hasil simulasi (safe)
+        mp: document.getElementById("mp")?.value || '',
+        manfaat100: document.getElementById("manfaat100")?.value || '',
+        manfaat80: document.getElementById("manfaat80")?.value || '',
+        manfaat20: document.getElementById("manfaat20")?.value || '',
     };
 
     $('#modalPenawaran').modal('hide');
@@ -421,6 +565,7 @@ function submitPenawaranModal() {
     window.location.href = `/cetak-penawaran-pensiun?` + new URLSearchParams(data);
 }
 </script>
+
 <!-- Modal Data Pembuatan SK -->
 <div class="modal fade" id="modalPembuatanSK" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
@@ -482,6 +627,7 @@ function submitPenawaranModal() {
     </div>
   </div>
 </div>
+
 <script>
 function submitPembuatanSK() {
 
@@ -499,11 +645,12 @@ function submitPembuatanSK() {
     tmtpensiun: document.getElementById("tmtpensiun").value,
     dodt: document.getElementById("dodt")?.value || '',
     batasmanfaatbulanan: document.getElementById("batasmanfaatbulanan").value,
+    suratketerangan: (document.getElementById("suratketerangan")?.value || '').toLowerCase().trim(),
 
-    mp: document.getElementById("mp").value,
-    manfaat100: document.getElementById("manfaat100").value,
-    manfaat80: document.getElementById("manfaat80").value,
-    manfaat20: document.getElementById("manfaat20").value,
+    mp: document.getElementById("mp")?.value || '',
+    manfaat100: document.getElementById("manfaat100")?.value || '',
+    manfaat80: document.getElementById("manfaat80")?.value || '',
+    manfaat20: document.getElementById("manfaat20")?.value || '',
 
     ...dataTambahan
 };
@@ -515,6 +662,7 @@ function submitPembuatanSK() {
     window.location.href = `/cetak-data-pembuatan-sk?` + new URLSearchParams(data);
 }
 </script>
+
 <!-- Modal Cetak SK -->
 <div class="modal fade" id="modalCetakSK" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
@@ -595,7 +743,8 @@ function submitPembuatanSK() {
 
     </div>
   </div>
-</div> 
+</div>
+
 <script>
 function submitCetakSK() {
 
@@ -612,12 +761,13 @@ function submitCetakSK() {
         tmtpensiun: document.getElementById("tmtpensiun").value,
         dodt: document.getElementById("dodt")?.value || '',
         batasmanfaatbulanan: document.getElementById("batasmanfaatbulanan").value,
+        suratketerangan: document.getElementById("suratketerangan").value || '',
 
         // 🔥 HASIL SIMULASI YANG SUDAH ADA
-        mp: document.getElementById("mp").value,
-        manfaat100: document.getElementById("manfaat100").value,
-        manfaat80: document.getElementById("manfaat80").value,
-        manfaat20: document.getElementById("manfaat20").value,
+        mp: document.getElementById("mp")?.value || '',
+        manfaat100: document.getElementById("manfaat100")?.value || '',
+        manfaat80: document.getElementById("manfaat80")?.value || '',
+        manfaat20: document.getElementById("manfaat20")?.value || '',
 
         ...tambahan
     };
@@ -628,4 +778,5 @@ function submitCetakSK() {
 }
 
 </script>
+
 @endsection

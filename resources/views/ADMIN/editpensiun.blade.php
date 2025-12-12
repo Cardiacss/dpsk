@@ -33,7 +33,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label>Nomor Peserta</label>
-                    <input type="text" name="i  nggota" value="{{ $pensiun->idanggota ?? $peserta->idanggota }}" readonly
+                    <input type="text" name="idanggota" value="{{ $pensiun->idanggota ?? $peserta->idanggota }}" readonly
                         class="form-control">
                 </div>
 
@@ -44,7 +44,8 @@
 
                 <div class="mb-3">
                     <label>Pekerjaan</label>
-                    <input type="text" name="pekerjaan" value="{{ $pensiun->pekerjaan ?? 'GURU' }}" class="form-control">
+                    <input type="text" name="pekerjaan" value="{{ $pensiun->pekerjaan ?? 'GURU' }}" class="form-control"
+                        readonly>
                 </div>
 
                 <div class="mb-3">
@@ -54,13 +55,16 @@
                 </div>
 
                 <div class="mb-3">
-                    <label>Surat keterangan tambahan</label>
-                    <select id="sk_tambahan" name="sk_tambahan" class="form-control">
-                        <option value="">-- Pilih Surat Keterangan --</option>
-                        <option value="SK Kematian" {{ ($pensiun->sk_tambahan ?? '') == 'SK Kematian' ? 'selected' : '' }}>
-                            SK Kematian</option>
-                        <option value="SK Sakit" {{ ($pensiun->sk_tambahan ?? '') == 'SK Sakit' ? 'selected' : '' }}>SK
-                            Sakit</option>
+                    <label>Status Pensiun</label>
+                    <select name="statuspensiun" id="statuspensiun" class="form-control">
+                        <option value="Normal" {{ ($pensiun->statuspensiun ?? '') == 'Normal' ? 'selected' : '' }}>Normal
+                        </option>
+                        <option value="Janda" {{ ($pensiun->statuspensiun ?? '') == 'Janda' ? 'selected' : '' }}>Janda
+                        </option>
+                        <option value="Duda" {{ ($pensiun->statuspensiun ?? '') == 'Duda' ? 'selected' : '' }}>Duda
+                        </option>
+                        <option value="Anak" {{ ($pensiun->statuspensiun ?? '') == 'Anak' ? 'selected' : '' }}>Anak
+                        </option>
                     </select>
                 </div>
 
@@ -108,7 +112,7 @@
                     <div class="col">
                         <label>Tanggal Lahir</label>
                         <input type="date" name="tgllahir"
-                            value="{{ $peserta->tgllahir ? date('Y-m-d', strtotime($peserta->tgllahir)) : '' }}"
+                            value="{{ $peserta->tgllahir ? date('Y-m-d', strtotime($peserta->tgllahir)) : '' }}" readonly
                             class="form-control">
                     </div>
                     <div class="col">
@@ -117,11 +121,6 @@
                             value="{{ $peserta->tmtkeja ? date('Y-m-d', strtotime($peserta->tmtkeja)) : '' }}"
                             class="form-control">
                     </div>
-                </div>
-
-                <div class="mb-3">
-                    <label>Keterangan</label>
-                    <textarea name="keterangan" rows="3" class="form-control" required>{{ $pensiun->keterangan ?? '' }}</textarea>
                 </div>
 
                 <div class="mb-3">
@@ -137,11 +136,6 @@
                         class="form-control" required>
                 </div>
 
-                <div class="mb-3">
-                    <label>Nilai Variabel</label>
-                    <input type="text" name="nilaivariabel" value="{{ $pensiun->nilaivariabel ?? '0.021' }}"
-                        class="form-control">
-                </div>
 
                 <div class="mb-3">
                     <label>Nomor Agenda DPSK</label>

@@ -60,28 +60,34 @@ class PesertaController extends Controller
         return redirect('/daftarpesertaadmin')->with('success', 'Peserta berhasil ditambahkan.');
     }
 
-    public function index(Request $request)
-    {
-        $filter = $request->input('filter');
-        $search = $request->input('search');
+public function index(Request $request)
+{
+    $filter = $request->input('filter');
+    $search = $request->input('search');
 
-        $query = TPeserta::with(['mitra', 'unit']);
+    // Tampilkan hanya peserta yg aktif
+    $query = TPeserta::with(['mitra', 'unit'])
+        ->where('statuspeserta', 'AKTIF');  // <--- FILTER STATUS
 
-        if ($search) {
-            if ($filter == 'Nomor') {
-                $query->where('nopeserta', 'like', "%{$search}%");
-            } elseif ($filter == 'Nama') {
-                $query->where('nama', 'like', "%{$search}%");
-            } elseif ($filter == 'Mitra') {
-                $query->whereHas('mitra', function ($q) use ($search) {
-                    $q->where('nama_um', 'like', "%{$search}%");
-                });
-            }
+    // Filter pencarian
+    if ($search) {
+        if ($filter == 'Nomor') {
+            $query->where('nopeserta', 'like', "%{$search}%");
+        } elseif ($filter == 'Nama') {
+            $query->where('nama', 'like', "%{$search}%");
+        } elseif ($filter == 'Mitra') {
+            $query->whereHas('mitra', function ($q) use ($search) {
+                $q->where('nama_um', 'like', "%{$search}%");
+            });
         }
-
-        $peserta = $query->paginate(20);
-        return view('ADMIN.daftarpesertaadmin', compact('peserta', 'filter', 'search'));
     }
+
+    // Pagination
+    $peserta = $query->paginate(20);
+
+    return view('ADMIN.daftarpesertaadmin', compact('peserta', 'filter', 'search'));
+}
+
 
     public function create()
     {

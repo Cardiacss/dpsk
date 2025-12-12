@@ -9,6 +9,7 @@ use App\Models\IdxReward;
 use App\Models\TPeraturan;
 use Illuminate\Support\Facades\DB;
 use App\Models\TFaktorNilai;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MasterController extends Controller
 {
@@ -133,4 +134,55 @@ public function updateFaktor(Request $request)
 
         return redirect()->back()->with('success', 'Nilai berhasil diperbarui!');
     }
+public function importFaktorNilai(Request $request)
+{
+    $request->validate([
+        'file' => 'required|mimes:xlsx,xls',
+    ]);
+
+    $data = Excel::toArray([], $request->file('file'));
+    $rows = $data[0];
+
+    foreach ($rows as $index => $row) {
+        if ($index == 0) continue; // Lewati header
+
+        $umur        = $row[0] ?? null;
+        $statuskerja = $row[1] ?? null;
+
+        if (!$umur || !$statuskerja) continue; // skip jika data utama tidak ada
+
+        // Ambil semua nilai FNS dari Excel
+        $fns_s_pria_kawin    = $row[2] ?? 0;
+        $fns_b_pria_kawin    = $row[3] ?? 0;
+        $fns_s_wanita_kawin  = $row[4] ?? 0;
+        $fns_b_wanita_kawin  = $row[5] ?? 0;
+        $fns_s_pria_lajang   = $row[6] ?? 0;
+        $fns_b_pria_lajang   = $row[7] ?? 0;
+        $fns_s_wanita_lajang = $row[8] ?? 0;
+        $fns_b_wanita_lajang = $row[9] ?? 0;
+
+        // Cari record yang cocok
+        $record = DB::table('t_faktornilai')
+                    ->where('umur', $umur)
+                    ->where('statuskerja', $statuskerja)
+                    ->first();
+
+        if ($record) {
+            // Update semua kolom FNS
+            DB::table('t_faktornilai')->where('id', $record->id)->update([
+                'fns_s_pria_kawin'    => $fns_s_pria_kawin,
+                'fns_b_pria_kawin'    => $fns_b_pria_kawin,
+                'fns_s_wanita_kawin'  => $fns_s_wanita_kawin,
+                'fns_b_wanita_kawin'  => $fns_b_wanita_kawin,
+                'fns_s_pria_lajang'   => $fns_s_pria_lajang,
+                'fns_b_pria_lajang'   => $fns_b_pria_lajang,
+                'fns_s_wanita_lajang' => $fns_s_wanita_lajang,
+                'fns_b_wanita_lajang' => $fns_b_wanita_lajang,
+            ]);
+        }
+        // Jika tidak ada record, skip
+    }
+
+    return redirect()->route('faktornilai.index')->with('success', 'Data Faktor Nilai berhasil diupdate.');
+}
 }

@@ -27,9 +27,22 @@ public function index(Request $request)
                   ->orWhere('kotakab', 'like', "%{$search}%")
                   ->orWhere('provinsi', 'like', "%{$search}%");
         })
-        ->get();
+        ->orderByRaw("CASE WHEN stat_um = 'AKTIF' THEN 0 ELSE 1 END") 
+        ->orderBy('nama_um', 'asc') 
+        ->paginate(20)
+        ->appends(['search' => $search]);
 
-    return view('ADMIN.mitradansekolahadmin', compact('mitras'));
+    return view('ADMIN.mitradansekolahadmin', compact('mitras', 'search'));
+}
+public function toggleStatus($idunit)
+{
+    $unit = TUnitMitra::where('idunit', $idunit)->firstOrFail();
+
+    // Toggle nilai: AKTIF <-> TIDAK AKTIF
+    $unit->stat_um = ($unit->stat_um === 'AKTIF') ? 'TIDAK AKTIF' : 'AKTIF';
+    $unit->save();
+
+    return redirect()->back()->with('success', 'Status unit berhasil diperbarui.');
 }
 
     public function create()
@@ -258,19 +271,23 @@ public function edit($idunit)
     return redirect()->route('admin.mitradansekolah')
         ->with('success', 'Data Unit Mitra berhasil diperbarui.');
 }
-    public function showIuran(Request $request)
+public function showIuran(Request $request)
 {
     $search = $request->input('search');
 
-    $mitras = TUnitMitra::when($search, function ($query) use ($search) {
-        $query->where('nama_um', 'LIKE', "%$search%")
-              ->orWhere('idunit', 'LIKE', "%$search%");
-    })
-    ->orderBy('idunit')
-    ->get();
+    $mitras = TUnitMitra::where('stat_um', 'AKTIF') // hanya yang aktif
+        ->when($search, function ($query) use ($search) {
+            $query->where('nama_um', 'LIKE', "%$search%")
+                  ->orWhere('idunit', 'LIKE', "%$search%");
+        })
+        ->orderBy('idunit')
+        ->paginate(20)
+        ->appends(['search' => $search]); // supaya search tidak hilang di pagination
 
     return view('ADMIN.iuranpesertaadmin', compact('mitras'));
-}    public function mitraEdit($idmitra)
+}
+
+  public function mitraEdit($idmitra)
     {
         $mitra = TMitra::findOrFail($idmitra); // pakai model TMitra
         return view('ADMIN.listmitraadminedit', compact('mitra'));
@@ -356,26 +373,36 @@ public function edit($idunit)
 }
 public function daftarPeserta(Request $request, $idmitra)
 {
-    // Ambil mitra berdasarkan ID
+    // Ambil mitra
     $mitra = TMitra::findOrFail($idmitra);
 
     // Ambil input pencarian
     $search = $request->input('search');
 
-    // Query peserta
-    $query = TPeserta::where('idmitra', $idmitra);
+    // Query peserta (hanya AKTIF)
+    $query = TPeserta::where('idmitra', $idmitra)
+                      ->where('statuspeserta', 'AKTIF'); // hanya yang AKTIF
 
-    // Filter nama peserta
     if ($search) {
         $query->where('nama', 'LIKE', '%' . $search . '%');
     }
 
-    $peserta = $query->get();
+    // Pagination 5 data per halaman
+    $peserta = $query->paginate(5)->withQueryString(); // dengan query string agar search tetap ada saat paginate
 
+    // Nilai Aktuaria
     $nilai = TNilaiAktuaria::where('idunit', $mitra->idunit)->first();
 
-    return view('ADMIN.daftarpesertaiuranadmin', compact('mitra', 'peserta', 'nilai', 'search'));
+    // Map iuran peserta: idanggota → data iuran
+    $iuranMap = TIuranPeserta::whereIn('idanggota', $peserta->pluck('idanggota'))
+        ->get()
+        ->keyBy('idanggota');
+
+    return view('ADMIN.daftarpesertaiuranadmin', compact(
+        'mitra', 'peserta', 'nilai', 'search', 'iuranMap'
+    ));
 }
+
     public function editIPeserta($idanggota)
     {
         $peserta = TPeserta::findOrFail($idanggota);

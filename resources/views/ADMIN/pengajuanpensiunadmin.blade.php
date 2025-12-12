@@ -70,7 +70,7 @@
         <tbody>
             @forelse ($peserta as $index => $p)
                 <tr>
-                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $peserta->firstItem() + $index }}</td>
                     <td>{{ $p->nopeserta }}</td>
                     <td>{{ $p->nama }}</td>
                     <td>{{ $p->mitra->nama_um ?? '-' }}</td>
@@ -104,6 +104,10 @@
             @endforelse
         </tbody>
     </table>
+    <div class="mt-3">
+    {{ $peserta->links('pagination::bootstrap-5') }}
+</div>
+
 </div>
 
 

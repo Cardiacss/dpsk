@@ -104,10 +104,11 @@
         </table>
     </div>
 
-    {{-- Pagination
-    <div class="mt-3">
-        {{ $peserta->appends(request()->query())->links() }}
-    </div>
+    {{-- Pagination --}}
+<div class="mt-3 d-flex justify-content-center">
+    {{ $peserta->appends(request()->query())->links('pagination::bootstrap-4') }}
+</div>
+
 <style>
     .pagination svg {
         width: 16px !important;
@@ -115,9 +116,15 @@
     }
 
     .pagination .page-link {
-        padding: 4px 10px !important;
+        padding: 6px 12px !important;
         font-size: 14px !important;
     }
-</style> --}}
+
+    .pagination .page-item.active .page-link {
+        background-color: #2994A4 !important;
+        border-color: #2994A4 !important;
+        color: white !important;
+    }
+</style>
 
 @endsection
